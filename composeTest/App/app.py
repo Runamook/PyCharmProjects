@@ -6,7 +6,8 @@
 # TODO: Handle re-registrations sqlite> CREATE UNIQUE INDEX device_index ON devices (id, mac);
 # TODO: FIX GLOBAL VAR!!!
 # TODO: Implicit registration - register a device when it sends data
-# TODO: Concurrency issues? DB lock?
+# TODO: Concurrency issues? DB lock?3
+# TODO: Switch to transactions, which are faster
 
 import datetime as dt
 
