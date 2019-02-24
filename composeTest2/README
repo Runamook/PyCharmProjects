@@ -1,0 +1,17 @@
+# Build docker image
+docker build -t web .
+
+# Launch image
+docker-compose up
+
+# Launch as a daemon
+docker-compose up -d
+
+# Check processes
+docker-compose ps
+
+# Run command in container
+docker-compose run web env
+
+# Stop container
+docker-compose stop
