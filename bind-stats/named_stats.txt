@@ -1,0 +1,613 @@
++++ Statistics Dump +++ (1551367104)
+++ Incoming Requests ++
+                   5 QUERY
+++ Incoming Queries ++
+                   4 A
+                   1 MX
+++ Outgoing Queries ++
+[View: default]
+                   3 A
+                   7 NS
+                   2 DS
+                   5 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+                   5 IPv4 requests received
+                   5 requests with EDNS(0) received
+                   5 responses sent
+                   5 responses with EDNS(0) sent
+                   3 queries resulted in successful answer
+                   2 queries resulted in authoritative answer
+                   3 queries resulted in non authoritative answer
+                   1 queries resulted in nxrrset
+                   1 queries resulted in NXDOMAIN
+                   3 queries caused recursion
+                   5 UDP queries received
+                   5 Other EDNS option received
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                  17 IPv4 queries sent
+                  17 IPv4 responses received
+                   1 NXDOMAIN received
+                   3 truncated responses received
+                   3 query retries
+                  12 DNSSEC validation attempted
+                  10 DNSSEC validation succeeded
+                   2 DNSSEC NX validation succeeded
+                  12 queries with RTT < 10ms
+                   5 queries with RTT 10-100ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                 244 cache hits
+                  83 cache misses
+                   0 cache hits (from query)
+                   3 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   5 cache database nodes
+                  64 cache database hash buckets
+              288501 cache tree memory total
+               37493 cache tree memory in use
+               39317 cache tree highest memory in use
+              294912 cache heap memory total
+               33792 cache heap memory in use
+               33792 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   1 A
+                   1 NS
+                   1 DS
+                   6 RRSIG
+                   2 NSEC
+                   2 DNSKEY
+                   1 !DS
+                   1 NXDOMAIN
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  49 UDP/IPv4 sockets opened
+                  21 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  43 UDP/IPv4 sockets closed
+                  19 TCP/IPv4 sockets closed
+                   1 UDP/IPv4 socket bind failures
+                  14 UDP/IPv4 connections established
+                   3 TCP/IPv4 connections established
+                   3 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   7 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551367104)
++++ Statistics Dump +++ (1551367165)
+++ Incoming Requests ++
+                   5 QUERY
+++ Incoming Queries ++
+                   4 A
+                   1 MX
+++ Outgoing Queries ++
+[View: default]
+                   3 A
+                   7 NS
+                   2 DS
+                   5 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+                   5 IPv4 requests received
+                   5 requests with EDNS(0) received
+                   5 responses sent
+                   5 responses with EDNS(0) sent
+                   3 queries resulted in successful answer
+                   2 queries resulted in authoritative answer
+                   3 queries resulted in non authoritative answer
+                   1 queries resulted in nxrrset
+                   1 queries resulted in NXDOMAIN
+                   3 queries caused recursion
+                   5 UDP queries received
+                   5 Other EDNS option received
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                  17 IPv4 queries sent
+                  17 IPv4 responses received
+                   1 NXDOMAIN received
+                   3 truncated responses received
+                   3 query retries
+                  12 DNSSEC validation attempted
+                  10 DNSSEC validation succeeded
+                   2 DNSSEC NX validation succeeded
+                  12 queries with RTT < 10ms
+                   5 queries with RTT 10-100ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                 244 cache hits
+                  83 cache misses
+                   0 cache hits (from query)
+                   3 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   5 cache database nodes
+                  64 cache database hash buckets
+              288501 cache tree memory total
+               37493 cache tree memory in use
+               39317 cache tree highest memory in use
+              294912 cache heap memory total
+               33792 cache heap memory in use
+               33792 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   1 A
+                   1 NS
+                   1 DS
+                   6 RRSIG
+                   2 NSEC
+                   2 DNSKEY
+                   1 !DS
+                   1 NXDOMAIN
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  49 UDP/IPv4 sockets opened
+                  21 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  43 UDP/IPv4 sockets closed
+                  20 TCP/IPv4 sockets closed
+                   1 UDP/IPv4 socket bind failures
+                  14 UDP/IPv4 connections established
+                   3 TCP/IPv4 connections established
+                   4 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   8 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551367165)
++++ Statistics Dump +++ (1551429472)
+++ Incoming Requests ++
+++ Incoming Queries ++
+++ Outgoing Queries ++
+[View: default]
+                   2 NS
+                   2 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                   4 IPv4 queries sent
+                   4 IPv4 responses received
+                   2 truncated responses received
+                   2 query retries
+                   1 DNSSEC validation attempted
+                   1 DNSSEC validation succeeded
+                   4 queries with RTT < 10ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                  28 cache hits
+                  28 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   1 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               32128 cache tree memory in use
+               32352 cache tree highest memory in use
+              270336 cache heap memory total
+                9216 cache heap memory in use
+                9216 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   1 NS
+                   2 RRSIG
+                   1 DNSKEY
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  20 UDP/IPv4 sockets opened
+                  12 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  14 UDP/IPv4 sockets closed
+                   8 TCP/IPv4 sockets closed
+                   2 UDP/IPv4 connections established
+                   2 TCP/IPv4 connections established
+                   1 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   5 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551429472)
++++ Statistics Dump +++ (1551429624)
+++ Incoming Requests ++
+                   2 QUERY
+++ Incoming Queries ++
+                   2 A
+++ Outgoing Queries ++
+[View: default]
+                   2 A
+                   5 NS
+                   3 DS
+                   4 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+                   2 IPv4 requests received
+                   2 requests with EDNS(0) received
+                   2 responses sent
+                   2 responses with EDNS(0) sent
+                   2 queries resulted in successful answer
+                   2 queries resulted in non authoritative answer
+                   2 queries caused recursion
+                   2 UDP queries received
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                  14 IPv4 queries sent
+                  14 IPv4 responses received
+                   3 truncated responses received
+                   3 query retries
+                  10 DNSSEC validation attempted
+                   8 DNSSEC validation succeeded
+                   2 DNSSEC NX validation succeeded
+                  12 queries with RTT < 10ms
+                   2 queries with RTT 10-100ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                 126 cache hits
+                  66 cache misses
+                   0 cache hits (from query)
+                   2 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   4 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               36048 cache tree memory in use
+               36640 cache tree highest memory in use
+              294912 cache heap memory total
+               33792 cache heap memory in use
+               33792 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   2 A
+                   1 NS
+                   1 DS
+                   4 RRSIG
+                   2 DNSKEY
+                   2 !DS
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  29 UDP/IPv4 sockets opened
+                  13 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  23 UDP/IPv4 sockets closed
+                  10 TCP/IPv4 sockets closed
+                  11 UDP/IPv4 connections established
+                   3 TCP/IPv4 connections established
+                   2 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   6 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551429624)
++++ Statistics Dump +++ (1551429684)
+++ Incoming Requests ++
+                   2 QUERY
+++ Incoming Queries ++
+                   2 A
+++ Outgoing Queries ++
+[View: default]
+                   2 A
+                   5 NS
+                   3 DS
+                   4 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+                   2 IPv4 requests received
+                   2 requests with EDNS(0) received
+                   2 responses sent
+                   2 responses with EDNS(0) sent
+                   2 queries resulted in successful answer
+                   2 queries resulted in non authoritative answer
+                   2 queries caused recursion
+                   2 UDP queries received
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                  14 IPv4 queries sent
+                  14 IPv4 responses received
+                   3 truncated responses received
+                   3 query retries
+                  10 DNSSEC validation attempted
+                   8 DNSSEC validation succeeded
+                   2 DNSSEC NX validation succeeded
+                  12 queries with RTT < 10ms
+                   2 queries with RTT 10-100ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                 126 cache hits
+                  66 cache misses
+                   0 cache hits (from query)
+                   2 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   4 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               36048 cache tree memory in use
+               36640 cache tree highest memory in use
+              294912 cache heap memory total
+               33792 cache heap memory in use
+               33792 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   2 A
+                   1 NS
+                   1 DS
+                   4 RRSIG
+                   2 DNSKEY
+                   2 !DS
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  29 UDP/IPv4 sockets opened
+                  13 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  23 UDP/IPv4 sockets closed
+                  11 TCP/IPv4 sockets closed
+                  11 UDP/IPv4 connections established
+                   3 TCP/IPv4 connections established
+                   3 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   7 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551429684)
++++ Statistics Dump +++ (1551446782)
+++ Incoming Requests ++
+                   2 QUERY
+++ Incoming Queries ++
+                   2 A
+++ Outgoing Queries ++
+[View: default]
+                   2 A
+                   5 NS
+                   3 DS
+                   4 DNSKEY
+[View: _bind]
+++ Name Server Statistics ++
+                   2 IPv4 requests received
+                   2 requests with EDNS(0) received
+                   2 responses sent
+                   2 responses with EDNS(0) sent
+                   2 queries resulted in successful answer
+                   2 queries resulted in non authoritative answer
+                   2 queries caused recursion
+                   2 UDP queries received
+++ Zone Maintenance Statistics ++
+++ Resolver Statistics ++
+[Common]
+[View: default]
+                  14 IPv4 queries sent
+                  14 IPv4 responses received
+                   3 truncated responses received
+                   3 query retries
+                  10 DNSSEC validation attempted
+                   8 DNSSEC validation succeeded
+                   2 DNSSEC NX validation succeeded
+                  12 queries with RTT < 10ms
+                   2 queries with RTT 10-100ms
+                  31 bucket size
+[View: _bind]
+                  31 bucket size
+++ Cache Statistics ++
+[View: default]
+                 126 cache hits
+                  66 cache misses
+                   0 cache hits (from query)
+                   2 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   4 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               36048 cache tree memory in use
+               36640 cache tree highest memory in use
+              294912 cache heap memory total
+               33792 cache heap memory in use
+               33792 cache heap highest memory in use
+[View: _bind (Cache: _bind)]
+                   0 cache hits
+                   0 cache misses
+                   0 cache hits (from query)
+                   0 cache misses (from query)
+                   0 cache records deleted due to memory exhaustion
+                   0 cache records deleted due to TTL expiration
+                   0 cache database nodes
+                  64 cache database hash buckets
+              287392 cache tree memory total
+               29608 cache tree memory in use
+               29608 cache tree highest memory in use
+              262144 cache heap memory total
+                1024 cache heap memory in use
+                1024 cache heap highest memory in use
+++ Cache DB RRsets ++
+[View: default]
+                   2 A
+                   1 NS
+                   1 DS
+                   4 RRSIG
+                   2 DNSKEY
+                   2 !DS
+[View: _bind (Cache: _bind)]
+++ ADB stats ++
+[View: default]
+                1021 Address hash table size
+                  26 Addresses in hash table
+                1021 Name hash table size
+                  13 Names in hash table
+[View: _bind]
+                1021 Address hash table size
+                1021 Name hash table size
+++ Socket I/O Statistics ++
+                  31 UDP/IPv4 sockets opened
+                  14 TCP/IPv4 sockets opened
+                   1 TCP/IPv6 sockets opened
+                   1 Raw sockets opened
+                  25 UDP/IPv4 sockets closed
+                  13 TCP/IPv4 sockets closed
+                  11 UDP/IPv4 connections established
+                   3 TCP/IPv4 connections established
+                   4 TCP/IPv4 connections accepted
+                   6 UDP/IPv4 sockets active
+                   8 TCP/IPv4 sockets active
+                   1 TCP/IPv6 sockets active
+                   1 Raw sockets active
+++ Per Zone Query Statistics ++
+--- Statistics Dump --- (1551446782)

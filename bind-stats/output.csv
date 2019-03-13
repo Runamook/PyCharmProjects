@@ -1,0 +1,469 @@
+2019-02-28 18:18:24,Incoming Requests,5,QUERY,NA
+2019-02-28 18:18:24,Incoming Queries,4,A,NA
+2019-02-28 18:18:24,Incoming Queries,1,MX,NA
+2019-02-28 18:18:24,Outgoing Queries,3,A,default
+2019-02-28 18:18:24,Outgoing Queries,7,NS,default
+2019-02-28 18:18:24,Outgoing Queries,2,DS,default
+2019-02-28 18:18:24,Outgoing Queries,5,DNSKEY,default
+2019-02-28 18:18:24,Name Server Statistics,5,IPv4 requests received,_bind
+2019-02-28 18:18:24,Name Server Statistics,5,Requests with EDNS(0) received,_bind
+2019-02-28 18:18:24,Name Server Statistics,5,Responses sent,_bind
+2019-02-28 18:18:24,Name Server Statistics,5,Responses with EDNS(0) sent,_bind
+2019-02-28 18:18:24,Name Server Statistics,3,Queries resulted in successful answer,_bind
+2019-02-28 18:18:24,Name Server Statistics,2,Queries resulted in authoritative answer,_bind
+2019-02-28 18:18:24,Name Server Statistics,3,Queries resulted in non authoritative answer,_bind
+2019-02-28 18:18:24,Name Server Statistics,1,Queries resulted in nxrrset,_bind
+2019-02-28 18:18:24,Name Server Statistics,1,Queries resulted in NXDOMAIN,_bind
+2019-02-28 18:18:24,Name Server Statistics,3,Queries caused recursion,_bind
+2019-02-28 18:18:24,Name Server Statistics,5,UDP queries received,_bind
+2019-02-28 18:18:24,Name Server Statistics,5,Other EDNS option received,_bind
+2019-02-28 18:18:24,Resolver Statistics,17,IPv4 queries sent,default
+2019-02-28 18:18:24,Resolver Statistics,17,IPv4 responses received,default
+2019-02-28 18:18:24,Resolver Statistics,1,NXDOMAIN received,default
+2019-02-28 18:18:24,Resolver Statistics,3,Truncated responses received,default
+2019-02-28 18:18:24,Resolver Statistics,3,Query retries,default
+2019-02-28 18:18:24,Resolver Statistics,12,DNSSEC validation attempted,default
+2019-02-28 18:18:24,Resolver Statistics,10,DNSSEC validation succeeded,default
+2019-02-28 18:18:24,Resolver Statistics,2,DNSSEC NX validation succeeded,default
+2019-02-28 18:18:24,Resolver Statistics,12,Queries with RTT < 10ms,default
+2019-02-28 18:18:24,Resolver Statistics,5,Queries with RTT 10-100ms,default
+2019-02-28 18:18:24,Resolver Statistics,31,Bucket size,default
+2019-02-28 18:18:24,Resolver Statistics,31,Bucket size,_bind
+2019-02-28 18:18:24,Cache Statistics,244,Cache hits,default
+2019-02-28 18:18:24,Cache Statistics,83,Cache misses,default
+2019-02-28 18:18:24,Cache Statistics,0,Cache hits (from query),default
+2019-02-28 18:18:24,Cache Statistics,3,Cache misses (from query),default
+2019-02-28 18:18:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-02-28 18:18:24,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-02-28 18:18:24,Cache Statistics,5,Cache database nodes,default
+2019-02-28 18:18:24,Cache Statistics,64,Cache database hash buckets,default
+2019-02-28 18:18:24,Cache Statistics,288501,Cache tree memory total,default
+2019-02-28 18:18:24,Cache Statistics,37493,Cache tree memory in use,default
+2019-02-28 18:18:24,Cache Statistics,39317,Cache tree highest memory in use,default
+2019-02-28 18:18:24,Cache Statistics,294912,Cache heap memory total,default
+2019-02-28 18:18:24,Cache Statistics,33792,Cache heap memory in use,default
+2019-02-28 18:18:24,Cache Statistics,33792,Cache heap highest memory in use,default
+2019-02-28 18:18:24,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-02-28 18:18:24,Cache DB RRsets,1,A,default
+2019-02-28 18:18:24,Cache DB RRsets,1,NS,default
+2019-02-28 18:18:24,Cache DB RRsets,1,DS,default
+2019-02-28 18:18:24,Cache DB RRsets,6,RRSIG,default
+2019-02-28 18:18:24,Cache DB RRsets,2,NSEC,default
+2019-02-28 18:18:24,Cache DB RRsets,2,DNSKEY,default
+2019-02-28 18:18:24,Cache DB RRsets,1,!DS,default
+2019-02-28 18:18:24,Cache DB RRsets,1,NXDOMAIN,default
+2019-02-28 18:18:24,ADB stats,1021,Address hash table size,default
+2019-02-28 18:18:24,ADB stats,26,Addresses in hash table,default
+2019-02-28 18:18:24,ADB stats,1021,Name hash table size,default
+2019-02-28 18:18:24,ADB stats,13,Names in hash table,default
+2019-02-28 18:18:24,ADB stats,1021,Address hash table size,_bind
+2019-02-28 18:18:24,ADB stats,1021,Name hash table size,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,49,UDP/IPv4 sockets opened,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,21,TCP/IPv4 sockets opened,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,43,UDP/IPv4 sockets closed,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,19,TCP/IPv4 sockets closed,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,1,UDP/IPv4 socket bind failures,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,14,UDP/IPv4 connections established,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,3,TCP/IPv4 connections established,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,3,TCP/IPv4 connections accepted,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,7,TCP/IPv4 sockets active,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-02-28 18:18:24,Socket I/O Statistics,1,Raw sockets active,_bind
+2019-02-28 18:19:25,Incoming Requests,5,QUERY,_bind
+2019-02-28 18:19:25,Incoming Queries,4,A,_bind
+2019-02-28 18:19:25,Incoming Queries,1,MX,_bind
+2019-02-28 18:19:25,Outgoing Queries,3,A,default
+2019-02-28 18:19:25,Outgoing Queries,7,NS,default
+2019-02-28 18:19:25,Outgoing Queries,2,DS,default
+2019-02-28 18:19:25,Outgoing Queries,5,DNSKEY,default
+2019-02-28 18:19:25,Name Server Statistics,5,IPv4 requests received,_bind
+2019-02-28 18:19:25,Name Server Statistics,5,Requests with EDNS(0) received,_bind
+2019-02-28 18:19:25,Name Server Statistics,5,Responses sent,_bind
+2019-02-28 18:19:25,Name Server Statistics,5,Responses with EDNS(0) sent,_bind
+2019-02-28 18:19:25,Name Server Statistics,3,Queries resulted in successful answer,_bind
+2019-02-28 18:19:25,Name Server Statistics,2,Queries resulted in authoritative answer,_bind
+2019-02-28 18:19:25,Name Server Statistics,3,Queries resulted in non authoritative answer,_bind
+2019-02-28 18:19:25,Name Server Statistics,1,Queries resulted in nxrrset,_bind
+2019-02-28 18:19:25,Name Server Statistics,1,Queries resulted in NXDOMAIN,_bind
+2019-02-28 18:19:25,Name Server Statistics,3,Queries caused recursion,_bind
+2019-02-28 18:19:25,Name Server Statistics,5,UDP queries received,_bind
+2019-02-28 18:19:25,Name Server Statistics,5,Other EDNS option received,_bind
+2019-02-28 18:19:25,Resolver Statistics,17,IPv4 queries sent,default
+2019-02-28 18:19:25,Resolver Statistics,17,IPv4 responses received,default
+2019-02-28 18:19:25,Resolver Statistics,1,NXDOMAIN received,default
+2019-02-28 18:19:25,Resolver Statistics,3,Truncated responses received,default
+2019-02-28 18:19:25,Resolver Statistics,3,Query retries,default
+2019-02-28 18:19:25,Resolver Statistics,12,DNSSEC validation attempted,default
+2019-02-28 18:19:25,Resolver Statistics,10,DNSSEC validation succeeded,default
+2019-02-28 18:19:25,Resolver Statistics,2,DNSSEC NX validation succeeded,default
+2019-02-28 18:19:25,Resolver Statistics,12,Queries with RTT < 10ms,default
+2019-02-28 18:19:25,Resolver Statistics,5,Queries with RTT 10-100ms,default
+2019-02-28 18:19:25,Resolver Statistics,31,Bucket size,default
+2019-02-28 18:19:25,Resolver Statistics,31,Bucket size,_bind
+2019-02-28 18:19:25,Cache Statistics,244,Cache hits,default
+2019-02-28 18:19:25,Cache Statistics,83,Cache misses,default
+2019-02-28 18:19:25,Cache Statistics,0,Cache hits (from query),default
+2019-02-28 18:19:25,Cache Statistics,3,Cache misses (from query),default
+2019-02-28 18:19:25,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-02-28 18:19:25,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-02-28 18:19:25,Cache Statistics,5,Cache database nodes,default
+2019-02-28 18:19:25,Cache Statistics,64,Cache database hash buckets,default
+2019-02-28 18:19:25,Cache Statistics,288501,Cache tree memory total,default
+2019-02-28 18:19:25,Cache Statistics,37493,Cache tree memory in use,default
+2019-02-28 18:19:25,Cache Statistics,39317,Cache tree highest memory in use,default
+2019-02-28 18:19:25,Cache Statistics,294912,Cache heap memory total,default
+2019-02-28 18:19:25,Cache Statistics,33792,Cache heap memory in use,default
+2019-02-28 18:19:25,Cache Statistics,33792,Cache heap highest memory in use,default
+2019-02-28 18:19:25,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-02-28 18:19:25,Cache DB RRsets,1,A,default
+2019-02-28 18:19:25,Cache DB RRsets,1,NS,default
+2019-02-28 18:19:25,Cache DB RRsets,1,DS,default
+2019-02-28 18:19:25,Cache DB RRsets,6,RRSIG,default
+2019-02-28 18:19:25,Cache DB RRsets,2,NSEC,default
+2019-02-28 18:19:25,Cache DB RRsets,2,DNSKEY,default
+2019-02-28 18:19:25,Cache DB RRsets,1,!DS,default
+2019-02-28 18:19:25,Cache DB RRsets,1,NXDOMAIN,default
+2019-02-28 18:19:25,ADB stats,1021,Address hash table size,default
+2019-02-28 18:19:25,ADB stats,26,Addresses in hash table,default
+2019-02-28 18:19:25,ADB stats,1021,Name hash table size,default
+2019-02-28 18:19:25,ADB stats,13,Names in hash table,default
+2019-02-28 18:19:25,ADB stats,1021,Address hash table size,_bind
+2019-02-28 18:19:25,ADB stats,1021,Name hash table size,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,49,UDP/IPv4 sockets opened,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,21,TCP/IPv4 sockets opened,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,43,UDP/IPv4 sockets closed,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,20,TCP/IPv4 sockets closed,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,1,UDP/IPv4 socket bind failures,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,14,UDP/IPv4 connections established,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,3,TCP/IPv4 connections established,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,4,TCP/IPv4 connections accepted,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,8,TCP/IPv4 sockets active,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-02-28 18:19:25,Socket I/O Statistics,1,Raw sockets active,_bind
+2019-03-01 11:37:52,Outgoing Queries,2,NS,default
+2019-03-01 11:37:52,Outgoing Queries,2,DNSKEY,default
+2019-03-01 11:37:52,Resolver Statistics,4,IPv4 queries sent,default
+2019-03-01 11:37:52,Resolver Statistics,4,IPv4 responses received,default
+2019-03-01 11:37:52,Resolver Statistics,2,Truncated responses received,default
+2019-03-01 11:37:52,Resolver Statistics,2,Query retries,default
+2019-03-01 11:37:52,Resolver Statistics,1,DNSSEC validation attempted,default
+2019-03-01 11:37:52,Resolver Statistics,1,DNSSEC validation succeeded,default
+2019-03-01 11:37:52,Resolver Statistics,4,Queries with RTT < 10ms,default
+2019-03-01 11:37:52,Resolver Statistics,31,Bucket size,default
+2019-03-01 11:37:52,Resolver Statistics,31,Bucket size,_bind
+2019-03-01 11:37:52,Cache Statistics,28,Cache hits,default
+2019-03-01 11:37:52,Cache Statistics,28,Cache misses,default
+2019-03-01 11:37:52,Cache Statistics,0,Cache hits (from query),default
+2019-03-01 11:37:52,Cache Statistics,0,Cache misses (from query),default
+2019-03-01 11:37:52,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-03-01 11:37:52,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-03-01 11:37:52,Cache Statistics,1,Cache database nodes,default
+2019-03-01 11:37:52,Cache Statistics,64,Cache database hash buckets,default
+2019-03-01 11:37:52,Cache Statistics,287392,Cache tree memory total,default
+2019-03-01 11:37:52,Cache Statistics,32128,Cache tree memory in use,default
+2019-03-01 11:37:52,Cache Statistics,32352,Cache tree highest memory in use,default
+2019-03-01 11:37:52,Cache Statistics,270336,Cache heap memory total,default
+2019-03-01 11:37:52,Cache Statistics,9216,Cache heap memory in use,default
+2019-03-01 11:37:52,Cache Statistics,9216,Cache heap highest memory in use,default
+2019-03-01 11:37:52,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:37:52,Cache DB RRsets,1,NS,default
+2019-03-01 11:37:52,Cache DB RRsets,2,RRSIG,default
+2019-03-01 11:37:52,Cache DB RRsets,1,DNSKEY,default
+2019-03-01 11:37:52,ADB stats,1021,Address hash table size,default
+2019-03-01 11:37:52,ADB stats,26,Addresses in hash table,default
+2019-03-01 11:37:52,ADB stats,1021,Name hash table size,default
+2019-03-01 11:37:52,ADB stats,13,Names in hash table,default
+2019-03-01 11:37:52,ADB stats,1021,Address hash table size,_bind
+2019-03-01 11:37:52,ADB stats,1021,Name hash table size,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,20,UDP/IPv4 sockets opened,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,12,TCP/IPv4 sockets opened,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,14,UDP/IPv4 sockets closed,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,8,TCP/IPv4 sockets closed,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,2,UDP/IPv4 connections established,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,2,TCP/IPv4 connections established,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,1,TCP/IPv4 connections accepted,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,5,TCP/IPv4 sockets active,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-03-01 11:37:52,Socket I/O Statistics,1,Raw sockets active,_bind
+2019-03-01 11:40:24,Incoming Requests,2,QUERY,_bind
+2019-03-01 11:40:24,Incoming Queries,2,A,_bind
+2019-03-01 11:40:24,Outgoing Queries,2,A,default
+2019-03-01 11:40:24,Outgoing Queries,5,NS,default
+2019-03-01 11:40:24,Outgoing Queries,3,DS,default
+2019-03-01 11:40:24,Outgoing Queries,4,DNSKEY,default
+2019-03-01 11:40:24,Name Server Statistics,2,IPv4 requests received,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Requests with EDNS(0) received,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Responses sent,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Responses with EDNS(0) sent,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Queries resulted in successful answer,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Queries resulted in non authoritative answer,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,Queries caused recursion,_bind
+2019-03-01 11:40:24,Name Server Statistics,2,UDP queries received,_bind
+2019-03-01 11:40:24,Resolver Statistics,14,IPv4 queries sent,default
+2019-03-01 11:40:24,Resolver Statistics,14,IPv4 responses received,default
+2019-03-01 11:40:24,Resolver Statistics,3,Truncated responses received,default
+2019-03-01 11:40:24,Resolver Statistics,3,Query retries,default
+2019-03-01 11:40:24,Resolver Statistics,10,DNSSEC validation attempted,default
+2019-03-01 11:40:24,Resolver Statistics,8,DNSSEC validation succeeded,default
+2019-03-01 11:40:24,Resolver Statistics,2,DNSSEC NX validation succeeded,default
+2019-03-01 11:40:24,Resolver Statistics,12,Queries with RTT < 10ms,default
+2019-03-01 11:40:24,Resolver Statistics,2,Queries with RTT 10-100ms,default
+2019-03-01 11:40:24,Resolver Statistics,31,Bucket size,default
+2019-03-01 11:40:24,Resolver Statistics,31,Bucket size,_bind
+2019-03-01 11:40:24,Cache Statistics,126,Cache hits,default
+2019-03-01 11:40:24,Cache Statistics,66,Cache misses,default
+2019-03-01 11:40:24,Cache Statistics,0,Cache hits (from query),default
+2019-03-01 11:40:24,Cache Statistics,2,Cache misses (from query),default
+2019-03-01 11:40:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-03-01 11:40:24,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-03-01 11:40:24,Cache Statistics,4,Cache database nodes,default
+2019-03-01 11:40:24,Cache Statistics,64,Cache database hash buckets,default
+2019-03-01 11:40:24,Cache Statistics,287392,Cache tree memory total,default
+2019-03-01 11:40:24,Cache Statistics,36048,Cache tree memory in use,default
+2019-03-01 11:40:24,Cache Statistics,36640,Cache tree highest memory in use,default
+2019-03-01 11:40:24,Cache Statistics,294912,Cache heap memory total,default
+2019-03-01 11:40:24,Cache Statistics,33792,Cache heap memory in use,default
+2019-03-01 11:40:24,Cache Statistics,33792,Cache heap highest memory in use,default
+2019-03-01 11:40:24,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:40:24,Cache DB RRsets,2,A,default
+2019-03-01 11:40:24,Cache DB RRsets,1,NS,default
+2019-03-01 11:40:24,Cache DB RRsets,1,DS,default
+2019-03-01 11:40:24,Cache DB RRsets,4,RRSIG,default
+2019-03-01 11:40:24,Cache DB RRsets,2,DNSKEY,default
+2019-03-01 11:40:24,Cache DB RRsets,2,!DS,default
+2019-03-01 11:40:24,ADB stats,1021,Address hash table size,default
+2019-03-01 11:40:24,ADB stats,26,Addresses in hash table,default
+2019-03-01 11:40:24,ADB stats,1021,Name hash table size,default
+2019-03-01 11:40:24,ADB stats,13,Names in hash table,default
+2019-03-01 11:40:24,ADB stats,1021,Address hash table size,_bind
+2019-03-01 11:40:24,ADB stats,1021,Name hash table size,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,29,UDP/IPv4 sockets opened,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,13,TCP/IPv4 sockets opened,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,23,UDP/IPv4 sockets closed,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,10,TCP/IPv4 sockets closed,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,11,UDP/IPv4 connections established,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,3,TCP/IPv4 connections established,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,2,TCP/IPv4 connections accepted,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,6,TCP/IPv4 sockets active,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-03-01 11:40:24,Socket I/O Statistics,1,Raw sockets active,_bind
+2019-03-01 11:41:24,Incoming Requests,2,QUERY,_bind
+2019-03-01 11:41:24,Incoming Queries,2,A,_bind
+2019-03-01 11:41:24,Outgoing Queries,2,A,default
+2019-03-01 11:41:24,Outgoing Queries,5,NS,default
+2019-03-01 11:41:24,Outgoing Queries,3,DS,default
+2019-03-01 11:41:24,Outgoing Queries,4,DNSKEY,default
+2019-03-01 11:41:24,Name Server Statistics,2,IPv4 requests received,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Requests with EDNS(0) received,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Responses sent,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Responses with EDNS(0) sent,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Queries resulted in successful answer,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Queries resulted in non authoritative answer,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,Queries caused recursion,_bind
+2019-03-01 11:41:24,Name Server Statistics,2,UDP queries received,_bind
+2019-03-01 11:41:24,Resolver Statistics,14,IPv4 queries sent,default
+2019-03-01 11:41:24,Resolver Statistics,14,IPv4 responses received,default
+2019-03-01 11:41:24,Resolver Statistics,3,Truncated responses received,default
+2019-03-01 11:41:24,Resolver Statistics,3,Query retries,default
+2019-03-01 11:41:24,Resolver Statistics,10,DNSSEC validation attempted,default
+2019-03-01 11:41:24,Resolver Statistics,8,DNSSEC validation succeeded,default
+2019-03-01 11:41:24,Resolver Statistics,2,DNSSEC NX validation succeeded,default
+2019-03-01 11:41:24,Resolver Statistics,12,Queries with RTT < 10ms,default
+2019-03-01 11:41:24,Resolver Statistics,2,Queries with RTT 10-100ms,default
+2019-03-01 11:41:24,Resolver Statistics,31,Bucket size,default
+2019-03-01 11:41:24,Resolver Statistics,31,Bucket size,_bind
+2019-03-01 11:41:24,Cache Statistics,126,Cache hits,default
+2019-03-01 11:41:24,Cache Statistics,66,Cache misses,default
+2019-03-01 11:41:24,Cache Statistics,0,Cache hits (from query),default
+2019-03-01 11:41:24,Cache Statistics,2,Cache misses (from query),default
+2019-03-01 11:41:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-03-01 11:41:24,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-03-01 11:41:24,Cache Statistics,4,Cache database nodes,default
+2019-03-01 11:41:24,Cache Statistics,64,Cache database hash buckets,default
+2019-03-01 11:41:24,Cache Statistics,287392,Cache tree memory total,default
+2019-03-01 11:41:24,Cache Statistics,36048,Cache tree memory in use,default
+2019-03-01 11:41:24,Cache Statistics,36640,Cache tree highest memory in use,default
+2019-03-01 11:41:24,Cache Statistics,294912,Cache heap memory total,default
+2019-03-01 11:41:24,Cache Statistics,33792,Cache heap memory in use,default
+2019-03-01 11:41:24,Cache Statistics,33792,Cache heap highest memory in use,default
+2019-03-01 11:41:24,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-03-01 11:41:24,Cache DB RRsets,2,A,default
+2019-03-01 11:41:24,Cache DB RRsets,1,NS,default
+2019-03-01 11:41:24,Cache DB RRsets,1,DS,default
+2019-03-01 11:41:24,Cache DB RRsets,4,RRSIG,default
+2019-03-01 11:41:24,Cache DB RRsets,2,DNSKEY,default
+2019-03-01 11:41:24,Cache DB RRsets,2,!DS,default
+2019-03-01 11:41:24,ADB stats,1021,Address hash table size,default
+2019-03-01 11:41:24,ADB stats,26,Addresses in hash table,default
+2019-03-01 11:41:24,ADB stats,1021,Name hash table size,default
+2019-03-01 11:41:24,ADB stats,13,Names in hash table,default
+2019-03-01 11:41:24,ADB stats,1021,Address hash table size,_bind
+2019-03-01 11:41:24,ADB stats,1021,Name hash table size,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,29,UDP/IPv4 sockets opened,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,13,TCP/IPv4 sockets opened,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,23,UDP/IPv4 sockets closed,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,11,TCP/IPv4 sockets closed,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,11,UDP/IPv4 connections established,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,3,TCP/IPv4 connections established,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,3,TCP/IPv4 connections accepted,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,7,TCP/IPv4 sockets active,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-03-01 11:41:24,Socket I/O Statistics,1,Raw sockets active,_bind
+2019-03-01 16:26:22,Incoming Requests,2,QUERY,_bind
+2019-03-01 16:26:22,Incoming Queries,2,A,_bind
+2019-03-01 16:26:22,Outgoing Queries,2,A,default
+2019-03-01 16:26:22,Outgoing Queries,5,NS,default
+2019-03-01 16:26:22,Outgoing Queries,3,DS,default
+2019-03-01 16:26:22,Outgoing Queries,4,DNSKEY,default
+2019-03-01 16:26:22,Name Server Statistics,2,IPv4 requests received,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Requests with EDNS(0) received,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Responses sent,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Responses with EDNS(0) sent,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Queries resulted in successful answer,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Queries resulted in non authoritative answer,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,Queries caused recursion,_bind
+2019-03-01 16:26:22,Name Server Statistics,2,UDP queries received,_bind
+2019-03-01 16:26:22,Resolver Statistics,14,IPv4 queries sent,default
+2019-03-01 16:26:22,Resolver Statistics,14,IPv4 responses received,default
+2019-03-01 16:26:22,Resolver Statistics,3,Truncated responses received,default
+2019-03-01 16:26:22,Resolver Statistics,3,Query retries,default
+2019-03-01 16:26:22,Resolver Statistics,10,DNSSEC validation attempted,default
+2019-03-01 16:26:22,Resolver Statistics,8,DNSSEC validation succeeded,default
+2019-03-01 16:26:22,Resolver Statistics,2,DNSSEC NX validation succeeded,default
+2019-03-01 16:26:22,Resolver Statistics,12,Queries with RTT < 10ms,default
+2019-03-01 16:26:22,Resolver Statistics,2,Queries with RTT 10-100ms,default
+2019-03-01 16:26:22,Resolver Statistics,31,Bucket size,default
+2019-03-01 16:26:22,Resolver Statistics,31,Bucket size,_bind
+2019-03-01 16:26:22,Cache Statistics,126,Cache hits,default
+2019-03-01 16:26:22,Cache Statistics,66,Cache misses,default
+2019-03-01 16:26:22,Cache Statistics,0,Cache hits (from query),default
+2019-03-01 16:26:22,Cache Statistics,2,Cache misses (from query),default
+2019-03-01 16:26:22,Cache Statistics,0,Cache records deleted due to memory exhaustion,default
+2019-03-01 16:26:22,Cache Statistics,0,Cache records deleted due to TTL expiration,default
+2019-03-01 16:26:22,Cache Statistics,4,Cache database nodes,default
+2019-03-01 16:26:22,Cache Statistics,64,Cache database hash buckets,default
+2019-03-01 16:26:22,Cache Statistics,287392,Cache tree memory total,default
+2019-03-01 16:26:22,Cache Statistics,36048,Cache tree memory in use,default
+2019-03-01 16:26:22,Cache Statistics,36640,Cache tree highest memory in use,default
+2019-03-01 16:26:22,Cache Statistics,294912,Cache heap memory total,default
+2019-03-01 16:26:22,Cache Statistics,33792,Cache heap memory in use,default
+2019-03-01 16:26:22,Cache Statistics,33792,Cache heap highest memory in use,default
+2019-03-01 16:26:22,Cache Statistics,0,Cache hits,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache misses,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache hits (from query),_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache misses (from query),_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache records deleted due to memory exhaustion,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache records deleted due to TTL expiration,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,0,Cache database nodes,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,64,Cache database hash buckets,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,287392,Cache tree memory total,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,29608,Cache tree memory in use,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,29608,Cache tree highest memory in use,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,262144,Cache heap memory total,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,1024,Cache heap memory in use,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache Statistics,1024,Cache heap highest memory in use,_bind (Cache: _bind)
+2019-03-01 16:26:22,Cache DB RRsets,2,A,default
+2019-03-01 16:26:22,Cache DB RRsets,1,NS,default
+2019-03-01 16:26:22,Cache DB RRsets,1,DS,default
+2019-03-01 16:26:22,Cache DB RRsets,4,RRSIG,default
+2019-03-01 16:26:22,Cache DB RRsets,2,DNSKEY,default
+2019-03-01 16:26:22,Cache DB RRsets,2,!DS,default
+2019-03-01 16:26:22,ADB stats,1021,Address hash table size,default
+2019-03-01 16:26:22,ADB stats,26,Addresses in hash table,default
+2019-03-01 16:26:22,ADB stats,1021,Name hash table size,default
+2019-03-01 16:26:22,ADB stats,13,Names in hash table,default
+2019-03-01 16:26:22,ADB stats,1021,Address hash table size,_bind
+2019-03-01 16:26:22,ADB stats,1021,Name hash table size,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,31,UDP/IPv4 sockets opened,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,14,TCP/IPv4 sockets opened,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,1,TCP/IPv6 sockets opened,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,1,Raw sockets opened,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,25,UDP/IPv4 sockets closed,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,13,TCP/IPv4 sockets closed,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,11,UDP/IPv4 connections established,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,3,TCP/IPv4 connections established,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,4,TCP/IPv4 connections accepted,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,6,UDP/IPv4 sockets active,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,8,TCP/IPv4 sockets active,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,1,TCP/IPv6 sockets active,_bind
+2019-03-01 16:26:22,Socket I/O Statistics,1,Raw sockets active,_bind
