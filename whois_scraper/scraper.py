@@ -6,8 +6,6 @@ import datetime
 from socket import timeout
 from time import sleep
 
-# TODO: Optimize SQL insertion (maybe later)
-# TODO: Try querying separate TLDs
 
 filename = '/home/egk/Work/Misc/DNS_Scrapping/random_small.csv'
 dbfile = '/home/egk/Work/Misc/DNS_Scrapping/random.db'
