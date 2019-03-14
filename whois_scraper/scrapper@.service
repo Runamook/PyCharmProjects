@@ -1,0 +1,12 @@
+[Unit]
+Description=%i scrapper
+#PartOf=scrapper.service
+#ReloadPropagatedFrom=scrapper.service
+Before=systemd-user-sessions.service
+
+[Service]
+ExecStart=/usr/bin/python3 /root/Scripts/scrapper.py /root/Scripts/%i.csv /root/Scripts/logfile.log
+WorkingDirectory=/root/Scripts
+
+[Install]
+WantedBy=multi-user.target

@@ -4,6 +4,7 @@ import csv
 import logging
 import datetime
 from socket import timeout
+import sys
 
 
 def parse_file(csv_filename):
@@ -49,7 +50,7 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
                 except timeout:
                     logging.info("Timeout for %s, trying once again" % fqdn_dataset[0])
                 except ConnectionResetError:
-                    logging.info("Connection reset for %s, trying once again" % fqdn_dataset[0])
+                    logging.warning("Connection reset for %s, trying once again" % fqdn_dataset[0])
                 finally:
                     i += 1
                     if i == 3:
@@ -62,7 +63,7 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
             except timeout:
                 logging.info("Timeout for %s" % fqdn_dataset[0])
             except ConnectionResetError:
-                logging.info("Connection reset for %s" % fqdn_dataset[0])
+                logging.warning("Connection reset for %s" % fqdn_dataset[0])
 
         write_db(fqdn_dataset, query)
 
@@ -179,8 +180,6 @@ def synonym_finder(query, synonym_list):
 
 def meta(csv_filename):
     dt_start = datetime.datetime.now()
-    fmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-    logging.basicConfig(format=fmt, level=logging.INFO)
     fqdn_data_list = parse_file(csv_filename)
     send_whois_query(fqdn_data_list)
 
@@ -192,6 +191,13 @@ def meta(csv_filename):
 
 if __name__ == "__main__":
 
-    csv_filename = '/home/egk/Work/Misc/DNS_Scrapping/random_small.csv'
-    dbfile = '/home/egk/Work/Misc/DNS_Scrapping/random.db'
+    csv_filename = sys.argv[1]
+    logging_filename = sys.argv[2]
+
+    fmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+    logging.basicConfig(format=fmt, level=logging.INFO, filename=logging_filename)
+
+    # csv_filename = '/home/egk/Work/Misc/DNS_Scrapping/random_small.csv'
+    # dbfile = '/home/egk/Work/Misc/DNS_Scrapping/random.db'
+
     meta(csv_filename)
