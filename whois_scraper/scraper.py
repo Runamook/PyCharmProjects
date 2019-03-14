@@ -5,7 +5,7 @@ import logging
 import datetime
 from socket import timeout
 import sys
-
+from time import sleep
 
 def parse_file(csv_filename):
     """
@@ -20,7 +20,7 @@ def parse_file(csv_filename):
     return fqdn_data_list
 
 
-def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
+def send_whois_query(fqnd_data_list, repeat_on_timeout=True):
     """
     Sends whois query and writes data to DB
     domain,NS,country,create_date,expiry_date
@@ -50,20 +50,32 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
                 except timeout:
                     logging.info("Timeout for %s, trying once again" % fqdn_dataset[0])
                 except ConnectionResetError:
-                    logging.warning("Connection reset for %s, trying once again" % fqdn_dataset[0])
+                    logging.warning("Connection reset for %s, trying once again after pause" % fqdn_dataset[0])
+                    sleep(1)
+                except ConnectionRefusedError:
+                    logging.warning("Connection refused for %s, trying once again after pause" % fqdn_dataset[0])
+                    sleep(1)
                 finally:
                     i += 1
-                    if i == 3:
-                        logging.warning("%s - unable to get" % fqdn_dataset[0])
+            if i == 3:
+                logging.warning("%s - unable to get" % fqdn_dataset[0])
+                continue
+
         else:
             try:
                 query = whois.whois(fqdn_dataset[0])
             except whois.parser.PywhoisError as e:
                 logging.info("%s not found" % fqdn_dataset[0])
+                continue
             except timeout:
                 logging.info("Timeout for %s" % fqdn_dataset[0])
+                continue
             except ConnectionResetError:
                 logging.warning("Connection reset for %s" % fqdn_dataset[0])
+                continue
+            except ConnectionRefusedError:
+                logging.warning("Connection refused for %s" % fqdn_dataset[0])
+                continue
 
         write_db(fqdn_dataset, query)
 
@@ -82,6 +94,8 @@ def write_db(fqdn_dataset, query):
     """
     Write to database
     """
+    assert (isinstance(query, whois.parser.WhoisEntry)), "Not a whois.parser.WhoisEntry object"
+
     eng = create_engine("sqlite:////home/egk/Work/Misc/DNS_Scrapping/random.db")
     conn = eng.connect()
 
@@ -173,7 +187,7 @@ def synonym_finder(query, synonym_list):
             continue
 
     if result == "notFound":
-        logging.warning("%s %s" % (delist(query.domain_name), synonym_list[0]))
+        logging.warning("Unable to find synonym %s %s" % (delist(query.domain_name), synonym_list[0]))
 
     return result
 

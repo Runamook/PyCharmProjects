@@ -13,3 +13,7 @@ root@serp-1:~/Scripts$ status scrapper@xaa scrapper@xab scrapper@xac scrapper@xa
 
 root@serp-1:~/Scripts$ for i in `seq -w 1 50`; do grep "2019-03-14 22:56:$i" logfile.log | wc -l; done | awk '{sum += $1; n++} END {print sum / n}'
 6.6
+
+
+
+.cf probably gives nothing
