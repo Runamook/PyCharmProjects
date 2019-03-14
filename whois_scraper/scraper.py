@@ -4,20 +4,15 @@ import csv
 import logging
 import datetime
 from socket import timeout
-from time import sleep
 
 
-filename = '/home/egk/Work/Misc/DNS_Scrapping/random_small.csv'
-dbfile = '/home/egk/Work/Misc/DNS_Scrapping/random.db'
-
-
-def parse_file(filename):
+def parse_file(csv_filename):
     """
-    Takes filename returns list of lists
+    Takes csv_filename returns list of lists
     [[domain,NS,country,create_date,expiry_date]...]
     """
     fqdn_data_list = []
-    with open(filename, 'r') as file:
+    with open(csv_filename, 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             fqdn_data_list.append(row)
@@ -39,14 +34,13 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
         logging.info("Searching for %s" % fqdn_dataset[0])
 
         if repeat_on_timeout:
+            # Re-run timed out queries
 
-            args = fqdn_dataset[0] + " --quick"
             i = 0
             while i < 3:
 
                 try:
-                    # query = whois.whois(fqdn_dataset[0])
-                    query = whois.whois(args)
+                    query = whois.whois(fqdn_dataset[0])
                     # Bypass further checks
                     i = 4
                 except whois.parser.PywhoisError as e:
@@ -75,6 +69,14 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=False):
     return
 
 
+def delist(maybe_list):
+
+    if type(maybe_list) == list:
+        return maybe_list[0]
+    else:
+        return maybe_list
+
+
 def write_db(fqdn_dataset, query):
     """
     Write to database
@@ -83,22 +85,36 @@ def write_db(fqdn_dataset, query):
     conn = eng.connect()
 
     if 'domains' not in eng.table_names():
-        conn.execute(
-            "CREATE TABLE domains (dt TIMESTAMP, domain_name TEXT, registrar TEXT, whois_server TEXT, referral_url TEXT, updated_date TIMESTAMP, creation_date TIMESTAMP, expiration_date TIMESTAMP, name_servers TEXT, status TEXT, emails TEXT, dnssec TEXT, name TEXT, org TEXT, address TEXT, city TEXT, state TEXT, zipcode TEXT, country TEXT)")
+        conn.execute("CREATE TABLE domains (\
+        dt TIMESTAMP, \
+        domain_name TEXT, \
+        name TEXT, \
+        org TEXT, \
+        country TEXT, \
+        city TEXT, \
+        address TIMESTAMP, \
+        creation_date TIMESTAMP, \
+        expiration_date TIMESTAMP, \
+        blob TEXT)"
+                     )
 
     dt = str(datetime.datetime.now())
-    domain_name = query['domain_name'][1]
-    registrar = query['registrar']
-    whois_server = query['whois_server']
-    referral_url = query['referral_url']
+    domain_name = delist(query['domain_name'])
 
-    if type(query['updated_date']) == list:
-        updated_date = query['updated_date'][1]
-    else:
-        updated_date = query['updated_date']
+    name = synonym_finder(query, ['name', 'person', 'owner', 'admin_name'])
+    org = synonym_finder(query, ['org', 'tech_org'])
+    country = synonym_finder(query, ['country', 'admin_country'])
+    city = synonym_finder(query, ['city', 'admin_city'])
+    address = synonym_finder(query, ['address', 'admin_address1'])
+    creation_date = synonym_finder(query, ['creation_date', 'created'])
+    expiration_date = synonym_finder(query, ['expiration_date', 'expires'])
+    blob = query.__repr__()
 
+
+    """
     creation_date = query['creation_date']
     expiration_date = query['expiration_date']
+    updated_date = query['updated_date']
     name_servers = query['name_servers']
     status = query['status']
     emails = query['emails']
@@ -110,29 +126,62 @@ def write_db(fqdn_dataset, query):
     state = query['state']
     zipcode = query['zipcode']
     country = query['country']
-    person
-    owner
-    admin_name
-    admin_email
-    admin_phone
+    registrar = query['registrar']
+    whois_server = query['whois_server']
+    referral_url = query['referral_url']
+    """
 
     try:
-        sql_query = "INSERT INTO domains (dt, domain_name, registrar, whois_server, referral_url, updated_date, creation_date, expiration_date, name_servers, status, emails, dnssec, name, org, address, city, state, zipcode, country) values (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" % (
-        dt, domain_name, registrar, whois_server, referral_url, updated_date, creation_date, expiration_date,
-        name_servers, status, emails, dnssec, name, org, address, city, state, zipcode, country)
+        sql_query = "INSERT INTO domains (\
+        dt, \
+        domain_name, \
+        name, \
+        org, \
+        country, \
+        city, \
+        address, \
+        creation_date, \
+        expiration_date, \
+        blob\
+        ) values (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" % (
+            dt,
+            domain_name,
+            name,
+            org,
+            country,
+            city,
+            address,
+            creation_date,
+            expiration_date,
+            blob)
         conn.execute(sql_query)
     finally:
-        # conn.commit()
         conn.close()
 
     return
 
 
-def meta(filename):
+def synonym_finder(query, synonym_list):
+    result = "notFound"
+
+    for synonym in synonym_list:
+        try:
+            result = delist(query[synonym])
+            break
+        except KeyError:
+            continue
+
+    if result == "notFound":
+        logging.warning("%s %s" % (delist(query.domain_name), synonym_list[0]))
+
+    return result
+
+
+def meta(csv_filename):
     dt_start = datetime.datetime.now()
-    FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-    logging.basicConfig(format=FORMAT, level=logging.INFO)
-    fqdn_data_list = parse_file(filename)
+    fmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+    logging.basicConfig(format=fmt, level=logging.INFO)
+    fqdn_data_list = parse_file(csv_filename)
     send_whois_query(fqdn_data_list)
 
     dt_stop = datetime.datetime.now()
@@ -141,4 +190,8 @@ def meta(filename):
     logging.info("Completed in %s seconds" % delta.seconds)
 
 
-meta(filename)
+if __name__ == "__main__":
+
+    csv_filename = '/home/egk/Work/Misc/DNS_Scrapping/random_small.csv'
+    dbfile = '/home/egk/Work/Misc/DNS_Scrapping/random.db'
+    meta(csv_filename)

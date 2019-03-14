@@ -5,6 +5,8 @@ import time
 import mysql.connector
 from mysql.connector import errorcode
 
+# TODO: prometheus exporter
+
 
 def time_converter(epoch):
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
