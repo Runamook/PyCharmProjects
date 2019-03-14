@@ -74,8 +74,7 @@ def send_whois_query(fqnd_data_list, repeat_on_timeout=True):
                 logging.warning("Connection reset for %s" % fqdn_dataset[0])
                 continue
             except ConnectionRefusedError:
-                logging.warning("Connection refused for %s" % fqdn_dataset[0])
-                continue
+                    logging.warning("Connection refused for %s" % fqdn_dataset[0])
 
         write_db(fqdn_dataset, query)
 
@@ -107,7 +106,7 @@ def write_db(fqdn_dataset, query):
         org TEXT, \
         country TEXT, \
         city TEXT, \
-        address TIMESTAMP, \
+        address TEXT, \
         creation_date TIMESTAMP, \
         expiration_date TIMESTAMP, \
         blob TEXT)"
