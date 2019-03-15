@@ -9,7 +9,7 @@ from time import sleep
 
 
 class Scrapper():
-    def __init__(self, csv_filename, log_filename, db_filename, repeat_on_timeout=False, repeats=3):
+    def __init__(self, csv_filename, log_filename, db_filename, repeat_on_timeout=False, repeats=3, change_ip_limit=10):
 
         self.csv_filename = csv_filename
         self.fqdn_data_list = self.parse_file()
@@ -33,9 +33,12 @@ class Scrapper():
         self.fh = logging.FileHandler(filename=log_filename)
         self.fh.setFormatter(self.fmt)
         self.fh.setLevel(logging.INFO)
-
         self.fh.setFormatter(self.fmt)
         self.logger.addHandler(self.fh)
+
+        # Change IP config
+        self.change_ip_limit = change_ip_limit
+        self.change_ip = 0
 
     def parse_file(self):
         """
@@ -56,6 +59,9 @@ class Scrapper():
         """
 
         for fqdn_dataset in self.fqdn_data_list:
+
+            if self.change_ip > self.change_ip_limit:
+                self.change_ip
 
             if "." not in fqdn_dataset[0]:
                 # Probably header
@@ -82,10 +88,12 @@ class Scrapper():
                         # Being gentle
                         self.logger.warning("Connection reset for %s, NOT trying once again" % fqdn_dataset[0])
                         i = self.repeats + 1
+                        self.change_ip += 1
                         sleep(1)
                     except ConnectionRefusedError:
                         self.logger.warning("Connection refused for %s, NOT trying once again" % fqdn_dataset[0])
                         i = self.repeats + 1
+                        self.change_ip += 1.5
                         sleep(1)
                     finally:
                         i += 1
@@ -199,7 +207,6 @@ class Scrapper():
         return result
 
     def main(self):
-
         dt_start = datetime.datetime.now()
         self.send_whois_query()
         dt_stop = datetime.datetime.now()
