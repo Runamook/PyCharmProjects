@@ -4,8 +4,8 @@ import csv
 import logging
 import datetime
 from socket import timeout
-import sys
 from time import sleep
+from .change_ip import IPChanger
 
 
 class Scrapper():
@@ -61,7 +61,7 @@ class Scrapper():
         for fqdn_dataset in self.fqdn_data_list:
 
             if self.change_ip > self.change_ip_limit:
-                self.change_ip
+                IPChanger.change_ip(self.logger)
 
             if "." not in fqdn_dataset[0]:
                 # Probably header

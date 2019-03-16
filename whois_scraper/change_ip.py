@@ -6,7 +6,7 @@ class IPChanger(Scrapper):
     def __init__(self):
         pass
 
-    def change_ip(self):
+    def ip_change(logger):
 
         dt_start = datetime.datetime.now()
         ip_old = run(["/usr/bin/curl", "-s", "https://ipinfo.io/ip"], stdout=PIPE).stdout.strip().decode("utf-8")
@@ -17,10 +17,10 @@ class IPChanger(Scrapper):
         delta = dt_stop - dt_start
 
         if ip_old == ip_new:
-            self.logger.error("Unable to change IP")
+            logger.error("Unable to change IP")
             raise Exception("IPChangeError")
         else:
-            self.logger.info("Changed IP from %s to %s in %s" % (ip_old, ip_new, delta.seconds))
+            logger.info("Changed IP from %s to %s in %s seconds" % (ip_old, ip_new, delta.seconds))
 
             return
 
