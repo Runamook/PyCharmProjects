@@ -1,15 +1,22 @@
 import whois
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 import csv
 import logging
 import datetime
 from socket import timeout
 from time import sleep
-from .change_ip import IPChanger
+try:
+    from ip_changer.ip_changer import IPChanger
+except ImportError:
+    from whois_scraper.ip_changer.ip_changer import IPChanger
+import sys
+
+# TODO: self.lockfile as class variable
 
 
-class Scrapper():
-    def __init__(self, csv_filename, log_filename, db_filename, repeat_on_timeout=False, repeats=3, change_ip_limit=10):
+class Scrapper:
+    def __init__(self, csv_filename, log_filename, db_filename, repeat_on_timeout=True, repeats=3, change_ip_limit=10):
 
         self.csv_filename = csv_filename
         self.fqdn_data_list = self.parse_file()
@@ -28,17 +35,16 @@ class Scrapper():
 
         # Logging config
         self.logger = logging.getLogger("Scrapper")
-        self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.DEBUG)
         self.fmt = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
         self.fh = logging.FileHandler(filename=log_filename)
         self.fh.setFormatter(self.fmt)
-        self.fh.setLevel(logging.INFO)
+        self.fh.setLevel(logging.DEBUG)
         self.fh.setFormatter(self.fmt)
         self.logger.addHandler(self.fh)
 
         # Change IP config
         self.change_ip_limit = change_ip_limit
-        self.change_ip = 0
 
     def parse_file(self):
         """
@@ -52,6 +58,21 @@ class Scrapper():
                 fqdn_data_list.append(row)
         return fqdn_data_list
 
+    def check_if_already_processed(self, domain_name):
+        """
+        :param domain_name:
+        :return: False if not found
+        """
+        eng = create_engine(self.db_filename)
+        conn = eng.connect()
+
+        # Create tables if they doesn't exist
+        Scrapper.create_tables(eng, conn)
+        sql_query = "SELECT domain_name FROM processed_domains WHERE domain_name = \"%s\"" % domain_name
+        result = conn.execute(sql_query)
+
+        return len(result.fetchall()) > 0
+
     def send_whois_query(self):
         """
         Sends whois query and writes data to DB
@@ -60,11 +81,11 @@ class Scrapper():
 
         for fqdn_dataset in self.fqdn_data_list:
 
-            if self.change_ip > self.change_ip_limit:
-                IPChanger.change_ip(self.logger)
-
             if "." not in fqdn_dataset[0]:
                 # Probably header
+                continue
+
+            if self.check_if_already_processed(fqdn_dataset[0]):
                 continue
 
             self.logger.info("Searching for %s" % fqdn_dataset[0])
@@ -76,25 +97,36 @@ class Scrapper():
                 while i < self.repeats:
 
                     try:
+                        changed = IPChanger.meta(self.change_ip_limit, self.logger)
+                        if changed == "changed":
+                            change_ip_counter = 0
+
                         query = whois.whois(fqdn_dataset[0])
                         # Bypass further checks
                         i = self.repeats + 1
                     except whois.parser.PywhoisError:
                         self.logger.info("%s not found" % fqdn_dataset[0])
-                        i = self.repeats + 1
+                        continue
                     except timeout:
                         self.logger.info("Timeout for %s, trying once again" % fqdn_dataset[0])
                     except ConnectionResetError:
-                        # Being gentle
-                        self.logger.warning("Connection reset for %s, NOT trying once again" % fqdn_dataset[0])
                         i = self.repeats + 1
-                        self.change_ip += 1
+                        change_ip_counter = IPChanger.increment_lock(float(1))
+                        self.logger.warning(
+                            "Connection reset for %s, skip, ip_change = %s" % (fqdn_dataset[0], change_ip_counter))
+                        # Being gentle
                         sleep(1)
                     except ConnectionRefusedError:
-                        self.logger.warning("Connection refused for %s, NOT trying once again" % fqdn_dataset[0])
                         i = self.repeats + 1
-                        self.change_ip += 1.5
+                        change_ip_counter = IPChanger.increment_lock(float(1.5))
+                        self.logger.warning(
+                            "Connection refused for %s, skip, ip_change = %s" % (fqdn_dataset[0], change_ip_counter))
                         sleep(1)
+                    except OSError:
+                        sleep(20)
+                        self.logger.warning(
+                            "OSError for %s" % fqdn_dataset[0])
+                        i = self.repeats + 1
                     finally:
                         i += 1
                 if i == self.repeats:
@@ -102,6 +134,8 @@ class Scrapper():
                     continue
 
             else:
+                # Need to review
+                assert False, "Please review the code, it may be not ready yet"
                 try:
                     query = whois.whois(fqdn_dataset[0])
                 except whois.parser.PywhoisError:
@@ -116,16 +150,50 @@ class Scrapper():
                 except ConnectionRefusedError:
                     self.logger.warning("Connection refused for %s" % fqdn_dataset[0])
 
+            # UnboundLocalError: local variable 'query' referenced before assignment
             self.write_db(query)
 
         return
 
-    def delist(self, maybe_list):
+    @staticmethod
+    def delist(maybe_list):
 
         if type(maybe_list) == list:
             return maybe_list[0]
         else:
             return maybe_list
+
+    @staticmethod
+    def create_tables(eng, conn):
+        """
+        Creating tables that doesn't exist
+        """
+
+        if 'domains' not in eng.table_names():
+            try:
+                conn.execute("CREATE TABLE domains (\
+                dt TIMESTAMP, \
+                domain_name TEXT, \
+                name TEXT, \
+                org TEXT, \
+                country TEXT, \
+                city TEXT, \
+                address TEXT, \
+                creation_date TIMESTAMP, \
+                expiration_date TIMESTAMP, \
+                blob TEXT)"
+                             )
+            # Avoid multithreading collision
+            except OperationalError:
+                pass
+
+        if 'processed_domains' not in eng.table_names():
+            try:
+                conn.execute("CREATE TABLE processed_domains (domain_name TEXT)")
+            except OperationalError:
+                pass
+
+        return
 
     def write_db(self, query):
         """
@@ -135,20 +203,6 @@ class Scrapper():
 
         eng = create_engine(self.db_filename)
         conn = eng.connect()
-
-        if 'domains' not in eng.table_names():
-            conn.execute("CREATE TABLE domains (\
-            dt TIMESTAMP, \
-            domain_name TEXT, \
-            name TEXT, \
-            org TEXT, \
-            country TEXT, \
-            city TEXT, \
-            address TEXT, \
-            creation_date TIMESTAMP, \
-            expiration_date TIMESTAMP, \
-            blob TEXT)"
-                         )
 
         dt = str(datetime.datetime.now())
         domain_name = self.delist(query['domain_name'])
@@ -163,6 +217,7 @@ class Scrapper():
         blob = query.__repr__()
 
         try:
+            # Insert record
             sql_query = "INSERT INTO domains (\
             dt, \
             domain_name, \
@@ -186,6 +241,11 @@ class Scrapper():
                 expiration_date,
                 blob)
             conn.execute(sql_query)
+
+            # Insert metadata
+            sql_query = "INSERT INTO processed_domains (domain_name) values (\"%s\")" % domain_name
+            conn.execute(sql_query)
+
         finally:
             conn.close()
 
@@ -207,6 +267,7 @@ class Scrapper():
         return result
 
     def main(self):
+        IPChanger.reset_counter()
         dt_start = datetime.datetime.now()
         self.send_whois_query()
         dt_stop = datetime.datetime.now()
@@ -217,14 +278,14 @@ class Scrapper():
 
 if __name__ == "__main__":
 
-    # csv_filename = sys.argv[1]
-    # logging_filename = sys.argv[2]
-    # db_filename = sys.argv[2]
-
-    csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
-    logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
-    db_filename = "sqlite:////home/egk/Work/Misc/DNS_Scrapping/random_small.db"
+    if len(sys.argv) < 4:
+        csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
+        logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
+        db_filename = "sqlite:////home/egk/Work/Misc/DNS_Scrapping/random_small.db"
+    else:
+        csv_filename = sys.argv[1]
+        logging_filename = sys.argv[2]
+        db_filename = sys.argv[3]
 
     app = Scrapper(csv_filename, logging_filename, db_filename)
     app.main()
-
