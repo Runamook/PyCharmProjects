@@ -2,6 +2,7 @@ from subprocess import run, PIPE
 import datetime
 from time import sleep
 
+# TODO: Check if modem is running and start sakis in case
 # TODO: May be enhance check_if_started with "ps aux | grep -v grep | grep sakis3g | wc -l"
 # TODO: Reliably reset reset_file upon start
 
@@ -60,12 +61,13 @@ class IPChanger:
         return result
 
     @staticmethod
-    def time_to_change_ip(change_ip_limit):
+    def time_to_change_ip(change_ip_limit, logger):
         """
         Reads IPChanger.lock_file and checks if it's time to change IP
         """
         with open(IPChanger.lock_file, 'r') as f:
             ip_change_counter = f.read()
+            logger.debug("change_ip_limit = %s, ip_change_counter = %s" % (change_ip_limit, ip_change_counter))
         if float(ip_change_counter) > float(change_ip_limit):
             return True
         else:
@@ -106,7 +108,7 @@ class IPChanger:
     def meta(change_ip_limit, logger):
         logger.debug("Starting IPChanger.meta()")
         result = "unchanged"
-        if IPChanger.time_to_change_ip(change_ip_limit):
+        if IPChanger.time_to_change_ip(change_ip_limit, logger):
             logger.debug("Time to change IP")
             if IPChanger.check_if_started(logger):
                 # If IP change is running, continuously check file

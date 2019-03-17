@@ -13,6 +13,7 @@ except ImportError:
 import sys
 
 # TODO: self.lockfile as class variable
+# TODO: OSError: [Errno 101] Network is unreachable run sakis
 
 
 class Scrapper:
@@ -86,6 +87,7 @@ class Scrapper:
                 continue
 
             if self.check_if_already_processed(fqdn_dataset[0]):
+                self.logger.debug("%s already processed" % fqdn_dataset[0])
                 continue
 
             self.logger.info("Searching for %s" % fqdn_dataset[0])
@@ -127,6 +129,9 @@ class Scrapper:
                         self.logger.warning(
                             "OSError for %s" % fqdn_dataset[0])
                         i = self.repeats + 1
+                    except OperationalError as e:
+                        i = self.repeats + 1
+                        logger.warning(e)
                     finally:
                         i += 1
                 if i == self.repeats:
@@ -164,10 +169,12 @@ class Scrapper:
             return maybe_list
 
     @staticmethod
-    def create_tables(eng, conn):
+    def create_tables(db_name):
         """
         Creating tables that doesn't exist
         """
+
+
 
         if 'domains' not in eng.table_names():
             try:
