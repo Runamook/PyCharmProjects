@@ -54,6 +54,9 @@ def create_tables(db_filename, logger):
     if 'processed_domains' not in eng.table_names():
         conn.execute("CREATE TABLE processed_domains (domain_name TEXT)")
 
+    if 'results' not in eng.table_names():
+        conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
+
     logger.info("Created SQL tables")
     return
 
