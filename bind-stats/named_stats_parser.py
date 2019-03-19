@@ -137,7 +137,8 @@ def meta(fl, db_config):
 
 
 if __name__ == "__main__":
-    fl = sys.argv[1]
+    # fl = sys.argv[1]
+    fl = '/home/egk/PycharmProjects/README.md'
     db_config = {
         'host': '127.0.0.1',
         'port': '13306',
@@ -146,4 +147,4 @@ if __name__ == "__main__":
         'database': 'bind_stats'
     }
 
-    meta(fl)
+    meta(fl, db_config)
