@@ -66,7 +66,7 @@ class Processor:
                 if i%1000 == 0:
                     stop_time = datetime.datetime.now()
                     delta = stop_time - start_time
-                    processing_speed = str(1000/float(delta.seconds))
+                    processing_speed = str(int(1000/float(delta.seconds)))
                     self.logger.info("1000 packets in %s seconds, %s packet/sec" % (delta.seconds,
                                                                                     processing_speed)
                                      )
