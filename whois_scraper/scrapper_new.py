@@ -8,8 +8,9 @@ import datetime
 from whois_scraper.helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
 
-# TODO: Split input into buckets
+# TODO: TLD separator (maybe separate)
 # TODO: Write whole bucket into DB
+
 
 class Scrapper:
     def __init__(self, csv_filename, log_filename, db_filename):
@@ -24,12 +25,15 @@ class Scrapper:
 
         self.domains = self.parse_input()
 
+        pool_size = 32
+        bucket_size = 100
+        self.logger.info("Created Scrapper object\nPool size = %s\nBucket size = %s" % (pool_size, bucket_size))
         # Create tables
         helper_functions.create_tables(self.db_filename, self.logger)
 
         # Multi thread pool
-        self.bucket_size = 100
-        self.pool = Pool(32)
+        self.bucket_size = bucket_size
+        self.pool = Pool(pool_size)
 
     def parse_input(self):
         """
@@ -55,7 +59,7 @@ class Scrapper:
         elif result[1] == "Timeout":
             self.logger.warning("%s --- Tiemout" % result[0])
         elif isinstance(result[1], whois.parser.WhoisEntry):
-            self.logger.info("%s --- Found" % result[0])
+            self.logger.debug("%s --- Found" % result[0])
 
         else:
             self.logger.error("Something goes wrong %s --- %s" % (result[0], result[1]))
@@ -77,14 +81,46 @@ class Scrapper:
         result.append(self.domains)
 
         self.domains = result
+        self.logger.info("%s buckets found" % str(len(result)))
         return
+
+    def check_bucket(self, bucket):
+        """Checks if domain names in bucket were already processed"""
+        eng = create_engine(self.db_filename)
+        conn = eng.connect()
+
+        results = []
+        try:
+            for domain_name in bucket:
+                sql_query = "SELECT result FROM results WHERE domain_name = \"%s\"" % domain_name
+                status = conn.execute(sql_query)
+                query_result = status.fetchall()
+
+                if len(query_result) == 1:
+                    # Already processed
+                    if query_result[0][0] in ["Processed", "Refused"]:
+                        self.logger.debug("%s already processed, skipping" % domain_name)
+                        continue
+                    elif query_result[0][0] in ["Timeout", "Refused"]:
+                        self.logger.debug("%s was tried but failed, retrying" % domain_name)
+                        results.append(domain_name)
+                elif len(query_result) == 0:
+                    # Not yet processed
+                    self.logger.debug("%s not processed" % domain_name)
+                    results.append(domain_name)
+        finally:
+            conn.close()
+
+        self.logger.info("Bucket shrinked to %s" % len(results))
+        return results
 
     def run(self):
 
         self.bucketize()
 
         for bucket in self.domains:
-            self.logger.log("Starting bucket")
+            self.logger.info("Starting bucket")
+            bucket = self.check_bucket(bucket)
             self.results = self.pool.map(helper_functions.get_whois, bucket)
             # [(domain_name, whois_results ),(),()...]
             for result in self.results:
@@ -97,70 +133,75 @@ class Scrapper:
         """
         Write to database
         """
-
         eng = create_engine(self.db_filename)
         conn = eng.connect()
 
-        # Insert into results
+        # Insert into results (metadata)
         try:
             if result[1] not in ["NotExistent", "Refused", "Timeout"]:
                 assert (isinstance(result[1], whois.parser.WhoisEntry)), "Not a whois.parser.WhoisEntry object\n%s" % result
 
-                sql_query = "INSERT INTO results ( \
+                sql_meta_query = "INSERT INTO results ( \
                 domain_name, \
                 result\
                 ) values (\"%s\", \"Processed\")" % result[0]
-
+                mark = "ok"
             else:
 
-                sql_query = "INSERT INTO results ( \
+                sql_meta_query = "INSERT INTO results ( \
                 domain_name, \
                 result\
                 ) values (\"%s\", \"%s\")" % (result[0], result[1])
+                mark = "continue"
 
-            conn.execute(sql_query)
-            self.logger.debug("Inserted metadata for %s into database" % result[0])
+            if mark == "continue":
+                # Not processing further - nothing to insert
+                conn.execute(sql_meta_query)
+                self.logger.debug("Inserted metadata for %s into database" % result[0])
+                self.logger.debug("Skipping data insertion")
+            else:
+                # Insert into data (data)
+                dt = str(datetime.datetime.now())
+                domain_name = result[0]
 
-            # Insert into data
-            dt = str(datetime.datetime.now())
-            domain_name = result[0]
+                name = helper_functions.synonym_finder(result[1], self.synonyms.synonym_name)
+                org = helper_functions.synonym_finder(result[1], self.synonyms.synonym_org)
+                country = helper_functions.synonym_finder(result[1], self.synonyms.synonym_country)
+                city = helper_functions.synonym_finder(result[1], self.synonyms.synonym_city)
+                address = helper_functions.synonym_finder(result[1], self.synonyms.synonym_address)
+                creation_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_creation_date)
+                expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
+                blob = result[1].text.replace('"', "'").strip(" \t\r\n\0")
 
-            name = helper_functions.synonym_finder(result[1], self.synonyms.synonym_name)
-            org = helper_functions.synonym_finder(result[1], self.synonyms.synonym_org)
-            country = helper_functions.synonym_finder(result[1], self.synonyms.synonym_country)
-            city = helper_functions.synonym_finder(result[1], self.synonyms.synonym_city)
-            address = helper_functions.synonym_finder(result[1], self.synonyms.synonym_address)
-            creation_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_creation_date)
-            expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
-            blob = result[1].__repr__()
+                # Insert record
+                sql_query = "INSERT INTO domains (\
+                dt, \
+                domain_name, \
+                name, \
+                org, \
+                country, \
+                city, \
+                address, \
+                creation_date, \
+                expiration_date, \
+                blob\
+                ) values (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" % (
+                    dt,
+                    domain_name,
+                    name,
+                    org,
+                    country,
+                    city,
+                    address,
+                    creation_date,
+                    expiration_date,
+                    blob)
 
-            # Insert record
-            sql_query = "INSERT INTO domains (\
-            dt, \
-            domain_name, \
-            name, \
-            org, \
-            country, \
-            city, \
-            address, \
-            creation_date, \
-            expiration_date, \
-            blob\
-            ) values (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" % (
-                dt,
-                domain_name,
-                name,
-                org,
-                country,
-                city,
-                address,
-                creation_date,
-                expiration_date,
-                blob)
-            conn.execute(sql_query)
-
-            self.logger.debug("Inserted data for %s into database" % result[0])
-
+                self.logger.debug(sql_query)
+                conn.execute(sql_query)
+                self.logger.debug("Inserted data for %s into database" % result[0])
+                conn.execute(sql_meta_query)
+                self.logger.debug("Inserted metadata for %s into database" % result[0])
         finally:
             conn.close()
 

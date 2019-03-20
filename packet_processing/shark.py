@@ -59,7 +59,10 @@ class Processor:
                 try:
                     if packet.diameter.session_id in self.results[filename]:
                         sub_id = packet.diameter.e164_msisdn
-                        self.sub_ids[filename] = helpers.unique_list(self.sub_ids[filename], sub_id)
+                        mcc = packet.diameter.e212_mcc
+                        mnc = packet.diameter.e212_mnc
+                        result = "%s %s %s" % (sub_id, mcc, mnc)
+                        self.sub_ids[filename] = helpers.unique_list(self.sub_ids[filename], result)
                 except AttributeError:
                     continue
                 i += 1
@@ -67,8 +70,11 @@ class Processor:
                     stop_time = datetime.datetime.now()
                     delta = stop_time - start_time
                     processing_speed = str(int(1000/float(delta.seconds)))
-                    self.logger.info("1000 packets in %s seconds, %s packet/sec" % (delta.seconds,
-                                                                                    processing_speed)
+                    self.logger.info("1000 packets in %s seconds, \
+                    %s packet/sec, \
+                    %s packets processed" % (delta.seconds,
+                                             processing_speed,
+                                             str(i))
                                      )
                     start_time = datetime.datetime.now()
         return
@@ -83,7 +89,7 @@ if __name__ == "__main__":
 
     with open("/home/egk/Pile/Work/UPCC/main_kpi/results.txt", 'w') as f:
         for result_filename in prc.sub_ids:
-            f.write(" ".join(prc.sub_ids[result_filename]))
+            f.write("\n".join(prc.sub_ids[result_filename]))
 
     # prefix = 'e164.msisdn == "'
     # command = prefix + '" or e164.msisdn == "'.join(prc.sub_ids) + '"'

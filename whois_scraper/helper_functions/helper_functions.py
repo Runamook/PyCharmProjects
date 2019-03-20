@@ -1,6 +1,7 @@
 import whois
 from sqlalchemy import create_engine
 from socket import timeout
+# from subprocess import run
 
 
 def get_whois(domain_name):
@@ -20,6 +21,12 @@ def get_whois(domain_name):
         # assert (isinstance(result, whois.parser.WhoisEntry)), "Not a whois.parser.WhoisEntry object"
     result = (domain_name, result)
     return result
+
+
+# def get_fulltext_whois(domain_name):
+#    result = run(["/usr/bin/env", "whois", domain_name], capture_output=True)
+#    fulltext = result.stdout.decode("utf-8")
+#    return fulltext
 
 
 def delist(maybe_list):
@@ -50,9 +57,6 @@ def create_tables(db_filename, logger):
         expiration_date TIMESTAMP, \
         blob TEXT)"
                      )
-
-    if 'processed_domains' not in eng.table_names():
-        conn.execute("CREATE TABLE processed_domains (domain_name TEXT)")
 
     if 'results' not in eng.table_names():
         conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
