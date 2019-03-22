@@ -1,12 +1,45 @@
 import whois
 from sqlalchemy import create_engine
 from socket import timeout
-# from subprocess import run
+import re
+
+
+re_keys = {
+    "1-NotExistent": re.compile(".*(NOT FOUND).*"),
+    "2-NotExistent": re.compile(".*(No match for domain).*"),
+    "3-NotExistent": re.compile(".*(No Data Found).*"),
+    "4-NotExistent": re.compile(".*(Could not retrieve Whois).*"),
+    "5-NotExistent": re.compile(".*(The queried object does not exist).*"),
+    "1-Refused": re.compile(".*(LIMIT EXCEEDED).*"),
+    "2-Refused": re.compile(".*(You have exceeded your access quota).*")
+}
 
 
 def get_whois(domain_name):
+
     try:
+
         result = whois.whois(domain_name)
+
+        # Check if the response given is really empty
+        for key in re_keys:
+            try:
+                if re_keys[key].match(result.text):
+                    result = key[2:]
+                    break
+            except AttributeError as e:
+                # Something strange, there is a response but no text attribute
+                raise AttributeError("Strange, no text attribute in response for ", domain_name, result, e)
+
+        # If there is a response, check if domain_name != None
+        # If domain_name = None, it should be captured by re_keys loop above
+        # If it is not captured, but still no domain_name - we want to see it
+
+        try:
+            assert result["domain_name"] != None, "Something went wrong %s %s" % (domain_name, result)
+        except TypeError:
+            # If result variable is a string
+            pass
 
     except whois.parser.PywhoisError:
         result = "NotExistent"  # No such domain
@@ -16,17 +49,18 @@ def get_whois(domain_name):
         result = "Refused"  # Trying to stop us
     except timeout:
         result = "Timeout"
+    except OSError as e:
+        result = "Refused"  # Whois server unavailable
 
-    # Legacy
-        # assert (isinstance(result, whois.parser.WhoisEntry)), "Not a whois.parser.WhoisEntry object"
     result = (domain_name, result)
     return result
 
 
-# def get_fulltext_whois(domain_name):
-#    result = run(["/usr/bin/env", "whois", domain_name], capture_output=True)
-#    fulltext = result.stdout.decode("utf-8")
-#    return fulltext
+def sanitize(text):
+    if isinstance(text, str):
+        return text.replace('"', "'").replace("\0", " ")
+    else:
+        return text
 
 
 def delist(maybe_list):
@@ -41,28 +75,37 @@ def create_tables(db_filename, logger):
     Creating tables that doesn't exist
     """
 
-    eng = create_engine(db_filename)
-    conn = eng.connect()
+    try:
 
-    if 'domains' not in eng.table_names():
-        conn.execute("CREATE TABLE domains (\
-        dt TIMESTAMP, \
-        domain_name TEXT, \
-        name TEXT, \
-        org TEXT, \
-        country TEXT, \
-        city TEXT, \
-        address TEXT, \
-        creation_date TIMESTAMP, \
-        expiration_date TIMESTAMP, \
-        blob TEXT)"
-                     )
+        eng = create_engine(db_filename)
+        conn = eng.connect()
 
-    if 'results' not in eng.table_names():
-        conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
+        if 'domains' not in eng.table_names():
+            conn.execute("CREATE TABLE domains (\
+            dt TIMESTAMP, \
+            domain_name TEXT, \
+            name TEXT, \
+            org TEXT, \
+            country TEXT, \
+            city TEXT, \
+            address TEXT, \
+            creation_date TIMESTAMP, \
+            expiration_date TIMESTAMP, \
+            blob TEXT)"
+                         )
 
-    logger.info("Created SQL tables")
-    return
+        if 'results' not in eng.table_names():
+            conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
+
+        logger.info("Created SQL tables")
+
+        conn.execute("CREATE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
+        conn.execute("CREATE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
+        conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
+        logger.info("Created indexes")
+    finally:
+        conn.close()
+        return
 
 
 def synonym_finder(query, synonym_list):
@@ -75,4 +118,4 @@ def synonym_finder(query, synonym_list):
         except KeyError:
             continue
 
-    return result
+    return sanitize(result)
