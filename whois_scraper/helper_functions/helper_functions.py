@@ -1,5 +1,6 @@
 import whois
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from socket import timeout
 import re
 
@@ -51,6 +52,8 @@ def get_whois(domain_name):
         result = "Timeout"
     except OSError as e:
         result = "Refused"  # Whois server unavailable
+    except OperationalError:
+        result = "Refused"  # http://sqlalche.me/e/e3q8
 
     result = (domain_name, result)
     return result
@@ -58,7 +61,8 @@ def get_whois(domain_name):
 
 def sanitize(text):
     if isinstance(text, str):
-        return text.replace('"', "'").replace("\0", " ")
+        # return text.replace('"', "'").replace("\0", " ")
+        return text.replace("'", '"').replace("\0", " ")
     else:
         return text
 
@@ -103,6 +107,8 @@ def create_tables(db_filename, logger):
         conn.execute("CREATE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
         conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
         logger.info("Created indexes")
+    except Exception as e:
+        raise e
     finally:
         conn.close()
         return

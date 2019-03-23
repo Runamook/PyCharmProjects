@@ -53,7 +53,7 @@ class Scrapper:
         """
         result = []
         start_time = time.time()
-        with open(self.csv_filename, 'r') as file:
+        with open(self.csv_filename, "r") as file:
             reader = csv.reader(file)
             for row in reader:
                 if "." in row[0]:
@@ -104,7 +104,7 @@ class Scrapper:
         results = []
         try:
             for domain_name in bucket:
-                sql_query = "SELECT result FROM results WHERE domain_name = \"%s\"" % domain_name
+                sql_query = "SELECT result FROM results WHERE domain_name = \'%s\'" % domain_name
                 status = conn.execute(sql_query)
                 query_result = status.fetchall()
 
@@ -147,6 +147,7 @@ class Scrapper:
         sleep(0.00001)
 
         if self.refused_counter > 10:
+            pause_time = 10     # Default fallback
             for counter in self.pause_times:
                 if self.refused_counter > self.pause_times[counter]:
                     pause_time = self.pause_times[counter]
@@ -178,7 +179,7 @@ class Scrapper:
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
-                        ) values (\"%s\", \"Processed\")" % result[0]
+                        ) values (\'%s\', \'Processed\')" % result[0]
                     mark = "ok"
                     inserts += 1
                 else:
@@ -186,7 +187,7 @@ class Scrapper:
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
-                        ) values (\"%s\", \"%s\")" % (result[0], result[1])
+                        ) values (\'%s\', \'%s\')" % (result[0], result[1])
                     mark = "continue"
 
                 if mark == "continue":
@@ -206,7 +207,9 @@ class Scrapper:
                     address = helper_functions.synonym_finder(result[1], self.synonyms.synonym_address)
                     creation_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_creation_date)
                     expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
-                    blob = result[1].text.replace('"', "'").replace("\0", " ").strip(" \t\r\n\0")
+                    # Others are processed using helper_functions.sanitize()
+                    blob = result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0")
+                    # blob = helper_functions.sanitize(result[1].text).strip(" \t\r\n\0")
 
                     # Insert record
                     sql_query = "INSERT INTO domains (\
@@ -220,7 +223,7 @@ class Scrapper:
                         creation_date, \
                         expiration_date, \
                         blob\
-                        ) values (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" % (
+                        ) values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')" % (
                         dt,
                         domain_name,
                         name,
@@ -237,6 +240,9 @@ class Scrapper:
                     self.logger.debug("Inserted data for %s into database" % result[0])
                     conn.execute(sql_meta_query)
                     self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
+        except Exception as e:
+            # self.logger.error("EXCEPTION on %s" % result)
+            raise e
 
         finally:
             conn.close()
@@ -252,6 +258,7 @@ if __name__ == "__main__":
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
         in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
         in_db_filename = "sqlite:///" + in_db_file
+        # in_db_filename = "postgres://serp:serpserpserpserpserp@127.0.0.1:5432/postgres"
     else:
         in_csv_filename = sys.argv[1]
         in_logging_filename = sys.argv[2]
