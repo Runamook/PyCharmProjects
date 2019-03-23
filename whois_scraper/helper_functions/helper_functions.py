@@ -103,8 +103,8 @@ def create_tables(db_filename, logger):
 
         logger.info("Created SQL tables")
 
-        conn.execute("CREATE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
-        conn.execute("CREATE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
+        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
+        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
         conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
         logger.info("Created indexes")
     except Exception as e:

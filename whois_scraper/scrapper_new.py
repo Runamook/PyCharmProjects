@@ -9,9 +9,8 @@ from whois_scraper.helper_functions import helper_functions, create_logger, syno
 from multiprocessing.dummy import Pool
 from time import sleep
 
-# TODO: UPSERT result
+# TODO: Use SQL ORM
 # TODO: TLD separator (maybe separate)
-# TODO: Insert into postgres
 # TODO change "Privacy" names to something else
 
 
@@ -180,7 +179,8 @@ class Scrapper:
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
-                        ) values (\'%s\', \'Processed\')" % result[0]
+                        ) values (\'%s\', \'Processed\') ON CONFLICT (domain_name) DO UPDATE SET \
+                         result = \'Processed\'" % result[0]
                     mark = "ok"
                     inserts += 1
                 else:
@@ -188,7 +188,8 @@ class Scrapper:
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
-                        ) values (\'%s\', \'%s\')" % (result[0], result[1])
+                        ) values (\'%s\', \'%s\') ON CONFLICT (domain_name) DO UPDATE SET \
+                         result = \'%s\'" % (result[0], result[1], result[1])
                     mark = "continue"
 
                 if mark == "continue":
@@ -241,6 +242,7 @@ class Scrapper:
                     conn.execute(text(sql_query))
                     self.logger.debug("Inserted data for %s into database" % result[0])
                     conn.execute(text(sql_meta_query))
+
                     self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
         except Exception as e:
             # self.logger.error("EXCEPTION on %s" % result)
