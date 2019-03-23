@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-# from sqlalchemy.exc import OperationalError
+from sqlalchemy import text
 import csv
 import whois
 import time
@@ -9,6 +9,7 @@ from whois_scraper.helper_functions import helper_functions, create_logger, syno
 from multiprocessing.dummy import Pool
 from time import sleep
 
+# TODO: UPSERT result
 # TODO: TLD separator (maybe separate)
 # TODO: Insert into postgres
 # TODO change "Privacy" names to something else
@@ -236,9 +237,10 @@ class Scrapper:
                         blob)
 
                     # self.logger.debug(sql_query)
-                    conn.execute(sql_query)
+                    # https://docs.sqlalchemy.org/en/latest/core/tutorial.html#using-textual-sql
+                    conn.execute(text(sql_query))
                     self.logger.debug("Inserted data for %s into database" % result[0])
-                    conn.execute(sql_meta_query)
+                    conn.execute(text(sql_meta_query))
                     self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
         except Exception as e:
             # self.logger.error("EXCEPTION on %s" % result)
@@ -256,9 +258,9 @@ if __name__ == "__main__":
         # in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
         in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
-        in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
-        in_db_filename = "sqlite:///" + in_db_file
-        # in_db_filename = "postgres://serp:serpserpserpserpserp@127.0.0.1:5432/postgres"
+        # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
+        # in_db_filename = "sqlite:///" + in_db_file
+        in_db_filename = "postgres://serp:serpserpserpserpserp@127.0.0.1:5432/postgres"
     else:
         in_csv_filename = sys.argv[1]
         in_logging_filename = sys.argv[2]
