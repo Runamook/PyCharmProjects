@@ -5,7 +5,10 @@ import whois
 import time
 import sys
 import datetime
-from whois_scraper.helper_functions import helper_functions, create_logger, synonyms
+try:
+        from whois_scraper.helper_functions import helper_functions, create_logger, synonyms
+except ImportError:
+        from helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
 from time import sleep
 
@@ -131,14 +134,17 @@ class Scrapper:
         self.bucketize()
 
         for bucket in self.domains:
+            start_time = time.time()
             self.check_if_pause_needed()
-            self.logger.info("Starting bucket, %s already processed" % self.buckets_processed)
+            self.logger.info("Starting a new bucket, %s already processed" % self.buckets_processed)
             bucket = self.check_bucket(bucket)
 
             self.results = self.pool.map(helper_functions.get_whois, bucket)
 
             self.write_all_to_db()
             self.buckets_processed += 1
+            delta = str(time.time() - start_time)
+            self.logger.info("Processed bucket in %s seconds" % delta)
 
         return
 
