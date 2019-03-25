@@ -1,0 +1,4 @@
+sqlalchemy
+python-whois
+psycopg2
+psycopg2-binary
