@@ -182,11 +182,18 @@ class Scrapper:
                     assert (isinstance(result[1], whois.parser.WhoisEntry)),\
                         "Not a whois.parser.WhoisEntry object\n%s" % result
 
+                    # Remember, sqlite3 doesn't support ON CONFLICT
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
                         ) values (\'%s\', \'Processed\') ON CONFLICT (domain_name) DO UPDATE SET \
                          result = \'Processed\'" % result[0]
+                    """
+                    sql_meta_query = "INSERT INTO results ( \
+                        domain_name, \
+                        result\
+                        ) values (\'%s\', \'Processed\')" % result[0]
+                    """
                     mark = "ok"
                     inserts += 1
                 else:
@@ -196,6 +203,12 @@ class Scrapper:
                         result\
                         ) values (\'%s\', \'%s\') ON CONFLICT (domain_name) DO UPDATE SET \
                          result = \'%s\'" % (result[0], result[1], result[1])
+                    """
+                    sql_meta_query = "INSERT INTO results ( \
+                        domain_name, \
+                        result\
+                        ) values (\'%s\', \'%s\')" % (result[0], result[1])
+                    """
                     mark = "continue"
 
                 if mark == "continue":
@@ -216,7 +229,8 @@ class Scrapper:
                     creation_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_creation_date)
                     expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
                     # Others are processed using helper_functions.sanitize()
-                    blob = result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0")
+                    blob = helper_functions.remove_nonascii(result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0"))
+                    # blob = result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0")
                     # blob = helper_functions.sanitize(result[1].text).strip(" \t\r\n\0")
 
                     # Insert record
@@ -268,7 +282,7 @@ if __name__ == "__main__":
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
         # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
         # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = "postgres://serp:serpserpserpserpserp@127.0.0.1:5432/postgres"
+        in_db_filename = "postgres://serp:serpserpserpserpserp@rpi.zvez.ga:5432/postgres"
     else:
         in_csv_filename = sys.argv[1]
         in_logging_filename = sys.argv[2]
