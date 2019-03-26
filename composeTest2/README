@@ -15,3 +15,34 @@ docker-compose run web env
 
 # Stop container
 docker-compose stop
+
+
+# Run remotely
+# Change ExecStart in /lib/systemd/system/docker.service to
+# ExecStart=/usr/bin/dockerd -H unix:// -H tcp://0.0.0.0:2375
+
+docker-compose -H tcp://rpi.zvez.ga:2375 up
+
+
+
+### Access filesystem
+# Find container
+pi@raspberrypi:~ $ docker ps
+CONTAINER ID        IMAGE                      COMMAND                  CREATED             STATUS              PORTS               NAMES
+d035358541f5        whoisscrappercompose_app   "python scrapper_new…"   About an hour ago   Up 34 seconds                           whoisscrappercompose_app_1
+
+# Create snapshot
+pi@raspberrypi:~ $ docker commit d035358541f5 snap
+sha256:e79f7ea900bcd0343cf5737461ad34eb65861b28c813bb84638d4798320a2f90
+
+# Explore this filesystem using bash (for example)
+docker run -t -i snap /bin/bash
+
+# Delete snap
+pi@raspberrypi:~ $ docker rmi snap
+Untagged: snap:latest
+Deleted: sha256:e79f7ea900bcd0343cf5737461ad34eb65861b28c813bb84638d4798320a2f90
+Deleted: sha256:9de0ea6f6bf3b6f7702fb386f5ab856fbf2577f2388aecee5edd28b352497bca
+
+
+https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system
