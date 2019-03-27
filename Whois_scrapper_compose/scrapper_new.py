@@ -6,7 +6,7 @@ import time
 import sys
 import datetime
 try:
-        from whois_scraper.helper_functions import helper_functions, create_logger, synonyms
+        from Whois_scrapper_compose.helper_functions import helper_functions, create_logger, synonyms
 except ImportError:
         from helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
@@ -29,12 +29,21 @@ class Scrapper:
         self.results = None
 
         self.refused_counter = 0
-        self.pause_times = {    # Refuses : Seconds
-            10: 20,             # 10 is mandatory
+        self.pause_times = {  # Refuses : Seconds
+            10: 20,  # 10 is mandatory
             40: 60,
             80: 120,
             99: 180
         }
+        """
+        self.pause_times = {    # Refuses : Seconds
+            10: 20,             # 10 is mandatory
+            40: 60,
+            80: 120,
+            90: 180,
+            99: "restart"
+        }
+        """
 
         self.domains = self.parse_input()
 
@@ -157,6 +166,12 @@ class Scrapper:
             for counter in self.pause_times:
                 if self.refused_counter > self.pause_times[counter]:
                     pause_time = self.pause_times[counter]
+                    """
+                    if self.pause_times[counter] == "restart":
+                        helper_functions.restart_modem(self.logger)
+                    else:
+                        pause_time = self.pause_times[counter]
+                    """
             self.logger.warning("%s refuses, pausing for %s" % (self.refused_counter, pause_time))
             sleep(pause_time)
             self.refused_counter = 0

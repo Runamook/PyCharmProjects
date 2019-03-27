@@ -3,7 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from socket import timeout
 import re
-
+from subprocess import run, PIPE
+import datetime
 
 re_keys = {
     "1-NotExistent": re.compile(".*(NOT FOUND).*"),
@@ -69,6 +70,35 @@ def sanitize(text):
         return text.replace("'", '"').replace("\0", " ")
     else:
         return text
+
+
+def restart_modem(logger):
+    """
+    Calls sakis3g (https://github.com/Trixarian/sakis3g-source) to restart 3G modem
+    :param logger:
+    :return:
+    """
+    dt_start = datetime.datetime.now()
+    ip_old = run(["/usr/bin/curl", "-s", "https://ipinfo.io/ip"], stdout=PIPE).stdout.strip().decode("utf-8")
+    run(["/usr/bin/sakis3g",
+         "reconnect",
+         "CUSTOM_APN=internet.tele2.ru",
+         "--sudo",
+         "APN=CUSTOM_APN",
+         "APN_USER=tele2",
+         "APN_PASS=tele2"])
+    ip_new = run(["/usr/bin/curl", "-s", "https://ipinfo.io/ip"], stdout=PIPE).stdout.strip().decode("utf-8")
+
+    dt_stop = datetime.datetime.now()
+    delta = dt_stop - dt_start
+
+    if ip_old == ip_new:
+        logger.error("Unable to change IP")
+        raise Exception("IPChangeError")
+    else:
+        logger.info("Changed IP from %s to %s in %s seconds" % (ip_old, ip_new, delta.seconds))
+
+        return
 
 
 def delist(maybe_list):
