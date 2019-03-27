@@ -52,7 +52,8 @@ def get_whois(domain_name):
     except timeout:
         result = "Timeout"
     except OSError as e:
-        result = "Refused"  # Whois server unavailable
+        # result = "Refused"  # Whois server unavailable
+        result = "NotExistent"
     except OperationalError:
         result = "Refused"  # http://sqlalche.me/e/e3q8
 

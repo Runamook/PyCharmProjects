@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy import text
+from sqlalchemy.exc import StatementError
 import csv
 import whois
 import time
@@ -11,10 +12,6 @@ except ImportError:
         from helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
 from time import sleep
-
-# TODO: Use SQL ORM
-# TODO: TLD separator (maybe separate)
-# TODO change "Privacy" names to something else
 
 
 class Scrapper:
@@ -188,8 +185,8 @@ class Scrapper:
         conn = eng.connect()
 
         inserts = 0
-        try:
 
+        try:
             for result in self.results:
 
                 self.log_result(result)
@@ -197,7 +194,7 @@ class Scrapper:
                     assert (isinstance(result[1], whois.parser.WhoisEntry)),\
                         "Not a whois.parser.WhoisEntry object\n%s" % result
 
-                    # Remember, sqlite3 doesn't support ON CONFLICT
+                    # Remember, sqlite3 doesn't support ON CONFLICT until version 3.24.0 (2018-06-04)
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
@@ -245,8 +242,6 @@ class Scrapper:
                     expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
                     # Others are processed using helper_functions.sanitize()
                     blob = helper_functions.remove_nonascii(result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0"))
-                    # blob = result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0")
-                    # blob = helper_functions.sanitize(result[1].text).strip(" \t\r\n\0")
 
                     # Insert record
                     sql_query = "INSERT INTO domains (\
@@ -273,20 +268,21 @@ class Scrapper:
                         expiration_date,
                         blob)
 
-                    # self.logger.debug(sql_query)
                     # https://docs.sqlalchemy.org/en/latest/core/tutorial.html#using-textual-sql
-                    conn.execute(text(sql_query))
-                    self.logger.debug("Inserted data for %s into database" % result[0])
-                    conn.execute(text(sql_meta_query))
+                    try:
+                        conn.execute(text(sql_query))
+                        self.logger.debug("Inserted data for %s into database" % result[0])
 
-                    self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
-        except Exception as e:
-            # self.logger.error("EXCEPTION on %s" % result)
-            raise e
+                        conn.execute(text(sql_meta_query))
+                        self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
+                    except StatementError:
+                        self.logger.error("EXCEPTION on %s" % result[0])
+                        pass
+
+            self.logger.info("Inserted %s" % inserts)
 
         finally:
             conn.close()
-        self.logger.info("Inserted %s" % inserts)
 
         return
 
@@ -294,11 +290,11 @@ class Scrapper:
 if __name__ == "__main__":
     if len(sys.argv) < 4:
         # in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
-        in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
+        in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_err.csv"
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
         # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
         # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = "postgres://serp:serpserpserpserpserp@rpi.zvez.ga:5432/postgres"
+        in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
     else:
         in_csv_filename = sys.argv[1]
         in_logging_filename = sys.argv[2]
