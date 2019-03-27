@@ -1,21 +1,24 @@
 from sqlalchemy import create_engine
 from sqlalchemy import text
-from sqlalchemy.exc import StatementError
 import csv
 import whois
 import time
 import sys
 import datetime
 try:
-        from Whois_scrapper_compose.helper_functions import helper_functions, create_logger, synonyms
+        from whois_scraper.helper_functions import helper_functions, create_logger, synonyms
 except ImportError:
         from helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
 from time import sleep
 
+# TODO: Use SQL ORM
+# TODO: TLD separator (maybe separate)
+# TODO change "Privacy" names to something else
+
 
 class Scrapper:
-    def __init__(self, csv_filename, log_filename, db_filename, apikey="AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q"):
+    def __init__(self, csv_filename, log_filename, db_filename):
 
         self.csv_filename = csv_filename
         self.db_filename = db_filename
@@ -24,29 +27,19 @@ class Scrapper:
         # Logging config
         self.logger = create_logger.create_logger(log_filename, __name__)
         self.results = None
-        self.apikey = apikey
 
         self.refused_counter = 0
-        self.pause_times = {  # Refuses : Seconds
-            10: 20,  # 10 is mandatory
-            40: 60,
-            80: 120,
-            90: "restart"
-        }
-        """
         self.pause_times = {    # Refuses : Seconds
             10: 20,             # 10 is mandatory
             40: 60,
             80: 120,
-            90: 180,
-            99: "restart"
+            99: 180
         }
-        """
 
         self.domains = self.parse_input()
 
         pool_size = 32              # Multi-thread flows
-        bucket_size = 500           # Domains processed at once
+        bucket_size = 100           # Domains processed at once
         self.buckets_processed = 0
         self.logger.info("Created Scrapper object\n\t\tPool size = %s\n\t\tBucket size = %s" % (pool_size, bucket_size))
         # Create tables
@@ -143,7 +136,7 @@ class Scrapper:
         for bucket in self.domains:
             start_time = time.time()
             self.check_if_pause_needed()
-            self.logger.info("Starting a new bucket, %s buckets already processed" % self.buckets_processed)
+            self.logger.info("Starting a new bucket, %s already processed" % self.buckets_processed)
             bucket = self.check_bucket(bucket)
 
             self.results = self.pool.map(helper_functions.get_whois, bucket)
@@ -161,17 +154,9 @@ class Scrapper:
 
         if self.refused_counter > 10:
             pause_time = 10     # Default fallback
-
-            # Loop over dict and select pause action/timer
             for counter in self.pause_times:
-                if self.refused_counter > counter:
+                if self.refused_counter > self.pause_times[counter]:
                     pause_time = self.pause_times[counter]
-
-            if pause_time == "restart":
-                socks_proxy = helper_functions.change_proxy(self.apikey)
-                self.logger.warning("Proxy changed, new proxy %s" % socks_proxy)
-                pause_time = 10
-
             self.logger.warning("%s refuses, pausing for %s" % (self.refused_counter, pause_time))
             sleep(pause_time)
             self.refused_counter = 0
@@ -188,8 +173,8 @@ class Scrapper:
         conn = eng.connect()
 
         inserts = 0
-
         try:
+
             for result in self.results:
 
                 self.log_result(result)
@@ -197,7 +182,7 @@ class Scrapper:
                     assert (isinstance(result[1], whois.parser.WhoisEntry)),\
                         "Not a whois.parser.WhoisEntry object\n%s" % result
 
-                    # Remember, sqlite3 doesn't support ON CONFLICT until version 3.24.0 (2018-06-04)
+                    # Remember, sqlite3 doesn't support ON CONFLICT
                     sql_meta_query = "INSERT INTO results ( \
                         domain_name, \
                         result\
@@ -245,6 +230,8 @@ class Scrapper:
                     expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
                     # Others are processed using helper_functions.sanitize()
                     blob = helper_functions.remove_nonascii(result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0"))
+                    # blob = result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0")
+                    # blob = helper_functions.sanitize(result[1].text).strip(" \t\r\n\0")
 
                     # Insert record
                     sql_query = "INSERT INTO domains (\
@@ -271,21 +258,20 @@ class Scrapper:
                         expiration_date,
                         blob)
 
+                    # self.logger.debug(sql_query)
                     # https://docs.sqlalchemy.org/en/latest/core/tutorial.html#using-textual-sql
-                    try:
-                        conn.execute(text(sql_query))
-                        self.logger.debug("Inserted data for %s into database" % result[0])
+                    conn.execute(text(sql_query))
+                    self.logger.debug("Inserted data for %s into database" % result[0])
+                    conn.execute(text(sql_meta_query))
 
-                        conn.execute(text(sql_meta_query))
-                        self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
-                    except StatementError:
-                        self.logger.error("EXCEPTION on %s" % result[0])
-                        pass
-
-            self.logger.info("Inserted %s" % inserts)
+                    self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
+        except Exception as e:
+            # self.logger.error("EXCEPTION on %s" % result)
+            raise e
 
         finally:
             conn.close()
+        self.logger.info("Inserted %s" % inserts)
 
         return
 
@@ -297,7 +283,7 @@ if __name__ == "__main__":
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
         # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
         # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
+        in_db_filename = "postgres://serp:serpserpserpserpserp@rpi.zvez.ga:5432/postgres"
     else:
         in_csv_filename = sys.argv[1]
         in_logging_filename = sys.argv[2]

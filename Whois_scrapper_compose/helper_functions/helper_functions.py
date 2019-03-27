@@ -5,6 +5,9 @@ from socket import timeout
 import re
 from subprocess import run, PIPE
 import datetime
+import requests
+import os
+
 
 re_keys = {
     "1-NotExistent": re.compile(".*(NOT FOUND).*"),
@@ -51,7 +54,7 @@ def get_whois(domain_name):
         result = "Refused"  # Trying to stop us
     except timeout:
         result = "Timeout"
-    except OSError as e:
+    except OSError:
         # result = "Refused"  # Whois server unavailable
         result = "NotExistent"
     except OperationalError:
@@ -62,7 +65,7 @@ def get_whois(domain_name):
 
 
 def remove_nonascii(s):
-    return "".join(i for i in s if ord(i)<128)
+    return "".join(i for i in s if ord(i) < 128)
 
 
 def sanitize(text):
@@ -100,6 +103,25 @@ def restart_modem(logger):
         logger.info("Changed IP from %s to %s in %s seconds" % (ip_old, ip_new, delta.seconds))
 
         return
+
+
+def change_proxy(apikey):
+    socks_proxy = get_proxy(apikey)
+    os.environ["SOCKS"] = socks_proxy
+
+    return socks_proxy
+
+
+def get_proxy(apikey):
+    # https://free-socks.in/api/v1/get_proxy?apikey=Token&protocol[]=socks5&max_latency=1
+
+    url = "https://free-socks.in/api/v1/get_proxy?apikey=%s&protocol[]=socks5&max_latency=1" % apikey
+    response = requests.get(url).json()
+
+    assert response["status"] != "error", "API returned error %s on %s" % (response, url)
+    socks_proxy = response["data"][0]["ip"] + ":" + str(response["data"][0]["port"])
+
+    return socks_proxy
 
 
 def delist(maybe_list):

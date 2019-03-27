@@ -46,3 +46,9 @@ Deleted: sha256:9de0ea6f6bf3b6f7702fb386f5ab856fbf2577f2388aecee5edd28b352497bca
 
 
 https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system
+
+
+
+# GUI Portainer
+docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+admin/password
