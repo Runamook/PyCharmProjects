@@ -64,6 +64,11 @@ def get_whois(domain_name):
     return result
 
 
+def remove_proxy():
+    del os.environ["SOCKS"]
+    return
+
+
 def remove_nonascii(s):
     return "".join(i for i in s if ord(i) < 128)
 

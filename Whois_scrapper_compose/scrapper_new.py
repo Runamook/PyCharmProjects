@@ -15,16 +15,24 @@ from time import sleep
 
 
 class Scrapper:
-    def __init__(self, csv_filename, log_filename, db_filename, apikey="AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q"):
+    def __init__(self,
+                 input_name,
+                 log_filename,
+                 db_filename,
+                 apikey="AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q",
+                 input_data_query=None,
+                 use_proxy=False):
 
-        self.csv_filename = csv_filename
+        self.input_name = input_name
         self.db_filename = db_filename
         # Lists of synonyms
         self.synonyms = synonyms.Synonyms()
         # Logging config
         self.logger = create_logger.create_logger(log_filename, __name__)
         self.results = None
+
         self.apikey = apikey
+        self.use_proxy = use_proxy
 
         self.refused_counter = 0
         self.pause_times = {  # Refuses : Seconds
@@ -43,10 +51,8 @@ class Scrapper:
         }
         """
 
-        self.domains = self.parse_input()
-
         pool_size = 32              # Multi-thread flows
-        bucket_size = 500           # Domains processed at once
+        bucket_size = 200           # Domains processed at once
         self.buckets_processed = 0
         self.logger.info("Created Scrapper object\n\t\tPool size = %s\n\t\tBucket size = %s" % (pool_size, bucket_size))
         # Create tables
@@ -56,6 +62,20 @@ class Scrapper:
         self.bucket_size = bucket_size
         self.pool = Pool(pool_size)
 
+        if input_data_query is None:
+            # Run this query if domain
+            self.input_data_query = "SELECT domain FROM source_data \
+            LEFT JOIN domains ON source_data.\"domain\" = domains.domain_name \
+            WHERE domains.domain_name IS NULL \
+            LIMIT 10000;"
+        else:
+            self.input_data_query = input_data_query
+
+        if self.input_name.endswith("csv"):
+            self.domains = self.parse_input()
+        else:
+            self.domains = self.get_input_from_db()
+
     def parse_input(self):
         """
         Parses CSV file and returns list of domains
@@ -63,11 +83,28 @@ class Scrapper:
         """
         result = []
         start_time = time.time()
-        with open(self.csv_filename, "r") as file:
+        with open(self.input_data_query, "r") as file:
             reader = csv.reader(file)
             for row in reader:
                 if "." in row[0]:
                     result.append(row[0])
+        delta = str(time.time() - start_time)
+        self.logger.info("Parsed input in %s seconds, %s domains found" % (delta, len(result)))
+        return result
+
+    def get_input_from_db(self):
+        """
+        :return: [domainA, domainB, domainC,...]
+        """
+        result = []
+        start_time = time.time()
+        conn = create_engine(self.db_filename).conn
+        try:
+            input_data = conn.execute(self.input_data_query).fetchall()
+            for domain_name in input_data:
+                result.append(domain_name[0])
+        finally:
+            conn.close()
         delta = str(time.time() - start_time)
         self.logger.info("Parsed input in %s seconds, %s domains found" % (delta, len(result)))
         return result
@@ -138,6 +175,9 @@ class Scrapper:
 
     def run(self):
 
+        if not self.use_proxy:
+            helper_functions.remove_proxy()
+
         self.bucketize()
 
         for bucket in self.domains:
@@ -167,10 +207,12 @@ class Scrapper:
                 if self.refused_counter > counter:
                     pause_time = self.pause_times[counter]
 
-            if pause_time == "restart":
+            if pause_time == "restart" and self.use_proxy:
                 socks_proxy = helper_functions.change_proxy(self.apikey)
                 self.logger.warning("Proxy changed, new proxy %s" % socks_proxy)
                 pause_time = 10
+            elif pause_time == "restart":
+                pause_time = 180
 
             self.logger.warning("%s refuses, pausing for %s" % (self.refused_counter, pause_time))
             sleep(pause_time)
@@ -293,17 +335,17 @@ class Scrapper:
 if __name__ == "__main__":
     if len(sys.argv) < 4:
         # in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
-        in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
+        input_name = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
         in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
         # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
         # in_db_filename = "sqlite:///" + in_db_file
         in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
     else:
-        in_csv_filename = sys.argv[1]
+        input_name = sys.argv[1]
         in_logging_filename = sys.argv[2]
         in_db_file = sys.argv[3]
         # in_db_filename = "sqlite:///" + in_db_file
         in_db_filename = in_db_file
 
-    app = Scrapper(in_csv_filename, in_logging_filename, in_db_filename)
+    app = Scrapper(input_name, in_logging_filename, in_db_filename)
     app.run()

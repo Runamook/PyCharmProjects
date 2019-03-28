@@ -1,5 +1,6 @@
 # Build docker image
 docker build -t web .
+docker build --no-cache .
 
 # Launch image
 docker-compose up
@@ -21,8 +22,8 @@ docker-compose stop
 # Change ExecStart in /lib/systemd/system/docker.service to
 # ExecStart=/usr/bin/dockerd -H unix:// -H tcp://0.0.0.0:2375
 
-docker-compose -H tcp://rpi.zvez.ga:2375 up
-
+docker-compose -H tcp://rpi.zvez.ga:2375 up -d
+# To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
 
 
 ### Access filesystem
