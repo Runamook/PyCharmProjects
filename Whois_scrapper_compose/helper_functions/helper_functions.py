@@ -7,6 +7,7 @@ from subprocess import run, PIPE
 import datetime
 import requests
 import os
+from random import randint
 
 
 re_keys = {
@@ -56,7 +57,8 @@ def get_whois(domain_name):
         result = "Timeout"
     except OSError:
         # result = "Refused"  # Whois server unavailable
-        result = "NotExistent"
+        # result = "NotExistent" # If proxy is unaccessible - all will be timed out
+        result = "Timeout"
     except OperationalError:
         result = "Refused"  # http://sqlalche.me/e/e3q8
 
@@ -65,7 +67,8 @@ def get_whois(domain_name):
 
 
 def remove_proxy():
-    del os.environ["SOCKS"]
+    if 'SOCKS' in os.environ:
+        del os.environ["SOCKS"]
     return
 
 
@@ -117,9 +120,10 @@ def change_proxy(apikey):
     return socks_proxy
 
 
-def get_proxy(apikey):
+def get_proxy(apikeys):
     # https://free-socks.in/api/v1/get_proxy?apikey=Token&protocol[]=socks5&max_latency=1
 
+    apikey = apikeys[randint(0, 1)]
     url = "https://free-socks.in/api/v1/get_proxy?apikey=%s&protocol[]=socks5&max_latency=1" % apikey
     response = requests.get(url).json()
 
@@ -136,7 +140,7 @@ def delist(maybe_list):
         return maybe_list
 
 
-def create_tables(db_filename, logger):
+def create_tables(db_filename, meta_db_filename, logger):
     """
     Creating tables that doesn't exist
     """
@@ -144,7 +148,10 @@ def create_tables(db_filename, logger):
     try:
 
         eng = create_engine(db_filename)
+        meta_eng = create_engine(meta_db_filename)
+
         conn = eng.connect()
+        meta_conn = meta_eng.connect()
 
         if 'domains' not in eng.table_names():
             conn.execute("CREATE TABLE domains (\
@@ -160,19 +167,20 @@ def create_tables(db_filename, logger):
             blob TEXT)"
                          )
 
-        if 'results' not in eng.table_names():
-            conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
+        if 'results' not in meta_eng.table_names():
+            meta_conn.execute("CREATE TABLE results (domain_name TEXT, result TEXT)")
 
-        logger.info("Created SQL tables")
+        logger.info("Created tables")
 
-        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
+        meta_conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
+        meta_conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
         conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
-        conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
         logger.info("Created indexes")
     except Exception as e:
         raise e
     finally:
         conn.close()
+        meta_conn.close()
         return
 
 
