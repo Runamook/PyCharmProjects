@@ -331,9 +331,9 @@ class Scrapper:
                     blob = helper_functions.remove_nonascii(result[1].\
                                                             text.replace("'", '"').\
                                                             replace("\0", " ").\
-                                                            strip(" \t\r\n\0")).\
-                        replace("(", "[").\
-                        replace(")", "]")
+                                                            strip(" \t\r\n\0").\
+                                                            replace("(", "[").\
+                                                            replace(")", "]"))
                     blob = re.sub(r'[\x00-\x1f]', r'', blob)
 
                     # Insert record
@@ -365,8 +365,8 @@ class Scrapper:
                     try:
                         conn.execute(text(sql_query))
                         self.logger.debug("Inserted data for %s into database" % result[0])
-                    except AttributeError:
-                        # except StatementError:
+                        #except AttributeError:
+                    except StatementError:
                         self.logger.error("StatementError EXCEPTION on %s" % result[0])
                         pass
 
