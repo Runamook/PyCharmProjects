@@ -31,9 +31,7 @@ class Scrapper:
         # Lists of synonyms
         self.synonyms = synonyms.Synonyms()
         # Logging config
-        loglevel = "INFO"
-        self.logger = create_logger.create_logger(log_filename, __name__, loglevel)
-
+        self.logger = create_logger.create_logger(log_filename, __name__)
         self.results = None
 
         self.apikey = apikey
@@ -56,7 +54,7 @@ class Scrapper:
         }
         """
 
-        pool_size = 32              # Multi-thread flows
+        pool_size = 2              # Multi-thread flows
         bucket_size = 500           # Domains processed at once
         self.buckets_processed = 0
         self.logger.info("Created Scrapper object\tPool size = %s\tBucket size = %s" % (pool_size, bucket_size))
@@ -360,30 +358,20 @@ class Scrapper:
 
 
 if __name__ == "__main__":
-    '''
-    if len(sys.argv) < 5:
-        # in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
-        # input_name = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
-        input_name = "use_database"
-        in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
-        # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
-        # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
-        proxy = True
-    else:
-        input_name = sys.argv[1]
-        in_logging_filename = sys.argv[2]
-        in_db_file = sys.argv[3]
-        # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = in_db_file
-        proxy = sys.argv[4]
-    '''
+    # Example comand:
+    # python ./scrapper_new.py use_database ./logfile.log postgres://serp:serpserpserpserpserp@127.0.0.1:5432/postgres True
+    #
+    # input_name = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
+    # input_name = "use_database"
+    # in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
+    # in_db_filename = "sqlite:///home/egk/Work/Misc/DNS_Scrapping/random_small.db"
+    # in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
+    # proxy = True
+
     input_name = sys.argv[1]
     in_logging_filename = sys.argv[2]
     in_db = sys.argv[3]
     proxy = sys.argv[4]
-    input_data_query = "SELECT company_domain FROM company_agg3 LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" WHERE whoistable.domain_name IS NULL LIMIT 100000;"
 
-    # app = Scrapper(input_name, in_logging_filename, in_db_filename, use_proxy=proxy)
-    app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy, input_data_query=input_data_query)
+    app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy)
     app.run()

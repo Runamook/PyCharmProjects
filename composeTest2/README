@@ -53,3 +53,26 @@ https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-sy
 # GUI Portainer
 docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
 admin/password
+
+# Push image
+docker login --username runamook --password asd
+docker build -t runamook/runamook:scrapper .
+docker push runamook/runamook:scrapper
+# Pull image
+docker login --username runamook --password asd
+docker pull runamook/runamook:scrapper
+
+# Change docker-compose file
+version: '2'
+services:
+  app:
+    image: runamook/runamook:scrapper
+
+# Push container, that uses image
+sudo docker-compose -H tcp://rpi.zvez.ga:2375 up -d
+
+
+
+
+docker inspect whois_scrapper_compose_app_1
+docker logs -f whois_scrapper_compose_app_1

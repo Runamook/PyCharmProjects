@@ -34,17 +34,27 @@ def get_whois(domain_name):
                     result = key[2:]
                     break
             except AttributeError as e:
-                # Something strange, there is a response but no text attribute
+                # Something strange, there is a response but no text attributes
                 raise AttributeError("Strange, no text attribute in response for ", domain_name, result, e)
 
         # If there is a response, check if domain_name != None
         # If domain_name = None, it should be captured by re_keys loop above
         # If it is not captured, but still no domain_name - we want to see it
 
+        """
+        I think it is some kind of refuse, changing to refuse
         try:
             assert result["domain_name"] != None, "Something went wrong %s %s" % (domain_name, result)
         except TypeError:
             # If result variable is a string
+            pass
+        """
+        # In normal case whois response is a whois object with at least domain_name key
+        try:
+            if result["domain_name"] is None:
+                result = "Refused"
+        except TypeError:
+            result = "Refused"
             pass
 
     except whois.parser.PywhoisError:
@@ -123,7 +133,7 @@ def change_proxy(apikey):
 def get_proxy(apikeys):
     # https://free-socks.in/api/v1/get_proxy?apikey=Token&protocol[]=socks5&max_latency=1
 
-    apikey = apikeys[randint(0, 1)]
+    apikey = apikeys[randint(0, len(apikeys[:-1]))]
     url = "https://free-socks.in/api/v1/get_proxy?apikey=%s&protocol[]=socks5&max_latency=1" % apikey
     response = requests.get(url).json()
 
