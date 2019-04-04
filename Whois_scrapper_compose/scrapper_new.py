@@ -5,7 +5,11 @@ import csv
 import whois
 import time
 import sys
+import re
+from datetime import datetime as dtime
 import datetime
+
+
 try:
         from Whois_scrapper_compose.helper_functions import helper_functions, create_logger, synonyms
 except ImportError:
@@ -31,7 +35,7 @@ class Scrapper:
         # Lists of synonyms
         self.synonyms = synonyms.Synonyms()
         # Logging config
-        loglevel = "INFO"
+        loglevel = "DEBUG"
         self.logger = create_logger.create_logger(log_filename, __name__, loglevel)
         self.logger.info("Starting with parameters \
         \n Input: %s\n Log: %s\n DB: %s\n Metadata: %s\n Input Query %s\n Proxy %s\n" % (input_name, log_filename, db_filename, self.meta_db_filename, input_data_query, use_proxy))
@@ -55,8 +59,8 @@ class Scrapper:
         self.pause_times = {  # Refuses : Seconds
             10: 20,  # 10 is mandatory
             80: 60,
-            200: 120,
-            300: "restart"
+            150: 120,
+            280: "restart"
         }
         """
         self.pause_times = {    # Refuses : Seconds
@@ -69,7 +73,7 @@ class Scrapper:
         """
 
         pool_size = 32              # Multi-thread flows
-        bucket_size = 500           # Domains processed at once
+        bucket_size = 300           # Domains processed at once
         self.buckets_processed = 0
         self.logger.info("Created Scrapper object\tPool size = %s\tBucket size = %s" % (pool_size, bucket_size))
         # Create tables
@@ -85,8 +89,8 @@ class Scrapper:
 
         if input_data_query is None:
             self.input_data_query = "SELECT domain FROM source_data \
-            LEFT JOIN domains ON source_data.\"domain\" = domains.domain_name \
-            WHERE domains.domain_name IS NULL \
+            LEFT JOIN whoistable ON source_data.\"domain\" = whoistable.domain_name \
+            WHERE whoistable.domain_name IS NULL \
             LIMIT 20000;"
         else:
             self.input_data_query = input_data_query
@@ -318,12 +322,22 @@ class Scrapper:
                     city = helper_functions.synonym_finder(result[1], self.synonyms.synonym_city)
                     address = helper_functions.synonym_finder(result[1], self.synonyms.synonym_address)
                     creation_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_creation_date)
+                    if isinstance(creation_date, str) or creation_date is None:
+                        creation_date = dtime.strptime('1800-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')
                     expiration_date = helper_functions.synonym_finder(result[1], self.synonyms.synonym_expiration_date)
+                    if isinstance(expiration_date, str) or expiration_date is None:
+                        expiration_date= dtime.strptime('1800-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')
                     # Others are processed using helper_functions.sanitize()
-                    blob = helper_functions.remove_nonascii(result[1].text.replace("'", '"').replace("\0", " ").strip(" \t\r\n\0"))
+                    blob = helper_functions.remove_nonascii(result[1].\
+                                                            text.replace("'", '"').\
+                                                            replace("\0", " ").\
+                                                            strip(" \t\r\n\0")).\
+                        replace("(", "[").\
+                        replace(")", "]")
+                    blob = re.sub(r'[\x00-\x1f]', r'', blob)
 
                     # Insert record
-                    sql_query = "INSERT INTO domains (\
+                    sql_query = "INSERT INTO whoistable (\
                         dt, \
                         domain_name, \
                         name, \
@@ -351,16 +365,17 @@ class Scrapper:
                     try:
                         conn.execute(text(sql_query))
                         self.logger.debug("Inserted data for %s into database" % result[0])
-                    except StatementError:
-                        self.logger.error("EXCEPTION on %s" % result[0])
+                    except AttributeError:
+                        # except StatementError:
+                        self.logger.error("StatementError EXCEPTION on %s" % result[0])
                         pass
 
                     try:
                         meta_conn.execute(text(sql_meta_query))
-                        self.logger.debug("Inserted metadata for %s into database [created]" % result[0])
+                        self.logger.debug("Inserted metaData for %s into database [created]" % result[0])
                     except IntegrityError:
                         meta_conn.execute(text(sql_meta_query_update))
-                        self.logger.debug("Updated metadata for %s in database [updated]" % result[0])
+                        self.logger.debug("Updated metaData for %s in database [updated]" % result[0])
 
             self.logger.info("Inserted %s" % inserts)
 
@@ -390,12 +405,14 @@ if __name__ == "__main__":
         in_db_filename = in_db_file
         proxy = sys.argv[4]
     # use_database whois_scrapper.log "postgres://root:manopc@corepo.org:5432/companies" False
+    # use_database whois_scrapper.log "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres" False
     '''
     input_name = sys.argv[1]
     in_logging_filename = sys.argv[2]
     in_db = sys.argv[3]
     proxy = sys.argv[4]
     input_data_query = "SELECT company_domain FROM company_agg3 LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" WHERE whoistable.domain_name IS NULL LIMIT 100000;"
+    #input_data_query = "SELECT company_agg3.domain_name FROM company_agg3 left join whoistable on company_agg3.domain_name = whoistable.domain_name where whoistable.domain_name is null limit 10000;"
 
     # app = Scrapper(input_name, in_logging_filename, in_db_filename, use_proxy=proxy)
     app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy, input_data_query=input_data_query)

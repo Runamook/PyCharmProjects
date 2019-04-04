@@ -6,7 +6,7 @@ import re
 from subprocess import run, PIPE
 import datetime
 import requests
-import os
+import os, sys
 from random import randint
 
 
@@ -26,7 +26,7 @@ def get_whois(domain_name):
     try:
 
         result = whois.whois(domain_name)
-        # print(domain_name)
+
         # Check if the response given is really empty
         for key in re_keys:
             try:
@@ -41,24 +41,23 @@ def get_whois(domain_name):
         # If domain_name = None, it should be captured by re_keys loop above
         # If it is not captured, but still no domain_name - we want to see it
 
-        """
-        I think it is some kind of refuse, changing to refuse
-        try:
-            assert result["domain_name"] != None, "Something went wrong %s %s" % (domain_name, result)
-        except TypeError:
-            # If result variable is a string
-            pass
-        """
         # In normal case whois response is a whois object with at least domain_name key
-        try:
-            if result["domain_name"] is None:
+        if result not in ["NotExistent", "Refused"]:
+            if "domain_name" in result.keys():
+                domain_name_field = "domain_name"
+            elif "domain" in result.keys():
+                domain_name_field = "domain"
+            else:
+                # print("domain name field (\"domain_name\" or \"domain\") not found")
+                result["domain_name"] = domain_name
+                domain_name_field = "domain_name"
+                print(domain_name, result)
+            try:
+                if result[domain_name_field] is None:
+                    result = "Refused"
+            except TypeError:
                 result = "Refused"
-        except TypeError:
-            result = "Refused"
-            pass
-        except KeyError:
-            result = "Refused"
-            pass
+                pass
 
     except whois.parser.PywhoisError:
         result = "NotExistent"  # No such domain
@@ -166,8 +165,8 @@ def create_tables(db_filename, meta_db_filename, logger):
         conn = eng.connect()
         meta_conn = meta_eng.connect()
 
-        if 'domains' not in eng.table_names():
-            conn.execute("CREATE TABLE domains (\
+        if 'whoistable' not in eng.table_names():
+            conn.execute("CREATE TABLE whoistable (\
             dt TIMESTAMP, \
             domain_name TEXT, \
             name TEXT, \
@@ -187,7 +186,8 @@ def create_tables(db_filename, meta_db_filename, logger):
 
         meta_conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_index on results (domain_name)")
         meta_conn.execute("CREATE INDEX IF NOT EXISTS results_index on results (result)")
-        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_data_index ON domains (domain_name)")
+        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS domain_name_data_index ON public.whoistable (domain_name)")
+        # CREATE UNIQUE INDEX whoistable_domain_name_idx ON public.whoistable (domain_name);
         logger.info("Created indexes")
     except Exception as e:
         raise e
