@@ -20,8 +20,8 @@ class Scrapper:
                  log_filename,
                  db_filename,
                  apikey=["AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q", "DM0OCDBBP6VHXQQEDPDDPZPC8OP69DUN", "9KMSYMUCT2VLESFMSNDKPCXWU5R7TMP8"],
-                 input_data_query=None,
-                 use_proxy=False):
+                 input_data_query="None",
+                 use_proxy="False"):
 
         self.input_name = input_name
         self.db_filename = db_filename
@@ -33,6 +33,18 @@ class Scrapper:
         # Logging config
         loglevel = "INFO"
         self.logger = create_logger.create_logger(log_filename, __name__, loglevel)
+        self.logger.info("Starting with parameters \
+        \n Input: %s\n Log: %s\n DB: %s\n Metadata: %s\n Input Query %s\n Proxy %s\n" % (input_name, log_filename, db_filename, self.meta_db_filename, input_data_query, use_proxy))
+
+        if input_data_query == "None":
+            input_data_query = None
+        if use_proxy == "False":
+            use_proxy = False
+        elif use_proxy == "True":
+            use_proxy = True
+        else:
+            self.logger.error("Proxy can be \"True\" or \"False\"")
+            exit(1)
 
         self.results = None
 
@@ -377,6 +389,7 @@ if __name__ == "__main__":
         # in_db_filename = "sqlite:///" + in_db_file
         in_db_filename = in_db_file
         proxy = sys.argv[4]
+    # use_database whois_scrapper.log "postgres://root:manopc@corepo.org:5432/companies" False
     '''
     input_name = sys.argv[1]
     in_logging_filename = sys.argv[2]

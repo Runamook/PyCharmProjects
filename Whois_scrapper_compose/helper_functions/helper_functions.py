@@ -26,7 +26,7 @@ def get_whois(domain_name):
     try:
 
         result = whois.whois(domain_name)
-
+        # print(domain_name)
         # Check if the response given is really empty
         for key in re_keys:
             try:
@@ -54,6 +54,9 @@ def get_whois(domain_name):
             if result["domain_name"] is None:
                 result = "Refused"
         except TypeError:
+            result = "Refused"
+            pass
+        except KeyError:
             result = "Refused"
             pass
 
