@@ -8,6 +8,7 @@ import sys
 import re
 from datetime import datetime as dtime
 import datetime
+import argparse
 
 
 try:
@@ -25,7 +26,8 @@ class Scrapper:
                  db_filename,
                  apikey=["AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q", "DM0OCDBBP6VHXQQEDPDDPZPC8OP69DUN", "9KMSYMUCT2VLESFMSNDKPCXWU5R7TMP8"],
                  input_data_query="None",
-                 use_proxy="False"):
+                 use_proxy="False",
+                 loglevel="INFO"):
 
         self.input_name = input_name
         self.db_filename = db_filename
@@ -35,7 +37,6 @@ class Scrapper:
         # Lists of synonyms
         self.synonyms = synonyms.Synonyms()
         # Logging config
-        loglevel = "DEBUG"
         self.logger = create_logger.create_logger(log_filename, __name__, loglevel)
         self.logger.info("Starting with parameters \
         \n Input: %s\n Log: %s\n DB: %s\n Metadata: %s\n Input Query %s\n Proxy %s\n" % (input_name, log_filename, db_filename, self.meta_db_filename, input_data_query, use_proxy))
@@ -387,33 +388,49 @@ class Scrapper:
 
 
 if __name__ == "__main__":
-    '''
-    if len(sys.argv) < 5:
-        # in_csv_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.csv"
-        # input_name = "/home/egk/Work/Misc/DNS_Scrapping/random.csv"
+    optparser = argparse.ArgumentParser(description="Get data from whois")
+    requiredNamed = optparser.add_argument_group('Required arguments')
+    optparser.add_argument("-i", "--input_name", type=str, help="Input name. \
+            if ends with '.csv' will be treated as CSV file input. Default: use_database")
+    optparser.add_argument("-l", "--log_file", type=str,
+                           help="Log filename. Default whois_scrapper.log")
+    requiredNamed.add_argument("-d", "--in_db", type=str,
+                           help="sqlalchemy db string\
+                           \nExample postgres://login:pass@host.domain:5432/database", required=True)
+    optparser.add_argument("-p", "--proxy", help="True or False. Default: False")
+    optparser.add_argument("--loglevel", help="Default: INFO")
+    optparser.add_argument("-q", "--input_data_query", help="Query to fetch data from SQL. Default: \
+             SELECT company_domain FROM company_agg3 \
+             LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" \
+             WHERE whoistable.domain_name IS NULL LIMIT 500000; ")
+    args = optparser.parse_args()
+
+    in_db = args.in_db
+    if not args.input_name:
         input_name = "use_database"
-        in_logging_filename = "/home/egk/Work/Misc/DNS_Scrapping/random_small.log"
-        # in_db_file = "/home/egk/Work/Misc/DNS_Scrapping/random_small.db"
-        # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres"
-        proxy = True
     else:
-        input_name = sys.argv[1]
-        in_logging_filename = sys.argv[2]
-        in_db_file = sys.argv[3]
-        # in_db_filename = "sqlite:///" + in_db_file
-        in_db_filename = in_db_file
-        proxy = sys.argv[4]
-    # use_database whois_scrapper.log "postgres://root:manopc@corepo.org:5432/companies" False
-    # use_database whois_scrapper.log "postgres://serp:serpserpserpserpserp@192.168.5.24:5432/postgres" False
-    '''
-    input_name = sys.argv[1]
-    in_logging_filename = sys.argv[2]
-    in_db = sys.argv[3]
-    proxy = sys.argv[4]
-    input_data_query = "SELECT company_domain FROM company_agg3 LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" WHERE whoistable.domain_name IS NULL LIMIT 100000;"
-    #input_data_query = "SELECT company_agg3.domain_name FROM company_agg3 left join whoistable on company_agg3.domain_name = whoistable.domain_name where whoistable.domain_name is null limit 10000;"
+        input_name = args.input_name
+
+    if not args.loglevel:
+        loglevel = "INFO"
+    else:
+        loglevel = args.loglevel
+
+    if not args.proxy:
+        proxy = "False"
+    else:
+        proxy = args.proxy
+
+    if not args.log_file:
+        in_logging_filename = "whois_scrapper.log"
+    else:
+        in_logging_filename = args.log_file
+
+    if not args.input_data_query:
+        input_data_query = "SELECT company_domain FROM company_agg3 LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" WHERE whoistable.domain_name IS NULL LIMIT 500000;"
+    else:
+        input_data_query = args.input_data_query
 
     # app = Scrapper(input_name, in_logging_filename, in_db_filename, use_proxy=proxy)
-    app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy, input_data_query=input_data_query)
+    app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy, input_data_query=input_data_query, loglevel=loglevel)
     app.run()
