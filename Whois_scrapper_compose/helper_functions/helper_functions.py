@@ -51,7 +51,7 @@ def get_whois(domain_name):
                 # print("domain name field (\"domain_name\" or \"domain\") not found")
                 result["domain_name"] = domain_name
                 domain_name_field = "domain_name"
-                print(domain_name, result)
+                # print(domain_name, result)
             try:
                 if result[domain_name_field] is None:
                     result = "Refused"

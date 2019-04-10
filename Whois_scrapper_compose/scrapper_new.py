@@ -4,17 +4,15 @@ from sqlalchemy.exc import StatementError, IntegrityError
 import csv
 import whois
 import time
-import sys
 import re
 from datetime import datetime as dtime
 import datetime
 import argparse
 
-
 try:
-        from Whois_scrapper_compose.helper_functions import helper_functions, create_logger, synonyms
+    from Whois_scrapper_compose.helper_functions import helper_functions, create_logger, synonyms
 except ImportError:
-        from helper_functions import helper_functions, create_logger, synonyms
+    from helper_functions import helper_functions, create_logger, synonyms
 from multiprocessing.dummy import Pool
 from time import sleep
 
@@ -24,10 +22,11 @@ class Scrapper:
                  input_name,
                  log_filename,
                  db_filename,
-                 apikey=["AOXWQJVE27YGVNPGADD8BZSWY2J8QM9Q", "DM0OCDBBP6VHXQQEDPDDPZPC8OP69DUN", "9KMSYMUCT2VLESFMSNDKPCXWU5R7TMP8"],
+                 apikey=None,
                  input_data_query="None",
                  use_proxy="False",
-                 loglevel="INFO"):
+                 loglevel="INFO",
+                 threads=2):
 
         self.input_name = input_name
         self.db_filename = db_filename
@@ -73,7 +72,7 @@ class Scrapper:
         }
         """
 
-        pool_size = 32              # Multi-thread flows
+        pool_size = threads              # Multi-thread flows
         bucket_size = 300           # Domains processed at once
         self.buckets_processed = 0
         self.logger.info("Created Scrapper object\tPool size = %s\tBucket size = %s" % (pool_size, bucket_size))
@@ -388,7 +387,8 @@ class Scrapper:
 
 
 if __name__ == "__main__":
-    optparser = argparse.ArgumentParser(description="Get data from whois")
+    optparser = argparse.ArgumentParser(description="Get data from whois. Destination table name is hardcoded \
+    to \"whoistable\"")
     requiredNamed = optparser.add_argument_group('Required arguments')
     optparser.add_argument("-i", "--input_name", type=str, help="Input name. \
             if ends with '.csv' will be treated as CSV file input. Default: use_database")
@@ -396,9 +396,12 @@ if __name__ == "__main__":
                            help="Log filename. Default whois_scrapper.log")
     requiredNamed.add_argument("-d", "--in_db", type=str,
                            help="sqlalchemy db string\
-                           \nExample postgres://login:pass@host.domain:5432/database", required=True)
+                           Example postgres://login:pass@host.domain:5432/database", required=True)
     optparser.add_argument("-p", "--proxy", help="True or False. Default: False")
     optparser.add_argument("--loglevel", help="Default: INFO")
+    optparser.add_argument("--threads", help="Number of threads for multiprocessing. Default = 2", type=int)
+    optparser.add_argument("--apikeys", help="API keys for http://free-socks.in/ \
+                            Example: \"apiKey1;apiKey2;...\"")
     optparser.add_argument("-q", "--input_data_query", help="Query to fetch data from SQL. Default: \
              SELECT company_domain FROM company_agg3 \
              LEFT JOIN whoistable ON company_agg3.\"company_domain\" = whoistable.\"domain_name\" \
@@ -411,12 +414,22 @@ if __name__ == "__main__":
     else:
         input_name = args.input_name
 
+    if not args.threads:
+        threads = 2
+    else:
+        threads = args.threads
+
     if not args.loglevel:
         loglevel = "INFO"
     else:
         loglevel = args.loglevel
 
-    if not args.proxy:
+    if not args.apikeys:
+        apikeys = None
+    else:
+        apikeys = args.apikeys.split(";")
+
+    if not args.proxy or apikeys is None:
         proxy = "False"
     else:
         proxy = args.proxy
@@ -432,5 +445,13 @@ if __name__ == "__main__":
         input_data_query = args.input_data_query
 
     # app = Scrapper(input_name, in_logging_filename, in_db_filename, use_proxy=proxy)
-    app = Scrapper(input_name, in_logging_filename, in_db, use_proxy=proxy, input_data_query=input_data_query, loglevel=loglevel)
+    app = Scrapper(input_name,
+                   in_logging_filename,
+                   in_db,
+                   use_proxy=proxy,
+                   input_data_query=input_data_query,
+                   loglevel=loglevel,
+                   apikey=None,
+                   threads=threads
+                   )
     app.run()
