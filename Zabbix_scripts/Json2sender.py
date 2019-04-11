@@ -16,6 +16,8 @@ except ImportError:
 # TODO: Empty response from API
 # TODO: Multiple meters from
 # TODO:  "StromNeutralleiter": null - removed from Numeric_Metrics
+# TODO: BlindleistungGesamt - was absent
+# TODO: LeistungsfaktorP2 - was absent
 
 
 class Meters:
