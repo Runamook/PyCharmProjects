@@ -1,0 +1,3 @@
+py-zabbix
+requests
+argparse

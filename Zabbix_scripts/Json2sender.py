@@ -9,18 +9,18 @@ try:
 except ImportError:
     from Helpers.create_logger import create_logger
 try:
-    from Zabbix_scripts.Helpers.helpers import make_dates, Numeric_Metrics, get_metric_time
+    from Zabbix_scripts.Helpers.helpers import make_dates, Numeric_Metrics, get_metric_time, find_meter_voltage
 except ImportError:
-    from Helpers.helpers import make_dates, Numeric_Metrics, get_metric_time
+    from Helpers.helpers import make_dates, Numeric_Metrics, get_metric_time, find_meter_voltage
 
 # TODO: Empty response from API
-# TODO: Multiple meters from
-# TODO:  "StromNeutralleiter": null - removed from Numeric_Metrics
-# TODO: BlindleistungGesamt - was absent
-# TODO: LeistungsfaktorP2 - was absent
+# TODO: Multiple meters
+# TODO: "StromNeutralleiter": null - removed from Numeric_Metrics
 
 
 class Meters:
+
+    meter_voltage_item = "MeterNormalVoltage"           # Meter reference voltage item name
 
     def __init__(self, logfile, loglevel, api_user, api_pass, meter_id, date, zabbix_server_ip):
 
@@ -47,6 +47,7 @@ User=%s\
 &pass=%s\
 &id=%s&\
 datum=%s" % (api_user, api_pass, meter_id, date)
+        self.meter_id = meter_id
 
     def get_json(self):
         self.logger.info("Querying URL %s" % self.api_url)
@@ -61,9 +62,28 @@ datum=%s" % (api_user, api_pass, meter_id, date)
         self.logger.debug("Text: %s" % response.text)
         return response.json()
 
-    def process_metrics(self):
+    def process_metrics_per_host(self):
         # ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
 
+        json = self.get_json()
+        self.logger.info("Meter %s - %s measurements" % (self.meter_id, len(json)))
+        results = []
+        metric_host = "Meter %s" % self.meter_id
+
+        for measurement in json:                            # measurement is a JSON element in a list returned by API
+            metric_time = get_metric_time(measurement)
+            for metric_key in Numeric_Metrics:
+                metric_value = measurement[metric_key]
+                self.logger.debug("Metric %s %s %s %s" % (metric_host, metric_key, metric_value, metric_time))
+                results.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=metric_time))
+
+            metric_value = self.find_meter_normal_voltage(measurement)
+            results.append(ZabbixMetric(metric_host, Meters.meter_voltage_item, metric_value, clock=metric_time))
+
+        self.logger.info("Meter %s - %s metrics for insertion" % (self.meter_id, len(results)))
+        return results
+
+    def process_metrics(self):
         json = self.get_json()
         self.logger.info("Found %s measurements" % len(json))
         results = []
@@ -77,8 +97,17 @@ datum=%s" % (api_user, api_pass, meter_id, date)
                 self.logger.debug("Metric %s %s %s" % (metric_key, metric_value, metric_time))
                 results.append(ZabbixMetric("Zabbix server", metric_key, metric_value, clock=metric_time))
 
+            metric_value = self.find_meter_normal_voltage(measurement)
+            results.append(ZabbixMetric("Zabbix server", "MeterNormalVoltage", metric_value, clock=metric_time))
+
         self.logger.info("Prepared %s metrics for insertion" % len(results))
         return results
+
+    def find_meter_normal_voltage(self, measurement):
+        voltage_list = [measurement["SpannungP1"], measurement["SpannungP2"], measurement["SpannungP3"]]
+        normal_voltage = find_meter_voltage(voltage_list)
+        self.logger.debug("Meter %s, normal voltage %s" % (measurement["IdentificationNumber"], normal_voltage))
+        return normal_voltage
 
     def send_metrics(self, metrics):
         sender = ZabbixSender(self.zabbix_server_ip)
@@ -93,8 +122,8 @@ datum=%s" % (api_user, api_pass, meter_id, date)
         return
 
     def run(self):
-        self.logger.warning("Starting")
-        metrics = self.process_metrics()
+        self.logger.warning("Meter %s started" % self.meter_id)
+        metrics = self.process_metrics_per_host()
         self.send_metrics(metrics)
 
 
