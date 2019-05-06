@@ -19,6 +19,7 @@ class Meter:
     ACK = b'\x06'
     EOT = b'\x04'
     LF = b'\n'
+    CRLF = b'\r\n'
 
     CTLBYTES = SOH + STX + ETX
     LineEnd = [ETX, LF, EOT]
@@ -130,7 +131,7 @@ class Meter:
         else:
             cmdwithdata = cmd
 
-        self.logger.debug(f"Sending {cmdwithdata}")
+        self.logger.debug(f"Sending {cmdwithdata}, expecting {etx}")
         self.ser.write(cmdwithdata)
         time.sleep(timer)
 
@@ -148,12 +149,13 @@ class Meter:
             elif self.ser.in_waiting == 0:
                 # If no data to read:
                 # self.logger.debug(f"{result}")
-                if len(result) > 0 and result[-2:-1] == etx:
+                if len(result) > 0 and (result[-2:-1] == etx or result[-1:] == etx):
                     # Check if the second-last read byte is End-of-Text (or similar)
                     self.logger.debug(f"ETX {etx} found, assuming end of transmission")
                     if etx == Meter.ETX:
                         bccbyte = result[-1:]
                         self.logger.debug(f"BCC: {bccbyte}")
+                        result = result[:-1]            # Remove BCC from result
                     return result
 
                 # If the last is read byte not ETX - wait for more data
@@ -299,8 +301,7 @@ class MeterRequests:
 
 if __name__ == "__main__":
     m = MeterRequests("socket://10.124.2.120:8000", 300)
-    print(m.get_table(2))
-    # print(m.get_p200logbook())
+    print(m.get_table(4))
 
     # Does TCP retransmission breaks the meter?
     # client -Push-> meter
