@@ -189,12 +189,10 @@ obis_codes = {
     "C.51.1": "Event terminal cover opened - counter",
     "C.51.2": "Event terminal cover opened - timestamp",
     "C.51.3": "Event main cover opened - counter",
-    "C.51.4": "Event main cover opened - timestamp",
     "C.51.5": "Event magnetic field detection start - counter",
     "C.51.6": "Event magnetic field detection start - timestamp",
     "C.51.7": "Event reverse power flow - counter",
     "C.51.8": "Event reverse power flow - timestamp",
-    "C.7.0": "Event power down - counter",
     "C.7.10": "Event power down - timestamp",
     "C.51.13": "Event power up - counter",
     "C.51.14": "Event power up – timestamp",
@@ -234,14 +232,8 @@ obis_codes = {
     "C.60.9": "Fraud flag",
     "0.3.0": "Active energy meter constant",
     "0.4.2": "Current transformer ratio",
-    "0.4.3": "Voltage transformer ratio"
-    }
-
-obis_codes_2 = {
-    "0.0.0": "Meter address",
+    "0.4.3": "Voltage transformer ratio",
     "0.0.9": "Identification number",
-    "0.9.1": "Current time",
-    "0.9.2": "Current date",
     "21.25": "Instantaneous value of active power phase L1",
     "41.25": "Instantaneous value of active power phase L2",
     "61.25": "Instantaneous value of active power phase L3",
@@ -275,7 +267,7 @@ obis_codes_2 = {
     "C.51.4": "DCF-77 last synchronization",
     "C.52.0": "Phase information",
     "C.86.0": "Installation check"
-}
+    }
 
 
 zabbix_items = {"1.5.0": "Positive active demand in the last completed demand period (A+) [kW]",

@@ -25,10 +25,6 @@ class Meter:
     CTLBYTES = SOH + STX + ETX
     LineEnd = [ETX, LF, EOT]
 
-    # tables = {"1": b"/1!\r\n",
-    #           "3": b"/0!\r\n",
-    #          "4": b"/2!\r\n"
-    #          }
     tables = {"1": b"/105296170!\r\n",       # 05296170 - meter address at 0.0.0
               "2": b"/205296170!\r\n",
               "3": b"/305296170!\r\n",
@@ -58,62 +54,6 @@ class Meter:
     def __exit__(self, exc_type, exc_value, traceback):
         self.logger.debug("Closing connection")
         self.ser.close()
-
-    def sendcmd(self, cmd, data=None, etx=ETX):
-        assert etx in Meter.LineEnd, f"Proposed text end {etx} if not in {Meter.LineEnd}"
-
-        if data:
-            cmdwithdata = cmd + Meter.STX + data + Meter.ETX
-            cmdwithdata = Meter.SOH + cmdwithdata + Meter.bcc(cmdwithdata)
-        else:
-            cmdwithdata = cmd
-
-        while True:
-            self.logger.debug(f"Sending {cmdwithdata}")
-            self.ser.write(cmdwithdata)
-            # If timeout is small (10 sec) - not enough time to read big (10KB) response.
-            response = self.ser.read_until(etx)
-            self.logger.debug(f"Received {len(response)} bytes: {response}")
-            if response[-1:] == etx:
-                if etx == Meter.ETX:
-                    bccbyte = self.ser.read(1)
-                    self.logger.debug(f"BCC: {bccbyte}")
-                return response
-            self.logger.debug("Retrying")
-            time.sleep(1)
-
-    def sendcmd_2(self, cmd, data=None, etx=ETX):
-        timer = 5
-        assert etx in Meter.LineEnd, f"Proposed text end {etx} if not in {Meter.LineEnd}"
-
-        if data:
-            cmdwithdata = cmd + Meter.STX + data + Meter.ETX
-            cmdwithdata = Meter.SOH + cmdwithdata + Meter.bcc(cmdwithdata)
-        else:
-            cmdwithdata = cmd
-
-        result = b""
-        self.logger.debug(f"Sending {cmdwithdata}")
-        self.ser.write(cmdwithdata)
-        while True:
-            time.sleep(timer)
-            # If timeout is small (10 sec) - not enough time to read big (10KB) response.
-            response = self.ser.read_all()
-            if len(response) > 0:
-                self.logger.debug(f"Received {len(response)} bytes: {response}")
-                result += response
-                self.logger.debug(f"Result {result}")
-                continue
-            elif len(response) == 0 and len(result) > 0:
-                self.logger.debug(f"no response returned in {timer} seconds, assuming transmission ended")
-                if etx == Meter.ETX:
-                    bccbyte = result[-1]
-                    self.logger.debug(f"BCC: {bccbyte}")
-                return result
-            elif len(response) == 0 and len(result) == 0:
-                self.logger.debug(f"no response returned in {timer} seconds, retrying")
-                self.logger.debug(f"Sending {cmdwithdata}")
-                self.ser.write(cmdwithdata)
 
     def sendcmd_3(self, cmd, data=None, etx=ETX):
         # Remember IEC 62056-21 timers:
@@ -257,20 +197,6 @@ class MeterRequests:
         with Meter(self.meter, self.timeout, get_id=False) as m:        # Using shortcut, id not needed
             return m.sendcmd_and_decode_response(Meter.tables[str(table_no)])
 
-    def get_data_15(self):
-        self.logger.info("Starting data gathering")
-        m = MeterRequests("socket://10.124.2.120:8000", 300)
-        result = {}
-        result["p01"] = m.get_p200logbook()
-        result["table4"] = m.get_table(4)
-        return result
-
-    def create_metrics(self, data):
-
-
-
-        return metrics
-
     def parse_table4(self, data):
         # /EMH4\@01LZQJL0014F
         # 0.0.0(05296170)
@@ -279,7 +205,7 @@ class MeterRequests:
         # 13.25(0.83*P/S)
         # C.7.2(0003)
         self.logger.debug("Parsing table4 output")
-        self.logger.debug(data)
+        # self.logger.debug(data)
 
         re_key = re.compile('^(.+)[(]')
         re_dt = re.compile('([(].+[)])')
@@ -303,7 +229,7 @@ class MeterRequests:
                 cur_date = re_dt.search(line).group()[2:-1]        # Strip first digit
             else:
                 if not re_value.search(line):
-                    self.logger.debug(f"no value in line {line}")
+                    self.logger.debug(f"Not found value X.X in line {line}")
                     continue
                 else:
                     # value = re_value.search(line).group()[1:-1]
@@ -312,8 +238,8 @@ class MeterRequests:
 
         epoch = datetime.datetime.strptime(cur_date + cur_time, "%y%m%d%H%M%S").strftime("%s")
         results[epoch] = pre_results        # {epoch: [(obis_code:val), (), (), ...]}
-        self.logger.debug(f"Results: {results}")
-
+        # self.logger.debug(f"Results: {results}")
+        self.logger.debug("Finished parsing table 4 output")
         return results
 
     def parse_p01(self, data):
@@ -322,7 +248,7 @@ class MeterRequests:
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
 
         self.logger.debug("Parsing P.01 output")
-        self.logger.debug(data)
+        # self.logger.debug(data)
         keys = ["1.5.0", "2.5.0", "5.5.0", "6.5.0", "7.5.0", "8.5.0"]
 
         lines = data.split('\r\n')
@@ -346,28 +272,8 @@ class MeterRequests:
             results[(base_dt + datetime.timedelta(counter*15)).strftime("%s")] = result
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
-        self.logger.debug(f"Results: {results}")
-        return results
-
-    def zabbix_metrics(self):
-        # ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
-
-        json = self.get_json()
-        self.logger.info("Meter %s - %s measurements" % (self.meter_id, len(json)))
-        results = []
-        metric_host = "Meter %s" % self.meter_id
-
-        for measurement in json:                            # measurement is a JSON element in a list returned by API
-            metric_time = get_metric_time(measurement)
-            for metric_key in Numeric_Metrics:
-                metric_value = measurement[metric_key]
-                self.logger.debug("Metric %s %s %s %s" % (metric_host, metric_key, metric_value, metric_time))
-                results.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=metric_time))
-
-            metric_value = self.find_meter_normal_voltage(measurement)
-            results.append(ZabbixMetric(metric_host, Meters.meter_voltage_item, metric_value, clock=metric_time))
-
-        self.logger.info("Meter %s - %s metrics for insertion" % (self.meter_id, len(results)))
+        # self.logger.debug(f"Results: {results}")
+        self.logger.debug("Finished parsing P.01 output")
         return results
 
     @staticmethod
@@ -403,12 +309,17 @@ class MeterRequests:
         return f"2{year}{month}{day}{hour}{minute}"     # 0 - normal time, 1 - summer time, 2 - UTC
 
 
-if __name__ == "__main__":
-    m = MeterRequests("socket://10.124.2.120:8000", 300)
+def get_data_15(meter_address):
+    m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4)
     p01_data = m.get_latest_p01()
     table4_res = m.parse_table4(table4_data)
     p01_res = m.parse_p01(p01_data)
+    return {"table4": table4_res, "p01": p01_res}
+
+
+if __name__ == "__main__":
+    print(get_data_15("10.124.2.120"))
 
     # Does TCP retransmission breaks the meter?
     # client -Push-> meter
