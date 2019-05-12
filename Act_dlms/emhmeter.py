@@ -279,6 +279,7 @@ class MeterRequests:
         # 13.25(0.83*P/S)
         # C.7.2(0003)
         self.logger.debug("Parsing table4 output")
+        self.logger.debug(data)
 
         re_key = re.compile('^(.+)[(]')
         re_dt = re.compile('([(].+[)])')
@@ -321,6 +322,7 @@ class MeterRequests:
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
 
         self.logger.debug("Parsing P.01 output")
+        self.logger.debug(data)
         keys = ["1.5.0", "2.5.0", "5.5.0", "6.5.0", "7.5.0", "8.5.0"]
 
         lines = data.split('\r\n')
@@ -335,9 +337,11 @@ class MeterRequests:
         for line in lines:
             if len(line) > 5:
                 result = []
-                values = line.split("(")
+                values = line.split("(")[1:]            # First value is an empty string
+                value_counter = 0
                 for value in values:
-                    result.append((keys[counter], value[:-1]))
+                    result.append((keys[value_counter], value[:-1]))
+                    value_counter += 1
                 counter += 1
             results[(base_dt + datetime.timedelta(counter*15)).strftime("%s")] = result
 
@@ -403,11 +407,8 @@ if __name__ == "__main__":
     m = MeterRequests("socket://10.124.2.120:8000", 300)
     table4_data = m.get_table(4)
     p01_data = m.get_latest_p01()
-    # print(table4_data)
-    # print(p01_data)
-    print(m.parse_table4(table4_data))
-    print(m.parse_p01(p01_data))
-    # print(m.get_p200logbook())
+    table4_res = m.parse_table4(table4_data)
+    p01_res = m.parse_p01(p01_data)
 
     # Does TCP retransmission breaks the meter?
     # client -Push-> meter
