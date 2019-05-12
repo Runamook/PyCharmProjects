@@ -3,6 +3,7 @@ import time
 import functools
 import operator
 import datetime
+import re
 try:
     from Act_dlms.Helpers.create_logger import create_logger
 except ImportError:
@@ -256,15 +257,114 @@ class MeterRequests:
         with Meter(self.meter, self.timeout, get_id=False) as m:        # Using shortcut, id not needed
             return m.sendcmd_and_decode_response(Meter.tables[str(table_no)])
 
-    def get_data(self):
-        self.logger.debug("Requesting data")
-        result = []
-        result.append(self.get_latest_p01())
-        time.sleep(5)
-        result.append(self.get_latest_p02())
-        time.sleep(5)
-        result.append(self.get_errors())
+    def get_data_15(self):
+        self.logger.info("Starting data gathering")
+        m = MeterRequests("socket://10.124.2.120:8000", 300)
+        result = {}
+        result["p01"] = m.get_p200logbook()
+        result["table4"] = m.get_table(4)
         return result
+
+    def create_metrics(self, data):
+
+
+
+        return metrics
+
+    def parse_table4(self, data):
+        # /EMH4\@01LZQJL0014F
+        # 0.0.0(05296170)
+        # 43.25(0.006*kvar)
+        # 0.9.1(1185411)            # 18:54:11 localtime
+        # 13.25(0.83*P/S)
+        # C.7.2(0003)
+        self.logger.debug("Parsing table4 output")
+
+        re_key = re.compile('^(.+)[(]')
+        re_dt = re.compile('([(].+[)])')
+        re_value = re.compile('[(]([0-9]+\\.[0-9]+)')
+        pre_results = []
+        results = {}
+
+        lines = data.split('\r\n')[1:]            # Remove header (meter id)
+        for line in lines:
+            if len(line) < 5:
+                continue
+            if not re_key.search(line):
+                self.logger.debug(f"no key in line {line}")
+                continue
+            else:
+                key = re_key.search(line).group()[:-1]
+
+            if key == "0.9.1":
+                cur_time = re_dt.search(line).group()[2:-1]        # Strip first digit
+            elif key == "0.9.2":
+                cur_date = re_dt.search(line).group()[2:-1]        # Strip first digit
+            else:
+                if not re_value.search(line):
+                    self.logger.debug(f"no value in line {line}")
+                    continue
+                else:
+                    # value = re_value.search(line).group()[1:-1]
+                    value = re_value.search(line).group()[1:]
+                    pre_results.append((key, value))
+
+        epoch = datetime.datetime.strptime(cur_date + cur_time, "%y%m%d%H%M%S").strftime("%s")
+        results[epoch] = pre_results        # {epoch: [(obis_code:val), (), (), ...]}
+        self.logger.debug(f"Results: {results}")
+
+        return results
+
+    def parse_p01(self, data):
+        # P.01(1190417001500)(00000000)(15)(6)(1.5)(kW)(2.5)(kW)(5.5)(kvar)(6.5)(kvar)(7.5)(kvar)(8.5)(kvar)
+        # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
+        # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
+
+        self.logger.debug("Parsing P.01 output")
+        keys = ["1.5.0", "2.5.0", "5.5.0", "6.5.0", "7.5.0", "8.5.0"]
+
+        lines = data.split('\r\n')
+        pre_header = lines[0].split("(")
+        header = [elem[:-1] for elem in pre_header]
+        base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
+
+        lines = lines[1:]
+        pre_obis_codes = operator.itemgetter(5, 7, 9, 11, 13, 15)(header)           # Not used
+        results = {}
+        counter = 0
+        for line in lines:
+            if len(line) > 5:
+                result = []
+                values = line.split("(")
+                for value in values:
+                    result.append((keys[counter], value[:-1]))
+                counter += 1
+            results[(base_dt + datetime.timedelta(counter*15)).strftime("%s")] = result
+
+        # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
+        self.logger.debug(f"Results: {results}")
+        return results
+
+    def zabbix_metrics(self):
+        # ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
+
+        json = self.get_json()
+        self.logger.info("Meter %s - %s measurements" % (self.meter_id, len(json)))
+        results = []
+        metric_host = "Meter %s" % self.meter_id
+
+        for measurement in json:                            # measurement is a JSON element in a list returned by API
+            metric_time = get_metric_time(measurement)
+            for metric_key in Numeric_Metrics:
+                metric_value = measurement[metric_key]
+                self.logger.debug("Metric %s %s %s %s" % (metric_host, metric_key, metric_value, metric_time))
+                results.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=metric_time))
+
+            metric_value = self.find_meter_normal_voltage(measurement)
+            results.append(ZabbixMetric(metric_host, Meters.meter_voltage_item, metric_value, clock=metric_time))
+
+        self.logger.info("Meter %s - %s metrics for insertion" % (self.meter_id, len(results)))
+        return results
 
     @staticmethod
     def get_dt():
@@ -301,7 +401,13 @@ class MeterRequests:
 
 if __name__ == "__main__":
     m = MeterRequests("socket://10.124.2.120:8000", 300)
-    print(m.get_table(4))
+    table4_data = m.get_table(4)
+    p01_data = m.get_latest_p01()
+    # print(table4_data)
+    # print(p01_data)
+    print(m.parse_table4(table4_data))
+    print(m.parse_p01(p01_data))
+    # print(m.get_p200logbook())
 
     # Does TCP retransmission breaks the meter?
     # client -Push-> meter

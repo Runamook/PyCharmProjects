@@ -236,3 +236,54 @@ obis_codes = {
     "0.4.2": "Current transformer ratio",
     "0.4.3": "Voltage transformer ratio"
     }
+
+obis_codes_2 = {
+    "0.0.0": "Meter address",
+    "0.0.9": "Identification number",
+    "0.9.1": "Current time",
+    "0.9.2": "Current date",
+    "21.25": "Instantaneous value of active power phase L1",
+    "41.25": "Instantaneous value of active power phase L2",
+    "61.25": "Instantaneous value of active power phase L3",
+    "1.25": "Instantaneous value of total power",
+    "23.25": "Instantaneous value of reactive power phase L1",
+    "43.25": "Instantaneous value of reactive power phase L2",
+    "63.25": "Instantaneous value of reactive power phase L3",
+    "3.25": "Instantaneous value of reactive power phase total",
+    "29.25": "Instantaneous value of apparent power phase L1",
+    "49.25": "Instantaneous value of apparent power phase L2",
+    "69.25": "Instantaneous value of apparent power phase L3",
+    "9.25": "Instantaneous value of total apparent power",
+    "31.25": "Instantaneous value of current phase L1",
+    "51.25": "Instantaneous value of current phase L2",
+    "71.25": "Instantaneous value of current phase L3",
+    "32.25": "Instantaneous value of voltage phase L1",
+    "52.25": "Instantaneous value of voltage phase L2",
+    "72.25": "Instantaneous value of voltage phase L3",
+    "33.25": "Instantaneous value of power factor phase L1",
+    "53.25": "Instantaneous value of power factor phase L2",
+    "73.25": "Instantaneous value of power factor phase L3",
+    "13.25": "Instantaneous value of average power factor",
+    "14.25": "Instantaneous value of frequency",
+    "C.3": "State of the in/out control signals",
+    "C.4": "State of the internal control signals",
+    "C.5": "Internal operating conditions",
+    "C.7.0": "Total number of phase failures",
+    "C.7.1": "Number of phase failures phase 1",
+    "C.7.2": "Number of phase failures phase 2",
+    "C.7.3": "Number of phase failures phase 3",
+    "C.51.4": "DCF-77 last synchronization",
+    "C.52.0": "Phase information",
+    "C.86.0": "Installation check"
+}
+
+
+zabbix_items = {"1.5.0": "Positive active demand in the last completed demand period (A+) [kW]",
+                "2.5.0": "Negative active demand in the last completed demand period (A-) [kW]",
+                "5.5.0": "Reactive demand in the last completed demand period in Q1 (Q1) [kvar]",
+                "6.5.0": "Reactive demand in the last completed demand period in Q2 (Q2) [kvar]",
+                "7.5.0": "Reactive demand in the last completed demand period in Q3 (Q3) [kvar]",
+                "8.5.0": "Reactive demand in the last completed demand period in Q4 (Q4) [kvar]",
+
+                }
+
