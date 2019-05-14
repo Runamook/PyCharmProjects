@@ -254,8 +254,11 @@ class MeterRequests:
         lines = data.split('\r\n')
         pre_header = lines[0].split("(")
         header = [elem[:-1] for elem in pre_header]
-        base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
-
+        try:
+            base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
+        except ValueError:
+            self.logger.error(f"Incorrect date in header {header}, lines: {lines}")
+            raise
         lines = lines[1:]
         pre_obis_codes = operator.itemgetter(5, 7, 9, 11, 13, 15)(header)           # Not used
         results = {}
@@ -312,7 +315,9 @@ class MeterRequests:
 def get_data_15(meter_address):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4)
+    assert len(table4_data) > 0, "No data returned for Table4"
     p01_data = m.get_latest_p01()
+    assert len(table4_data) > 0, "No data returned for P.01"
     table4_res = m.parse_table4(table4_data)
     p01_res = m.parse_p01(p01_data)
     return {"table4": table4_res, "p01": p01_res}
