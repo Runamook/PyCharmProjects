@@ -5,10 +5,7 @@ from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
 from pyzabbix import ZabbixMetric, ZabbixSender
 from Act_dlms.Helpers.create_logger import create_logger
 
-# TODO: Add transforms
 
-
-# logger = create_logger("/var/log/emh_to_zabbix.log", "MainApp", loglevel="INFO")
 logger = create_logger("emh_to_zabbix.log", "MainApp", loglevel="DEBUG")
 
 
