@@ -10,9 +10,10 @@ from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
 from pyzabbix import ZabbixMetric, ZabbixSender
 import logging
 import sys
+from redis import Redis
+from rq import Queue
 
-# Almost single file version
-# Working
+# Version with redis queue
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -313,6 +314,7 @@ class MeterRequests:
 
     @staticmethod
     def get_dt():
+        # P.01 will always return the last complete 15-minutes segment
         now = datetime.datetime.utcnow()
         delta = datetime.timedelta(minutes=15)
 
@@ -343,16 +345,36 @@ class MeterRequests:
 
         return f"2{year}{month}{day}{hour}{minute}"     # 0 - normal time, 1 - summer time, 2 - UTC
 
+# Get functions, that return meter data in dict format
+
 
 def get_data_15(meter_address):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4)
     assert len(table4_data) > 0, "No data returned for Table4"
     p01_data = m.get_latest_p01()
-    assert len(table4_data) > 0, "No data returned for P.01"
+    assert len(p01_data) > 0, "No data returned for P.01"
     table4_res = m.parse_table4(table4_data)
     p01_res = m.parse_p01(p01_data)
     return {"table4": table4_res, "p01": p01_res}
+
+
+def get_p01_parsed(meter_address):
+    m = MeterRequests(f"socket://{meter_address}:8000", 300)
+    p01_data = m.get_latest_p01()
+    assert len(p01_data) > 0, "No data returned for P.01"
+    p01_res = m.parse_p01(p01_data)
+    return {"p01": p01_res}
+
+
+def get_table4_parsed(meter_address):
+    m = MeterRequests(f"socket://{meter_address}:8000", 300)
+    table4_data = m.get_table(4)
+    assert len(table4_data) > 0, "No data returned for Table4"
+    table4_res = m.parse_table4(table4_data)
+    return {"table4": table4_res}
+
+# Get functions, that return meter data in dict format, END
 
 
 def get_json():
@@ -454,6 +476,105 @@ def meta_15():
     pool.map(push_data, list_of_meters)
 
 
+def send_metrics(metrics):
+    sender = ZabbixSender("192.168.33.33")
+    logger.debug(f"{metrics}")
+    zabbix_response = sender.send(metrics)
+
+    if zabbix_response.failed > 0 and zabbix_response.processed == 0:
+        logger.error(f"Something went totally wrong, terminating\n{zabbix_response}")
+        exit(1)
+    elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
+        logger.warning(f"More failures that successes {zabbix_response}")
+    else:
+        logger.warning(f"Result {zabbix_response}")
+    return
+
+# RQ mod
+
+
+def rq_create_metrics(data, meter_data):
+    """
+    data = {
+    'table4': {'1557693253': [('21.25', '0.004'), (), (), ...)]},
+    'p01': {'1558989000': [('1.5.0', '0.017'), (), (), ...)]}
+            }
+    """
+    logger.debug(f"{data}, {meter_data}")
+    metrics = []
+    metric_host = f"Meter {meter_data['meterNumber']}"
+
+    for data_set_name in data:                                      # Parse each table/logbook
+        for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
+            for metric_tuple in data[data_set_name][metric_time]:   # Parse each key-value pair
+                metric_obis_code = metric_tuple[0]
+                metric_key = zabbix_obis_codes[metric_obis_code]
+                metric_value = transform_metrics(meter_data, metric_key, metric_tuple[1])   # Apply transform
+                logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
+                metrics.append([metric_host, metric_key, metric_value, metric_time])
+
+    return metrics
+
+
+def rq_push_p01(meter):
+    data = get_p01_parsed(meter["ip"])
+    # metrics = rq_create_metrics(data, meter)
+    metrics = create_metrics(data, meter)
+    send_metrics(metrics)
+    return
+
+
+def rq_push_table4(meter):
+    data = get_table4_parsed(meter["ip"])
+    # metrics = rq_create_metrics(data, meter)
+    metrics = create_metrics(data, meter)
+    send_metrics(metrics)
+    return
+
+
+def rq_create_jobs():
+    """
+    Receives list of meter dictionaries
+    Places jobs to queues for python RQ
+    """
+    p01_q = Queue(name="p01", connection=Redis())
+    table4_q = Queue(name="table4", connection=Redis())
+    logger.info("Connected to redis")
+    # list_of_meters = get_json()
+    list_of_meters = [{
+        "meterNumber": "05296170",
+        "manufacturer": "EMH",
+        "ip": "10.124.2.120",
+        "installationDate": "2019-02-20T09:00:00",
+        "isActive": True,
+        "voltageRatio": 200,
+        "currentRatio": 15,
+        "totalFactor": 215
+    }]
+    logger.info(f"{len(list_of_meters)} meters found")
+    for meter in list_of_meters:
+        # ttl - job ttl, won't be executed on expiry
+        # default_timeout - job shall be executed in default_timeout or marked as failed
+        # result_ttl - store successful result
+        # failure_ttl - store failed job
+
+        logger.debug(f"enqueueing rq_push_p01 for {meter['ip']}")
+        p01_q.enqueue(rq_push_p01, meter, result_ttl=3600, ttl=300, failure_ttl=600)
+        logger.debug(f"enqueueing rq_push_table4 for {meter['ip']}")
+        table4_q.enqueue(rq_push_table4, meter, result_ttl=3600, ttl=300, failure_ttl=600)
+
+# RQ mod
+
+
+def requeue():
+    p01_q = Queue(name="p01", connection=Redis())
+    table4_q = Queue(name="table4", connection=Redis())
+    for i in p01_q.failed_job_registry.get_job_ids():
+        p01_q.failed_job_registry.requeue(i)
+    for i in table4_q.failed_job_registry.get_job_ids():
+        table4_q.failed_job_registry.requeue(i)
+
+
 if __name__ == "__main__":
-    logger.setLevel("INFO")
-    meta_15()
+    logger.setLevel("DEBUG")
+    rq_create_jobs()
