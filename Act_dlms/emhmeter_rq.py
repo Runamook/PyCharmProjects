@@ -7,6 +7,7 @@ import re
 from multiprocessing.dummy import Pool
 import requests
 from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
+from Act_dlms.Helpers.list_of_meters import list_of_meters
 from pyzabbix import ZabbixMetric, ZabbixSender
 import logging
 import sys
@@ -185,6 +186,12 @@ class MeterRequests:
             m.sendcmd_and_decode_response(Meter.ACK + b'051\r\n')
             return m.sendcmd_and_decode_response("R5".encode(), f"P.01({MeterRequests.get_dt()};)".encode())
 
+    def get_p01(self, timestamp):
+        logger.debug(f"Requesting P.01 from {timestamp}")
+        with Meter(self.meter, self.timeout) as m:
+            m.sendcmd_and_decode_response(Meter.ACK + b'051\r\n')
+            return m.sendcmd_and_decode_response("R5".encode(), f"P.01({timestamp};)".encode())
+
     def get_p98logbook(self):
         logger.debug("Requesting latest P.98")
         with Meter(self.meter, self.timeout) as m:
@@ -285,8 +292,8 @@ class MeterRequests:
         keys = ["1.5.0", "2.5.0", "5.5.0", "6.5.0", "7.5.0", "8.5.0"]
 
         lines = data.split('\r\n')
-        pre_header = lines[0].split("(")
-        header = [elem[:-1] for elem in pre_header]
+        pre_header = lines[0].split("(")                                    # Strip closing parenthesis
+        header = [elem[:-1] for elem in pre_header]                         # Strip opening parenthesis
         try:
             base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
         except ValueError:
@@ -315,6 +322,7 @@ class MeterRequests:
     @staticmethod
     def get_dt():
         # P.01 will always return the last complete 15-minutes segment
+        # "21905171700"
         now = datetime.datetime.utcnow()
         delta = datetime.timedelta(minutes=15)
 
@@ -359,9 +367,10 @@ def get_data_15(meter_address):
     return {"table4": table4_res, "p01": p01_res}
 
 
-def get_p01_parsed(meter_address):
+def get_p01_parsed(meter_address, timestamp):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
-    p01_data = m.get_latest_p01()
+    # p01_data = m.get_latest_p01()
+    p01_data = m.get_p01(timestamp)
     assert len(p01_data) > 0, "No data returned for P.01"
     p01_res = m.parse_p01(p01_data)
     return {"p01": p01_res}
@@ -389,17 +398,17 @@ def get_json():
 def transform_metrics(meter_data, metric_key, metric_value):
 
     assert metric_key in transform_set, logger.error(f"Metric {metric_key} not in transform set {transform_set}")
-    voltageRatio = float(meter_data["voltageRatio"])
-    currentRatio = float(meter_data["currentRatio"])
-    totalFactor = float(meter_data["totalFactor"])
+    voltageRatio = float(meter_data["VoltageRatio"])
+    currentRatio = float(meter_data["CurrentRatio"])
+    totalFactor = float(meter_data["TotalFactor"])
 
     if transform_set[metric_key] == "None":
         return metric_value
-    elif transform_set[metric_key] == "voltageRatio":
+    elif transform_set[metric_key] == "VoltageRatio":
         return float(metric_value) * voltageRatio
-    elif transform_set[metric_key] == "currentRatio":
+    elif transform_set[metric_key] == "CurrentRatio":
         return float(metric_value) * currentRatio
-    elif transform_set[metric_key] == "totalFactor":
+    elif transform_set[metric_key] == "TotalFactor":
         return float(metric_value) * totalFactor
 
 
@@ -431,7 +440,7 @@ def create_metrics(data, meter_data):
 def push_data(meter_data):
     """
     meter_data: {
-    "meterNumber":"05296170",
+    "MeterNumber":"05296170",
     "manufacturer":"EMH",
     "ip":"10.124.2.120",
     "installationDate":"2019-02-20T09:00:00",
@@ -463,7 +472,7 @@ def meta_15():
     pool = Pool(16)
     # list_of_meters = get_json()
     list_of_meters = [{
-        "meterNumber": "05296170",
+        "MeterNumber": "05296170",
         "manufacturer": "EMH",
         "ip": "10.124.2.120",
         "installationDate": "2019-02-20T09:00:00",
@@ -516,8 +525,8 @@ def rq_create_metrics(data, meter_data):
     return metrics
 
 
-def rq_push_p01(meter):
-    data = get_p01_parsed(meter["ip"])
+def rq_push_p01(meter, timestamp):
+    data = get_p01_parsed(meter["ip"], timestamp)
     # metrics = rq_create_metrics(data, meter)
     metrics = create_metrics(data, meter)
     send_metrics(metrics)
@@ -532,6 +541,25 @@ def rq_push_table4(meter):
     return
 
 
+def get_job_meta(queue):
+
+    running_jobs = {}
+    for job_id in queue.job_ids:                          # job_id - '52ad7ebf-f8f1-4ac2-9cc8-c1a165b6675b'
+        meta = queue.fetch_job(job_id).meta
+        meta['job_id'] = job_id                           # Add job_id key to meta dictionary
+        logger.debug(f"found meta: {meta}")
+        running_jobs[meta["MeterNumber"]] = meta          # running_jobs = {meterNumber1 : {meta}, meterNumber2: {} ...}
+
+    failed_jobs = {}
+    for job_id in queue.failed_job_registry.get_job_ids():
+        meta = queue.fetch_job(job_id).meta
+        meta["job_id"] = job_id
+        logger.debug(f"found meta: {meta}")
+        failed_jobs[meta["MeterNumber"]] = meta
+
+    return running_jobs, failed_jobs
+
+
 def rq_create_jobs():
     """
     Receives list of meter dictionaries
@@ -540,28 +568,50 @@ def rq_create_jobs():
     p01_q = Queue(name="p01", connection=Redis())
     table4_q = Queue(name="table4", connection=Redis())
     logger.info("Connected to redis")
+
     # list_of_meters = get_json()
-    list_of_meters = [{
-        "meterNumber": "05296170",
-        "manufacturer": "EMH",
-        "ip": "10.124.2.120",
-        "installationDate": "2019-02-20T09:00:00",
-        "isActive": True,
-        "voltageRatio": 200,
-        "currentRatio": 15,
-        "totalFactor": 215
-    }]
-    logger.info(f"{len(list_of_meters)} meters found")
+
+    logger.info(f"{len(list_of_meters)} meters to be processed")
+    p01_running_jobs, p01_failed_jobs = get_job_meta(p01_q)
     for meter in list_of_meters:
         # ttl - job ttl, won't be executed on expiry
         # default_timeout - job shall be executed in default_timeout or marked as failed
         # result_ttl - store successful result
         # failure_ttl - store failed job
 
-        logger.debug(f"enqueueing rq_push_p01 for {meter['ip']}")
-        p01_q.enqueue(rq_push_p01, meter, result_ttl=3600, ttl=300, failure_ttl=600)
-        logger.debug(f"enqueueing rq_push_table4 for {meter['ip']}")
-        table4_q.enqueue(rq_push_table4, meter, result_ttl=3600, ttl=300, failure_ttl=600)
+        # Before putting a job into a queue check if there is a failed
+        # or pending job for that meter already in queue
+        # Find a job by meterId - only one job for a meter id can exist in a queue at a time
+        timestamp = MeterRequests.get_dt()                                              # This is used for P01 query
+        current_timestamp = datetime.datetime.strptime(timestamp[1:], '%y%m%d%H%M')     # This is used for comparing
+
+        new_job = {"MeterNumber": meter["MeterNumber"], "timestamp": timestamp}
+        if new_job["MeterNumber"] in p01_failed_jobs.keys():
+            # If job is found in "failed" queue
+            existing_job = p01_failed_jobs[meter["MeterNumber"]]
+            job_start_time = existing_job["timestamp"]
+            existing_timestamp = datetime.datetime.strptime(job_start_time[1:], '%y%m%d%H%M')
+            # If the job was started less than 24 hours ago - requeue
+            delta = (current_timestamp - existing_timestamp).total_seconds
+            if delta < 86400:                                                             # Compare timestamps
+                logger.debug(f"Requeueing failed P.01 job {existing_job['MeterNumber']}, start time: {job_start_time[1:]} UTC")
+                p01_q.failed_job_registry.requeue(existing_job["job_id"])
+            elif delta > 86400:
+                logger.debug(f"Removing failed P.01 job {existing_job['MeterNumber']} after 24h, start time: {job_start_time[1:]} UTC")
+                p01_q.failed_job_registry.remove(p01_q.fetch_job(existing_job["job_id"]))
+        elif new_job["MeterNumber"] in p01_running_jobs.keys():
+            # If job is found in "running/waiting" queue
+            existing_job = p01_running_jobs[meter["MeterNumber"]]
+            job_start_time = existing_job["timestamp"]
+
+            logger.debug(f"Pending P.01 job {existing_job['MeterNumber']}, start time: {job_start_time[1:]} UTC")
+            pass
+        else:
+            # New job, not found anywhere
+            logger.debug(f"New P.01 job {new_job['MeterNumber']}")
+            p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
+        logger.debug(f"enqueueing rq_push_table4 for {meter['IP']}")
+        table4_q.enqueue(rq_push_table4, meter, result_ttl=10, ttl=300, failure_ttl=600)
 
 # RQ mod
 
