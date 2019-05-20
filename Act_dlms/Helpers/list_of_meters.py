@@ -9,7 +9,7 @@ list_of_meters = [{
         "TotalFactor": 210
     },
     {
-        "MeterNumber": "05939068",
+        "MeterNumber": "05939061",
         "Manufacturer": "EMH",
         "IP": "10.124.1.41",
         "InstallationDate": "2017-06-27T08:00:00",
@@ -29,7 +29,7 @@ list_of_meters = [{
         "TotalFactor": 81
     },
     {
-        "MeterNumber": "05896204",
+        "MeterNumber": "05896203",
         "Manufacturer": "EMH",
         "IP": "10.124.2.15",
         "InstallationDate": "2019-01-22T11:00:00",

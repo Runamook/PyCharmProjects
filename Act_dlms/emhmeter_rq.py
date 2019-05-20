@@ -15,6 +15,7 @@ from redis import Redis
 from rq import Queue
 
 # Version with redis queue
+# TODO: Send real meter id in serial request (Sending b'/405296170!\r\n')
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -592,7 +593,7 @@ def rq_create_jobs():
             job_start_time = existing_job["timestamp"]
             existing_timestamp = datetime.datetime.strptime(job_start_time[1:], '%y%m%d%H%M')
             # If the job was started less than 24 hours ago - requeue
-            delta = (current_timestamp - existing_timestamp).total_seconds
+            delta = (current_timestamp - existing_timestamp).total_seconds()
             if delta < 86400:                                                             # Compare timestamps
                 logger.debug(f"Requeueing failed P.01 job {existing_job['MeterNumber']}, start time: {job_start_time[1:]} UTC")
                 p01_q.failed_job_registry.requeue(existing_job["job_id"])
@@ -610,7 +611,7 @@ def rq_create_jobs():
             # New job, not found anywhere
             logger.debug(f"New P.01 job {new_job['MeterNumber']}")
             p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
-        logger.debug(f"enqueueing rq_push_table4 for {meter['IP']}")
+        logger.debug(f"enqueueing rq_push_table4 for {meter['ip']}")
         table4_q.enqueue(rq_push_table4, meter, result_ttl=10, ttl=300, failure_ttl=600)
 
 # RQ mod
