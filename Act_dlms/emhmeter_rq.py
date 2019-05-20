@@ -626,5 +626,10 @@ def requeue():
 
 
 if __name__ == "__main__":
+    # To run create script.py with:
+    # from emhmeter_rq import rq_create_jobs, logger
+    #
+    # logger.setLevel("DEBUG")
+    # rq_create_jobs()
     logger.setLevel("DEBUG")
     rq_create_jobs()
