@@ -498,8 +498,8 @@ def send_metrics(metrics):
     zabbix_response = sender.send(metrics)
 
     if zabbix_response.failed > 0 and zabbix_response.processed == 0:
-        logger.error(f"Something went totally wrong, terminating\n{zabbix_response}")
-        exit(1)
+        logger.error(f"Something went totally wrong, {zabbix_response}")
+        # exit(1)
     elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
         logger.warning(f"More failures that successes {zabbix_response}")
     else:
