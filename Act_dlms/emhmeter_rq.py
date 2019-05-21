@@ -6,8 +6,14 @@ import datetime
 import re
 from multiprocessing.dummy import Pool
 import requests
-from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
-from Act_dlms.Helpers.list_of_meters import list_of_meters
+try:
+    from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
+except ImportError:
+    from Helpers.obis_codes import zabbix_obis_codes, transform_set
+try:
+    from Act_dlms.Helpers.list_of_meters import list_of_meters
+except ImportError:
+    from Helpers.list_of_meters import list_of_meters
 from pyzabbix import ZabbixMetric, ZabbixSender
 import logging
 import sys
@@ -15,8 +21,7 @@ from redis import Redis
 from rq import Queue
 
 # Version with redis queue
-# TODO: Send real meter id in serial request (Sending b'/405296170!\r\n')
-
+# TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
     if loglevel == "ERROR":
@@ -62,12 +67,6 @@ class Meter:
 
     CTLBYTES = SOH + STX + ETX
     LineEnd = [ETX, LF, EOT]
-
-    tables = {"1": b"/105296170!\r\n",       # 05296170 - meter address at 0.0.0
-              "2": b"/205296170!\r\n",
-              "3": b"/305296170!\r\n",
-              "4": b"/405296170!\r\n"
-    }
 
     def __init__(self, port, timeout, get_id=True):
         self.port = port
@@ -232,11 +231,18 @@ class MeterRequests:
             return m.sendcmd_and_decode_response("R5".encode(), f"F.F()".encode())
 
     # Tables
-    def get_table(self, table_no):
-        assert str(table_no) in Meter.tables.keys(), f"No such table, choose one of {[a for a in Meter.tables.keys()]}"
-        logger.debug(f"Requesting table {table_no}")
+    def get_table(self, table_no, meter_number):
+        tables = {"1": b"/105296170!\r\n",  # 05296170 - meter address at 0.0.0
+                  "2": b"/205296170!\r\n",
+                  "3": b"/305296170!\r\n",
+                  "4": b"/405296170!\r\n"
+                  }
+        assert str(table_no) in tables.keys(), f"No such table, choose one of {[a for a in tables.keys()]}"
+        # Substitute meter number
+        query = tables[str(table_no)][:2] + meter_number.encode() + tables[str(table_no)][10:]
+        logger.debug(f"Requesting table {table_no}, {query}")
         with Meter(self.meter, self.timeout, get_id=False) as m:        # Using shortcut, id not needed
-            return m.sendcmd_and_decode_response(Meter.tables[str(table_no)])
+            return m.sendcmd_and_decode_response(query)
 
     def parse_table4(self, data):
         # /EMH4\@01LZQJL0014F
@@ -377,9 +383,9 @@ def get_p01_parsed(meter_address, timestamp):
     return {"p01": p01_res}
 
 
-def get_table4_parsed(meter_address):
+def get_table4_parsed(meter_address, meter_number):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
-    table4_data = m.get_table(4)
+    table4_data = m.get_table(4, meter_number)
     assert len(table4_data) > 0, "No data returned for Table4"
     table4_res = m.parse_table4(table4_data)
     return {"table4": table4_res}
@@ -424,7 +430,7 @@ def create_metrics(data, meter_data):
     """
     logger.debug(f"{data}, {meter_data}")
     zabbix_metrics = []
-    metric_host = f"Meter {meter_data['meterNumber']}"
+    metric_host = f"Meter {meter_data['MeterNumber']}"
 
     for data_set_name in data:                                      # Parse each table/logbook
         for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
@@ -454,7 +460,7 @@ def push_data(meter_data):
     data = get_data_15(meter_data["ip"])
     metrics = create_metrics(data, meter_data)
     # sender = ZabbixSender(zabbix_server_ip)
-    sender = ZabbixSender("192.168.33.33")
+    sender = ZabbixSender("127.0.0.1")
     logger.debug(f"{metrics}")
     zabbix_response = sender.send(metrics)
 
@@ -487,7 +493,7 @@ def meta_15():
 
 
 def send_metrics(metrics):
-    sender = ZabbixSender("192.168.33.33")
+    sender = ZabbixSender("127.0.0.1")
     logger.debug(f"{metrics}")
     zabbix_response = sender.send(metrics)
 
@@ -512,7 +518,7 @@ def rq_create_metrics(data, meter_data):
     """
     logger.debug(f"{data}, {meter_data}")
     metrics = []
-    metric_host = f"Meter {meter_data['meterNumber']}"
+    metric_host = f"Meter {meter_data['MeterNumber']}"
 
     for data_set_name in data:                                      # Parse each table/logbook
         for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
@@ -535,7 +541,7 @@ def rq_push_p01(meter, timestamp):
 
 
 def rq_push_table4(meter):
-    data = get_table4_parsed(meter["ip"])
+    data = get_table4_parsed(meter["ip"], meter["MeterNumber"])
     # metrics = rq_create_metrics(data, meter)
     metrics = create_metrics(data, meter)
     send_metrics(metrics)
@@ -549,7 +555,7 @@ def get_job_meta(queue):
         meta = queue.fetch_job(job_id).meta
         meta['job_id'] = job_id                           # Add job_id key to meta dictionary
         logger.debug(f"found meta: {meta}")
-        running_jobs[meta["MeterNumber"]] = meta          # running_jobs = {meterNumber1 : {meta}, meterNumber2: {} ...}
+        running_jobs[meta["MeterNumber"]] = meta          # running_jobs = {MeterNumber1 : {meta}, MeterNumber2: {} ...}
 
     failed_jobs = {}
     for job_id in queue.failed_job_registry.get_job_ids():
@@ -632,5 +638,7 @@ if __name__ == "__main__":
     #
     # logger.setLevel("DEBUG")
     # rq_create_jobs()
+
+    # (venv) [root@vsrvenomos00123 app]# rq worker p01 table4
     logger.setLevel("DEBUG")
     rq_create_jobs()

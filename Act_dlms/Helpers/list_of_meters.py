@@ -1,7 +1,7 @@
 list_of_meters = [{
         "MeterNumber": "05939068",
         "Manufacturer": "EMH",
-        "IP": "10.124.1.12",
+        "ip": "10.124.1.12",
         "InstallationDate": "2017-06-27T08:00:00",
         "IsActive": True,
         "VoltageRatio": 200,
@@ -11,7 +11,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05939061",
         "Manufacturer": "EMH",
-        "IP": "10.124.1.41",
+        "ip": "10.124.1.41",
         "InstallationDate": "2017-06-27T08:00:00",
         "IsActive": True,
         "VoltageRatio": 200,
@@ -21,7 +21,7 @@ list_of_meters = [{
     {
         "MeterNumber": "03429049",
         "Manufacturer": "Elster",
-        "IP": "10.124.1.128",
+        "ip": "10.124.1.128",
         "InstallationDate": "2015-05-18T15:30:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -31,7 +31,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05896203",
         "Manufacturer": "EMH",
-        "IP": "10.124.2.15",
+        "ip": "10.124.2.15",
         "InstallationDate": "2019-01-22T11:00:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -41,7 +41,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05896204",
         "Manufacturer": "EMH",
-        "IP": "10.124.2.103",
+        "ip": "10.124.2.103",
         "InstallationDate": "2019-01-22T11:00:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -51,7 +51,7 @@ list_of_meters = [{
     {
         "MeterNumber": "06205102",
         "Manufacturer": "",
-        "IP": "10.124.2.111",
+        "ip": "10.124.2.111",
         "InstallationDate": "2018-10-10T10:00:00",
         "IsActive": True,
         "VoltageRatio": 200,
@@ -61,7 +61,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05222613",
         "Manufacturer": "EMH",
-        "IP": "10.124.2.114",
+        "ip": "10.124.2.114",
         "InstallationDate": "2018-10-10T10:00:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -71,7 +71,7 @@ list_of_meters = [{
     {
         "MeterNumber": "07279397",
         "Manufacturer": "",
-        "IP": "10.124.2.116",
+        "ip": "10.124.2.116",
         "InstallationDate": "2018-10-10T10:00:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -81,7 +81,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05939038",
         "Manufacturer": "EMH",
-        "IP": "10.124.2.117",
+        "ip": "10.124.2.117",
         "InstallationDate": "2018-10-10T10:00:00",
         "IsActive": True,
         "VoltageRatio": 1,
@@ -91,7 +91,7 @@ list_of_meters = [{
     {
         "MeterNumber": "05296170",
         "Manufacturer": "EMH",
-        "IP": "10.124.2.120",
+        "ip": "10.124.2.120",
         "InstallationDate": "2019-02-20T09:00:00",
         "IsActive": True,
         "VoltageRatio": 200,
