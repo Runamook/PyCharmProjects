@@ -23,6 +23,7 @@ from rq import Queue
 # Version with redis queue
 # TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
 
+
 def create_logger(log_filename, instance_name, loglevel="INFO"):
     if loglevel == "ERROR":
         log_level = logging.ERROR
@@ -362,7 +363,7 @@ class MeterRequests:
 
 # Get functions, that return meter data in dict format
 
-
+'''
 def get_data_15(meter_address):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4)
@@ -372,6 +373,7 @@ def get_data_15(meter_address):
     table4_res = m.parse_table4(table4_data)
     p01_res = m.parse_p01(p01_data)
     return {"table4": table4_res, "p01": p01_res}
+'''
 
 
 def get_p01_parsed(meter_address, timestamp):
@@ -410,13 +412,20 @@ def transform_metrics(meter_data, metric_key, metric_value):
     totalFactor = float(meter_data["TotalFactor"])
 
     if transform_set[metric_key] == "None":
+        # logger.debug(f"Not transforming {metric_value}")
         return metric_value
-    elif transform_set[metric_key] == "VoltageRatio":
+    elif transform_set[metric_key] == "voltageRatio":
+        # logger.debug(f"Transforming {metric_value} as voltage")
         return float(metric_value) * voltageRatio
-    elif transform_set[metric_key] == "CurrentRatio":
+    elif transform_set[metric_key] == "currentRatio":
+        # logger.debug(f"Transforming {metric_value} as current")
         return float(metric_value) * currentRatio
-    elif transform_set[metric_key] == "TotalFactor":
+    elif transform_set[metric_key] == "totalFactor":
+        # logger.debug(f"Transforming {metric_value} as total")
         return float(metric_value) * totalFactor
+    else:
+        logger.error(f"No valid transform factor for {metric_key} in {transform_set}")
+        return None
 
 
 def create_metrics(data, meter_data):
@@ -435,8 +444,8 @@ def create_metrics(data, meter_data):
     for data_set_name in data:                                      # Parse each table/logbook
         for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
             for metric_tuple in data[data_set_name][metric_time]:   # Parse each key-value pair
-                metric_obis_code = metric_tuple[0]
-                metric_key = zabbix_obis_codes[metric_obis_code]
+                # logger.debug(f"Host: {metric_host}, Tuple: {metric_tuple}, Time: {metric_time}")
+                metric_key = zabbix_obis_codes[metric_tuple[0]]
                 metric_value = transform_metrics(meter_data, metric_key, metric_tuple[1])   # Apply transform
                 logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
                 zabbix_metrics.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=int(metric_time)))
@@ -444,6 +453,7 @@ def create_metrics(data, meter_data):
     return zabbix_metrics
 
 
+'''
 def push_data(meter_data):
     """
     meter_data: {
@@ -465,8 +475,8 @@ def push_data(meter_data):
     zabbix_response = sender.send(metrics)
 
     if zabbix_response.failed > 0 and zabbix_response.processed == 0:
-        logger.error(f"Something went totally wrong, terminating\n{zabbix_response}")
-        exit(1)
+        logger.error(f"Something went totally wrong {zabbix_response}")
+        # exit(1)
     elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
         logger.warning(f"More failures that successes {zabbix_response}")
     else:
@@ -490,6 +500,7 @@ def meta_15():
     }]
     logger.debug(f"Found {len(list_of_meters)} meters")
     pool.map(push_data, list_of_meters)
+'''
 
 
 def send_metrics(metrics):
@@ -498,17 +509,17 @@ def send_metrics(metrics):
     zabbix_response = sender.send(metrics)
 
     if zabbix_response.failed > 0 and zabbix_response.processed == 0:
-        logger.error(f"Something went totally wrong, {zabbix_response}")
+        logger.error(f"Something went wrong, {zabbix_response}")
         # exit(1)
     elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
         logger.warning(f"More failures that successes {zabbix_response}")
     else:
-        logger.warning(f"Result {zabbix_response}")
+        logger.info(f"Result {zabbix_response}")
     return
 
 # RQ mod
 
-
+'''
 def rq_create_metrics(data, meter_data):
     """
     data = {
@@ -530,12 +541,14 @@ def rq_create_metrics(data, meter_data):
                 metrics.append([metric_host, metric_key, metric_value, metric_time])
 
     return metrics
+'''
 
 
 def rq_push_p01(meter, timestamp):
     data = get_p01_parsed(meter["ip"], timestamp)
-    # metrics = rq_create_metrics(data, meter)
+    logger.debug(f"Creating metrics for Zabbix")
     metrics = create_metrics(data, meter)
+    logger.debug(f"Sending metrics to Zabbix")
     send_metrics(metrics)
     return
 
@@ -622,7 +635,7 @@ def rq_create_jobs():
 
 # RQ mod
 
-
+'''
 def requeue():
     p01_q = Queue(name="p01", connection=Redis())
     table4_q = Queue(name="table4", connection=Redis())
@@ -630,7 +643,7 @@ def requeue():
         p01_q.failed_job_registry.requeue(i)
     for i in table4_q.failed_job_registry.get_job_ids():
         table4_q.failed_job_registry.requeue(i)
-
+'''
 
 if __name__ == "__main__":
     # To run create script.py with:

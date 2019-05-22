@@ -1,0 +1,18 @@
+from Act_dlms.emhmeter_rq import create_metrics as cr
+md = {'MeterNumber': '05296170', 'Manufacturer': 'EMH', 'ip': '10.124.2.120', 'InstallationDate': '2019-02-20T09:00:00', 'IsActive': True, 'VoltageRatio': 200, 'CurrentRatio': 15, 'TotalFactor': 215}
+d = {'p01': {'1559826000': [('1.5.0', '0.111'), ('2.5.0', '0.000'), ('5.5.0', '0.040'), ('6.5.0', '0.000'), ('7.5.0', '0.000'), ('8.5.0', '0.000')]}}
+cr(d, md)
+2019-05-22 16:21:35,639 Meter        DEBUG    {'p01': {'1559826000': [('1.5.0', '0.111'), ('2.5.0', '0.000'), ('5.5.0', '0.040'), ('6.5.0', '0.000'), ('7.5.0', '0.000'), ('8.5.0', '0.000')]}}, {'MeterNumber': '05296170', 'Manufacturer': 'EMH', 'ip': '10.124.2.120', 'InstallationDate': '2019-02-20T09:00:00', 'IsActive': True, 'VoltageRatio': 200, 'CurrentRatio': 15, 'TotalFactor': 215}
+2019-05-22 16:21:35,640 Meter        DEBUG    Host: Meter 05296170, Tuple: ('1.5.0', '0.111'), Time: 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Meter 05296170, positiveActiveDemand, 23.865000000000002, 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Host: Meter 05296170, Tuple: ('2.5.0', '0.000'), Time: 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Meter 05296170, negativeActiveDemand, 0.0, 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Host: Meter 05296170, Tuple: ('5.5.0', '0.040'), Time: 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Meter 05296170, reactiveDemandQ1, 8.6, 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Host: Meter 05296170, Tuple: ('6.5.0', '0.000'), Time: 1559826000
+2019-05-22 16:21:35,640 Meter        DEBUG    Meter 05296170, reactiveDemandQ2, 0.0, 1559826000
+2019-05-22 16:21:35,641 Meter        DEBUG    Host: Meter 05296170, Tuple: ('7.5.0', '0.000'), Time: 1559826000
+2019-05-22 16:21:35,641 Meter        DEBUG    Meter 05296170, reactiveDemandQ3, 0.0, 1559826000
+2019-05-22 16:21:35,641 Meter        DEBUG    Host: Meter 05296170, Tuple: ('8.5.0', '0.000'), Time: 1559826000
+2019-05-22 16:21:35,641 Meter        DEBUG    Meter 05296170, reactiveDemandQ4, 0.0, 1559826000
+[{"host": "Meter 05296170", "key": "positiveActiveDemand", "value": "23.865000000000002", "clock": 1559826000}, {"host": "Meter 05296170", "key": "negativeActiveDemand", "value": "0.0", "clock": 1559826000}, {"host": "Meter 05296170", "key": "reactiveDemandQ1", "value": "8.6", "clock": 1559826000}, {"host": "Meter 05296170", "key": "reactiveDemandQ2", "value": "0.0", "clock": 1559826000}, {"host": "Meter 05296170", "key": "reactiveDemandQ3", "value": "0.0", "clock": 1559826000}, {"host": "Meter 05296170", "key": "reactiveDemandQ4", "value": "0.0", "clock": 1559826000}]
