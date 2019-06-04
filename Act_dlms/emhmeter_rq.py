@@ -18,9 +18,11 @@ import logging
 import sys
 from redis import Redis
 from rq import Queue
+from serial.serialutil import SerialException
 
 # Version with redis queue
 # TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
+# TODO: get_p01_parsed should check if meter address has port or not
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -52,7 +54,7 @@ def create_logger(log_filename, instance_name, loglevel="INFO"):
     return logger
 
 
-logger = create_logger("/var/log/emh_to_zabbix.log", "Meter", loglevel="DEBUG")
+logger = create_logger("emh_to_zabbix.log", "Meter", loglevel="DEBUG")
 
 
 class Meter:
@@ -76,11 +78,15 @@ class Meter:
 
     def __enter__(self):
         logger.debug(f"Opening connection to {self.port}")
-        self.ser = serial.serial_for_url(self.port,
+        try:
+            self.ser = serial.serial_for_url(self.port,
                                          baudrate=300,
                                          bytesize=serial.SEVENBITS,
                                          parity=serial.PARITY_EVEN,
                                          timeout=self.timeout)
+        except SerialException:
+            logger.error(f"Timeout when connecting to {self.port}")
+            raise
         time.sleep(1)
         if self.get_id:
             self.id = Meter.remove_parity_bits(Meter.drop_ctl_bytes(self.sendcmd_3(b"/?!\r\n", etx=Meter.LF))).decode("ascii")
@@ -240,7 +246,7 @@ class MeterRequests:
         assert str(table_no) in tables.keys(), f"No such table, choose one of {[a for a in tables.keys()]}"
         # Substitute meter number
         query = tables[str(table_no)][:2] + meter_number.encode() + tables[str(table_no)][10:]
-        logger.debug(f"Requesting table {table_no}, {query}")
+        logger.debug(f"{meter_number} :: Requesting table {table_no}, {query}")
         with Meter(self.meter, self.timeout, get_id=False) as m:        # Using shortcut, id not needed
             return m.sendcmd_and_decode_response(query)
 
@@ -362,24 +368,13 @@ class MeterRequests:
 
 # Get functions, that return meter data in dict format
 
-'''
-def get_data_15(meter_address):
-    m = MeterRequests(f"socket://{meter_address}:8000", 300)
-    table4_data = m.get_table(4)
-    assert len(table4_data) > 0, "No data returned for Table4"
-    p01_data = m.get_latest_p01()
-    assert len(p01_data) > 0, "No data returned for P.01"
-    table4_res = m.parse_table4(table4_data)
-    p01_res = m.parse_p01(p01_data)
-    return {"table4": table4_res, "p01": p01_res}
-'''
-
 
 def get_p01_parsed(meter_address, timestamp):
+    # Meter address can be with or without port, be aware!
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     # p01_data = m.get_latest_p01()
     p01_data = m.get_p01(timestamp)
-    assert len(p01_data) > 0, "No data returned for P.01"
+    assert len(p01_data) > 0, logger.error(f"No data returned for P.01 at {meter_address}")
     p01_res = m.parse_p01(p01_data)
     return {"p01": p01_res}
 
@@ -387,7 +382,7 @@ def get_p01_parsed(meter_address, timestamp):
 def get_table4_parsed(meter_address, meter_number):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4, meter_number)
-    assert len(table4_data) > 0, "No data returned for Table4"
+    assert len(table4_data) > 0, logger.error(f"No data returned for Table4 {meter_number}")
     table4_res = m.parse_table4(table4_data)
     return {"table4": table4_res}
 
@@ -406,9 +401,9 @@ def get_json():
 def transform_metrics(meter_data, metric_key, metric_value):
 
     assert metric_key in transform_set, logger.error(f"Metric {metric_key} not in transform set {transform_set}")
-    voltageRatio = float(meter_data["VoltageRatio"])
-    currentRatio = float(meter_data["CurrentRatio"])
-    totalFactor = float(meter_data["TotalFactor"])
+    voltageRatio = float(meter_data["voltageRatio"])
+    currentRatio = float(meter_data["currentRatio"])
+    totalFactor = float(meter_data["totalFactor"])
 
     if transform_set[metric_key] == "None":
         # logger.debug(f"Not transforming {metric_value}")
@@ -438,7 +433,7 @@ def create_metrics(data, meter_data):
     """
     logger.debug(f"{data}, {meter_data}")
     zabbix_metrics = []
-    metric_host = f"Meter {meter_data['MeterNumber']}"
+    metric_host = f"Meter {meter_data['meterNumber']}"
 
     for data_set_name in data:                                      # Parse each table/logbook
         for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
@@ -452,111 +447,38 @@ def create_metrics(data, meter_data):
     return zabbix_metrics
 
 
-'''
-def push_data(meter_data):
-    """
-    meter_data: {
-    "MeterNumber":"05296170",
-    "manufacturer":"EMH",
-    "ip":"10.124.2.120",
-    "installationDate":"2019-02-20T09:00:00",
-    "isActive":true,
-    "voltageRatio":200,
-    "currentRatio":15,
-    "totalFactor":215
-    }
-    """
-    data = get_data_15(meter_data["ip"])
-    metrics = create_metrics(data, meter_data)
-    # sender = ZabbixSender(zabbix_server_ip)
-    sender = ZabbixSender("127.0.0.1")
-    logger.debug(f"{metrics}")
+def send_metrics(metrics, meter_number):
+    sender = ZabbixSender("192.168.33.33")
+    logger.debug(f"{meter_number} :: {metrics}")
     zabbix_response = sender.send(metrics)
 
     if zabbix_response.failed > 0 and zabbix_response.processed == 0:
-        logger.error(f"Something went totally wrong {zabbix_response}")
+        logger.error(f"{meter_number} :: Something went wrong, {zabbix_response}")
         # exit(1)
     elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
-        logger.warning(f"More failures that successes {zabbix_response}")
+        logger.warning(f"{meter_number} :: More failures that successes {zabbix_response}")
     else:
-        logger.warning(f"Result {zabbix_response}")
-    return
-
-
-def meta_15():
-    logger.info(f"Starting app")
-    pool = Pool(16)
-    # list_of_meters = get_json()
-    list_of_meters = [{
-        "MeterNumber": "05296170",
-        "manufacturer": "EMH",
-        "ip": "10.124.2.120",
-        "installationDate": "2019-02-20T09:00:00",
-        "isActive": True,
-        "voltageRatio": 200,
-        "currentRatio": 15,
-        "totalFactor": 215
-    }]
-    logger.debug(f"Found {len(list_of_meters)} meters")
-    pool.map(push_data, list_of_meters)
-'''
-
-
-def send_metrics(metrics):
-    sender = ZabbixSender("127.0.0.1")
-    logger.debug(f"{metrics}")
-    zabbix_response = sender.send(metrics)
-
-    if zabbix_response.failed > 0 and zabbix_response.processed == 0:
-        logger.error(f"Something went wrong, {zabbix_response}")
-        # exit(1)
-    elif zabbix_response.failed > 0 and zabbix_response.failed > zabbix_response.processed:
-        logger.warning(f"More failures that successes {zabbix_response}")
-    else:
-        logger.info(f"Result {zabbix_response}")
+        logger.info(f"{meter_number} :: Result {zabbix_response}")
     return
 
 # RQ mod
 
-'''
-def rq_create_metrics(data, meter_data):
-    """
-    data = {
-    'table4': {'1557693253': [('21.25', '0.004'), (), (), ...)]},
-    'p01': {'1558989000': [('1.5.0', '0.017'), (), (), ...)]}
-            }
-    """
-    logger.debug(f"{data}, {meter_data}")
-    metrics = []
-    metric_host = f"Meter {meter_data['MeterNumber']}"
-
-    for data_set_name in data:                                      # Parse each table/logbook
-        for metric_time in data[data_set_name]:                     # Parse each timestamp dataset
-            for metric_tuple in data[data_set_name][metric_time]:   # Parse each key-value pair
-                metric_obis_code = metric_tuple[0]
-                metric_key = zabbix_obis_codes[metric_obis_code]
-                metric_value = transform_metrics(meter_data, metric_key, metric_tuple[1])   # Apply transform
-                logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
-                metrics.append([metric_host, metric_key, metric_value, metric_time])
-
-    return metrics
-'''
-
 
 def rq_push_p01(meter, timestamp):
+    meter_number = meter['meterNumber']
     data = get_p01_parsed(meter["ip"], timestamp)
-    logger.debug(f"Creating metrics for Zabbix")
+    logger.debug(f"{meter_number} :: Creating metrics for Zabbix")
     metrics = create_metrics(data, meter)
-    logger.debug(f"Sending metrics to Zabbix")
-    send_metrics(metrics)
+    logger.debug(f"{meter_number} :: Sending metrics to Zabbix")
+    send_metrics(metrics, meter_number)
     return
 
 
 def rq_push_table4(meter):
-    data = get_table4_parsed(meter["ip"], meter["MeterNumber"])
-    # metrics = rq_create_metrics(data, meter)
+    meter_number = meter['meterNumber']
+    data = get_table4_parsed(meter["ip"], meter_number)
     metrics = create_metrics(data, meter)
-    send_metrics(metrics)
+    send_metrics(metrics, meter_number)
     return
 
 
@@ -565,22 +487,22 @@ def get_job_meta(queue):
     running_jobs = {}
     for job_id in queue.job_ids:                          # job_id - '52ad7ebf-f8f1-4ac2-9cc8-c1a165b6675b'
         if queue.fetch_job(job_id) is None:
-            logger.debug(f"Skipping None type job {job_id}")
+            logger.debug(f"Jobs :: Skipping None type job {job_id}")
             pass
         meta = queue.fetch_job(job_id).meta
         meta['job_id'] = job_id                           # Add job_id key to meta dictionary
-        logger.debug(f"found meta: {meta}")
-        running_jobs[meta["MeterNumber"]] = meta          # running_jobs = {MeterNumber1 : {meta}, MeterNumber2: {} ...}
+        logger.debug(f"Jobs :: found meta: {meta}")
+        running_jobs[meta["meterNumber"]] = meta          # running_jobs = {meterNumber : {meta}, meterNumber: {} ...}
 
     failed_jobs = {}
     for job_id in queue.failed_job_registry.get_job_ids():
         if queue.fetch_job(job_id) is None:
-            logger.debug(f"Skipping None type job {job_id}")
+            logger.debug(f"Jobs :: Skipping None type job {job_id}")
             pass
         meta = queue.fetch_job(job_id).meta
         meta["job_id"] = job_id
-        logger.debug(f"found meta: {meta}")
-        failed_jobs[meta["MeterNumber"]] = meta
+        logger.debug(f"Jobs :: found meta: {meta}")
+        failed_jobs[meta["meterNumber"]] = meta
 
     return running_jobs, failed_jobs
 
@@ -609,52 +531,44 @@ def rq_create_jobs():
         # Find a job by meterId - only one job for a meter id can exist in a queue at a time
         timestamp = MeterRequests.get_dt()                                              # This is used for P01 query
         current_timestamp = datetime.datetime.strptime(timestamp[1:], '%y%m%d%H%M')     # This is used for comparing
+        meter_number = meter["meterNumber"]
 
-        new_job = {"MeterNumber": meter["MeterNumber"], "timestamp": timestamp}
-        if new_job["MeterNumber"] in p01_failed_jobs.keys():
+        new_job = {"meterNumber": meter_number, "timestamp": timestamp}
+        if new_job["meterNumber"] in p01_failed_jobs.keys():
             # If job is found in "failed" queue
-            existing_job = p01_failed_jobs[meter["MeterNumber"]]
+            existing_job = p01_failed_jobs[meter_number]
             job_start_time = existing_job["timestamp"]
             existing_timestamp = datetime.datetime.strptime(job_start_time[1:], '%y%m%d%H%M')
             # If the job was started less than 24 hours ago - requeue
             delta = (current_timestamp - existing_timestamp).total_seconds()
             if delta < 86400:                                                             # Compare timestamps
-                logger.debug(f"Requeueing failed P.01 job {existing_job['MeterNumber']}, start time: {job_start_time[1:]} UTC")
+                logger.debug(f"Meter {meter_number} :: Requeueing failed P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
                 p01_q.failed_job_registry.requeue(existing_job["job_id"])
             elif delta > 86400:
-                logger.debug(f"Removing failed P.01 job {existing_job['MeterNumber']} after 24h, start time: {job_start_time[1:]} UTC")
+                logger.debug(f"Meter {meter_number} :: Removing failed P.01 job {existing_job['meterNumber']} after 24h, start time: {job_start_time[1:]} UTC")
                 p01_q.failed_job_registry.remove(p01_q.fetch_job(existing_job["job_id"]))
-        elif new_job["MeterNumber"] in p01_running_jobs.keys():
+        elif new_job["meterNumber"] in p01_running_jobs.keys():
             # If job is found in "running/waiting" queue
-            existing_job = p01_running_jobs[meter["MeterNumber"]]
+            existing_job = p01_running_jobs[meter_number]
             job_start_time = existing_job["timestamp"]
 
-            logger.debug(f"Pending P.01 job {existing_job['MeterNumber']}, start time: {job_start_time[1:]} UTC")
+            logger.debug(f"Meter {meter_number} :: Pending P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
             pass
         else:
             # New job, not found anywhere
-            logger.debug(f"New P.01 job {new_job['MeterNumber']}")
+            logger.debug(f"Meter {meter_number} :: New P.01 job {new_job['meterNumber']}")
             p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
-        logger.debug(f"enqueueing rq_push_table4 for {meter['ip']}")
+        logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table4 for {meter['ip']}")
         table4_q.enqueue(rq_push_table4, meter, result_ttl=10, ttl=300, failure_ttl=600)
 
 # RQ mod
 
-'''
-def requeue():
-    p01_q = Queue(name="p01", connection=Redis())
-    table4_q = Queue(name="table4", connection=Redis())
-    for i in p01_q.failed_job_registry.get_job_ids():
-        p01_q.failed_job_registry.requeue(i)
-    for i in table4_q.failed_job_registry.get_job_ids():
-        table4_q.failed_job_registry.requeue(i)
-'''
 
 if __name__ == "__main__":
     # To run create script.py with:
     # from emhmeter_rq import rq_create_jobs, logger
     #
-    # logger.setLevel("DEBUG")
+    # logger.setLevel("INFO")
     # rq_create_jobs()
 
     # (venv) [root@vsrvenomos00123 app]# rq worker p01 table4
