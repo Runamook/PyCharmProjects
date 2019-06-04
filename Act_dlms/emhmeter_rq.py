@@ -4,7 +4,6 @@ import functools
 import operator
 import datetime
 import re
-from multiprocessing.dummy import Pool
 import requests
 try:
     from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
@@ -53,7 +52,7 @@ def create_logger(log_filename, instance_name, loglevel="INFO"):
     return logger
 
 
-logger = create_logger("emh_to_zabbix.log", "Meter", loglevel="DEBUG")
+logger = create_logger("/var/log/emh_to_zabbix.log", "Meter", loglevel="DEBUG")
 
 
 class Meter:
@@ -565,6 +564,9 @@ def get_job_meta(queue):
 
     running_jobs = {}
     for job_id in queue.job_ids:                          # job_id - '52ad7ebf-f8f1-4ac2-9cc8-c1a165b6675b'
+        if queue.fetch_job(job_id) is None:
+            logger.debug(f"Skipping None type job {job_id}")
+            pass
         meta = queue.fetch_job(job_id).meta
         meta['job_id'] = job_id                           # Add job_id key to meta dictionary
         logger.debug(f"found meta: {meta}")
@@ -572,6 +574,9 @@ def get_job_meta(queue):
 
     failed_jobs = {}
     for job_id in queue.failed_job_registry.get_job_ids():
+        if queue.fetch_job(job_id) is None:
+            logger.debug(f"Skipping None type job {job_id}")
+            pass
         meta = queue.fetch_job(job_id).meta
         meta["job_id"] = job_id
         logger.debug(f"found meta: {meta}")
