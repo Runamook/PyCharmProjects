@@ -46,12 +46,20 @@ if val is not None:
 
 elif val is None:
     # Reading K-V
-    with open(storage_path, 'r') as f:
-        result = json.load(f)
-        i = len(result[key])
-        for value in result[key]:
-            if i > 1:
-                print(value, end=", ")
-            elif i == 1:
-                print(value)
-            i -= 1
+    if os.path.exists(storage_path):
+        with open(storage_path, 'r') as f:
+            result = json.load(f)
+            if key in result:
+                i = len(result[key])
+                for value in result[key]:
+                    if i > 1:
+                        print(value, end=", ")
+                    elif i == 1:
+                        print(value)
+                    i -= 1
+            else:
+                # print()
+                pass
+    else:
+        # print()
+        pass
