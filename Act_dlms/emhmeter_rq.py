@@ -374,7 +374,10 @@ def get_p01_parsed(meter_address, timestamp):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     # p01_data = m.get_latest_p01()
     p01_data = m.get_p01(timestamp)
-    assert len(p01_data) > 0, logger.error(f"No data returned for P.01 at {meter_address}")
+    # assert len(p01_data) > 0, logger.error(f"No data returned for P.01 at {meter_address}")
+    if len(p01_data) <= 0:
+        logger.error(f"No data returned for P.01 at {meter_address}")
+        raise ValueError(f"No data returned for P.01 at {meter_address}")
     p01_res = m.parse_p01(p01_data)
     return {"p01": p01_res}
 
@@ -382,7 +385,10 @@ def get_p01_parsed(meter_address, timestamp):
 def get_table4_parsed(meter_address, meter_number):
     m = MeterRequests(f"socket://{meter_address}:8000", 300)
     table4_data = m.get_table(4, meter_number)
-    assert len(table4_data) > 0, logger.error(f"No data returned for Table4 {meter_number}")
+    # assert len(table4_data) > 0, logger.error(f"No data returned for Table4 {meter_number}")
+    if len(table4_data) <= 0:
+        logger.error(f"No data returned for Table4 {meter_number}")
+        raise ValueError(f"No data returned for Table4 at {meter_address}")
     table4_res = m.parse_table4(table4_data)
     return {"table4": table4_res}
 
@@ -393,8 +399,10 @@ def get_json():
     url = "http://10.11.30.97:5000/api/meterpinginfo"
     logger.debug(f"Connecting to {url}")
     response = requests.get(url)
-    assert response.status_code == 200, logger.error("API responded %s, expected 200" % response.status_code)
-    # assert response.status_code == 200, f"API responded {response.status_code}, expected 200"
+    # assert response.status_code == 200, logger.error("API responded %s, expected 200" % response.status_code)
+    if response.status_code != 200:
+        logger.error(f"API responded {response.status_code}, expected 200")
+        raise ValueError(f"No data returned from API result: {response.status_code}")
     return response.json()
 
 
