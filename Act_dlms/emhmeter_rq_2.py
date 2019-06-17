@@ -10,9 +10,9 @@ try:
 except ImportError:
     from Helpers.obis_codes import zabbix_obis_codes, transform_set
 try:
-    from Act_dlms.Helpers.list_of_meters import list_of_meters
+    from Act_dlms.Helpers.list_of_meters import list_of_meters as list_of_meters
 except ImportError:
-    from Helpers.list_of_meters import list_of_meters
+    from Helpers.list_of_meters import list_of_meters as list_of_meters
 from pyzabbix import ZabbixMetric, ZabbixSender
 import logging
 import sys
@@ -22,7 +22,6 @@ from serial.serialutil import SerialException
 
 # Version with redis queue
 # TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
-# TODO: get_p01_parsed should check if meter address has port or not
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -118,7 +117,7 @@ class MeterBase:
                                              parity=serial.PARITY_EVEN,
                                              timeout=self.timeout)
         except SerialException:
-            logger.error(f"{self.meter_number}Timeout when connecting to {self.port}")
+            logger.error(f"{self.meter_number} Timeout when connecting to {self.port}")
             raise SerialException
         time.sleep(1)
         if self.get_id:
@@ -481,6 +480,7 @@ class ExportToZabbix:
         self.server = input_vars.get("server") or "127.0.0.1"
         self.meter_data = input_vars["meter"]
         self.meter_number = input_vars["meter"]["meterNumber"]
+        logger.info(f"Zabbix server {self.server}, input {input_vars}")
 
     def export(self, data):
         metrics = self.create_metrics(data)
@@ -569,7 +569,7 @@ def get_json():
 
 
 def meta(input_vars):
-    logger.debug(f"{input_vars['meter']['meterNumber']} - {input_vars}")
+    logger.debug(f"Input vars {input_vars['meter']['meterNumber']} - {input_vars}")
     if input_vars["data_handler"] == "P.01":
         data_handler = GetP01(input_vars)
     elif input_vars["data_handler"] == "Table":
@@ -596,7 +596,7 @@ def create_input_vars(meter):
                       "timestamp": MeterBase.get_dt(),
                       "data_handler": "P.01",
                       "exporter": "Zabbix",
-                      "server": "127.0.0.1",
+                      "server": "192.168.33.33",
                       "meter": meter
                       }
 
@@ -607,7 +607,7 @@ def create_input_vars(meter):
                          "meterNumber": meter["meterNumber"],
                          "data_handler": "Table",
                          "exporter": "Zabbix",
-                         "server": "127.0.0.1",
+                         "server": "192.168.33.33",
                          "meter": meter
                          }
     return {"P01": input_vars_p01, "Table4": input_vars_table4}

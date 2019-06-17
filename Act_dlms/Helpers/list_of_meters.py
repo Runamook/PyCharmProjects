@@ -98,3 +98,56 @@ list_of_meters = [{
         "currentRatio": 15,
         "totalFactor": 215
     }]
+
+
+list_of_meters_2 = [
+   {
+      "meterNumber":"08032333",
+      "ip":"192.168.104.11",
+      "voltageRatio":200,
+      "currentRatio":10,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"08032332",
+      "ip":"192.168.104.12",
+      "voltageRatio":200,
+      "currentRatio":20,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"08032331",
+      "ip":"192.168.104.14",
+      "voltageRatio":200,
+      "currentRatio":160,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"07777739",
+      "ip":"192.168.104.15",
+      "voltageRatio":200,
+      "currentRatio":600,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"07777742",
+      "ip":"192.168.104.16",
+      "voltageRatio":1,
+      "currentRatio":80,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"07777737",
+      "ip":"192.168.104.17",
+      "voltageRatio":1,
+      "currentRatio":40,
+      "totalFactor":"calculated"
+   },
+   {
+      "meterNumber":"07777736",
+      "ip":"192.168.104.18",
+      "voltageRatio":1,
+      "currentRatio":20,
+      "totalFactor":"calculated"
+   }
+]
