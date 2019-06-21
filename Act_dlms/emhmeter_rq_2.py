@@ -304,7 +304,9 @@ class GetP01:
         except ValueError:
             logger.error(f"{self.meter_number} Incorrect date in header {header}, lines: {lines}")
             raise
-        lines = lines[1:]
+        # Strip header line and all short lines
+        # Reorder a list, cause newest values are the last by default
+        lines = list(filter(lambda x: len(x) > 6, lines[1:]))[::-1]
         # logger.debug(f"Header {header}, time {base_dt}, lines {lines}")
         results = {}
         counter = 0
@@ -316,8 +318,9 @@ class GetP01:
                 for value in values:
                     result.append((keys[value_counter], value[:-1]))
                     value_counter += 1
-                counter += 1
             results[(base_dt + datetime.timedelta(counter*15)).strftime("%s")] = result
+            logger.debug(f"{self.meter_number} Intermediate result {results}")
+            counter += 1
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
         # logger.debug(f"Results: {results}")
@@ -370,6 +373,7 @@ class GetTable:
         lines = data.split('\r\n')[1:]  # Remove header (meter id)
         logger.debug(f"{self.meter_number}, {data}")
         for line in lines:
+            # Attention: XC meter not found/available!
             if len(line) < 5:
                 continue
             if not re_key.search(line):
@@ -496,7 +500,8 @@ class ExportToZabbix:
 
         voltageRatio = float(meter_data["voltageRatio"])
         currentRatio = float(meter_data["currentRatio"])
-        totalFactor = float(meter_data["totalFactor"])
+        # totalFactor = float(meter_data["totalFactor"])
+        totalFactor = currentRatio * voltageRatio
 
         if transform_set[metric_key] == "None":
             # logger.debug(f"Not transforming {metric_value}")

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify
 from sqlalchemy import create_engine
 
 app = Flask(__name__)
@@ -10,14 +10,16 @@ def meters_from_db(db_file):
         raise ValueError
     if not db_file.startswith("sqlite:///"):
         db_file = f"sqlite:///{db_file}"
-        print(db_file)
+        # print(db_file)
 
     engine = create_engine(db_file)
     conn = engine.connect()
 
-    query = "SELECT meterNumber FROM meters ORDER BY meterNumber ASC;"
+    query = "SELECT meterNumber, tag FROM meters ORDER BY meterNumber ASC;"
     db_response = conn.execute(query).fetchall()
-    meter_list = [{"MeterId": meter_tuple[0].replace("'", '"')} for meter_tuple in db_response]
+    # meter_list = [{"MeterId": meter_tuple[0].replace("'", '"')} for meter_tuple in db_response]
+    tuple_list = list(filter(lambda x: x[1] == "frequent", db_response))
+    meter_list = [{"MeterId": x[0].replace("'", '"')} for x in tuple_list]
 
     return meter_list
 
