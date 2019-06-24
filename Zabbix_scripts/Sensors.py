@@ -91,7 +91,7 @@ def get_data_one_sensor(sensor):
 
         if "°C" in line:
             device = _get("device", line)
-            results[f"{hw_device}:{device}"] = _get("temperature", line)
+            results[f"{hw_device}:{device}"] = int(float(_get("temperature", line)))
 
             """
             if "high =" in line:
