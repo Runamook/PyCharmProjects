@@ -59,27 +59,51 @@ class Sbc:
 
     entities = {
         "value": re.compile(".* (\S+)$"),
-        "metric": re.compile("^\s+- (\S+)\s+\S$"),
+        # "metric": re.compile("^\s+- (\S+)\s+\S$"),
+        "metric": re.compile("^\s+- (\S+)\s+\S+$"),
         "metric_group": re.compile("^\s+- (\S+)$"),
         "submetric": re.compile("^\s+\|-\s+(\S+)")
     }
 
+    sep = "--"
+
+    """
+    To add data to ignore_list
+    
+    "Simple" metric: 
+   - reset_nap_drop_stats                  : No             (No,Yes)
+   add "metric name" to the ignore_list variable.
+   
+   "Complex" metric:
+   - local_drop_stats                                      
+     |- TOTAL                              1309
+    add "metric group" + sep + "metric name" to the ignore_list variable
+        
+    
+    """
     ignore_list = ["unique_id", "signaling_type", "reset_stats", "firewall_blocked_cnt", "inst_incoming_file_playbacks",
                    "inst_incoming_file_recordings", "total_incoming_file_playbacks", "total_incoming_file_recordings",
                    "inst_outgoing_file_playbacks", "inst_outgoing_file_recordings", "total_outgoing_file_playbacks",
                    "total_outgoing_file_recordings", "mips_shared_usage_percent", "port_range_shared_usage_percent",
-                   "sip_shared_usage_percent", "reset_asr_stats", "availability_detection_struct:poll_remote_proxy",
-                   "registration_struct:register_to_proxy", "registration_struct:registered", "reset_rtp_stats",
-                   "rtp_statistics_struct:from_net_nb_packets", "rtp_statistics_struct:from_net_nb_out_of_seq_packets",
-                   "rtp_statistics_struct:from_net_nb_lost_packets",
-                   "rtp_statistics_struct:from_net_nb_duplicate_packets",
-                   "rtp_statistics_struct:from_net_nb_early_late_packets",
-                   "rtp_statistics_struct:from_net_nb_bad_protocol_headers",
-                   "rtp_statistics_struct:from_net_nb_buffer_overflows",
-                   "rtp_statistics_struct:from_net_nb_other_errors", "rtp_statistics_struct:to_net_nb_packets",
-                   "rtp_statistics_struct:to_net_nb_arp_failures", "rtp_statistics_struct:t38_nb_pages_to_tdm",
-                   "rtp_statistics_struct:t38_nb_pages_from_tdm", "reset_nap_drop_stats", "local_drop_stats:TOTAL",
-                   "remote_drop_stats", "system_drop_stats:TOTAL"]
+                   "sip_shared_usage_percent", "reset_asr_stats", "reset_rtp_stats",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_packets",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_out_of_seq_packets",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_lost_packets",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_duplicate_packets",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_early_late_packets",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_bad_protocol_headers",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_buffer_overflows",
+                   # "rtp_statistics_struct" + sep + "from_net_nb_other_errors",
+                   # "rtp_statistics_struct" + sep + "to_net_nb_packets",
+                   # "rtp_statistics_struct" + sep + "to_net_nb_arp_failures",
+                   # "rtp_statistics_struct" + sep + "t38_nb_pages_to_tdm",
+                   # "rtp_statistics_struct" + sep + "t38_nb_pages_from_tdm",
+                   # "local_drop_stats" + sep + "TOTAL",
+                   # "system_drop_stats" + sep + "TOTAL",
+                   "reset_nap_drop_stats", "remote_drop_stats"]
+
+    positives = ["yes", "true"]             # Transformed to 1
+    negatives = ["no", "false"]             # Transformed to 0
 
     def __init__(self, logfile=None, loglevel="DEBUG", command=None):
 
@@ -106,7 +130,7 @@ class Sbc:
         # Returns list of dicts {metric: value}
 
         metrics = []
-        sep = ":"
+        sep = Sbc.sep
         provider = None
         metric = None
         metric_group = None
@@ -114,13 +138,14 @@ class Sbc:
         value = None
 
         for line in in_data:
+            line = self.line_cleaner(line)
             if len(line) < 15:
                 # Skip the line
                 continue
 
             if ":/nap:" in line:
                 # Provider line
-                provider = line.split(":")[-1].strip()
+                provider = line.split(":")[-1].strip()                  # ":" is fixed here
                 self.logger.debug("Found provider: %s" % provider)
                 continue
 
@@ -161,6 +186,10 @@ class Sbc:
 
             if metric:     # remove submetric
                 value = Sbc.entities["value"].match(line).groups()[0]
+                if value.lower() in Sbc.positives:
+                    value = "1"
+                elif value.lower() in Sbc.negatives:
+                    value = "0"
 
             if metric:
                 metrics.append({metric: value})
@@ -168,6 +197,11 @@ class Sbc:
                 submetric = None
 
         return metrics
+
+    def line_cleaner(self, line):
+        line = line.strip("\r\n").rstrip(" ")
+        self.logger.debug("Parsing line \"%s\"" % line)
+        return line
 
     def get_data(self):
 
@@ -189,8 +223,22 @@ class Sbc:
     def sbc_get_items(self):
         command_output = self.get_data()
         items = self.parser(command_output)
+        result = dict()
+        for item in items:
+            result[list(item.items())[0][0]] = list(item.items())[0][1]
 
-        return items
+        return result
+
+    def sbc_get_items_text(self):
+        command_output = self.get_data()
+        items = self.parser(command_output)             # [{key: value}, {key: value}]
+        result = ""
+        for item in items:
+            key = list(item.items())[0][0]
+            value = list(item.items())[0][1]
+            result += "%s = %s\n" % (key, value)
+
+        return result
 
     def get_sbc_data(self):
         raise NotImplementedError
@@ -209,6 +257,20 @@ class Sbc:
         return result
 
 
+"""
+def test():
+    cmd = "cat log.txt"
+    llevel = "INFO"
+    lfile = "./sbc_to_zabbix.log"
+    sbc = Sbc(loglevel=llevel, logfile=lfile, command=cmd)
+    sbc.set_ssh_params(host="127.0.0.1", user="adm", password="pass")
+    print(sbc.sbc_get_items_text())
+    
+
+if __name__ == "__main__":
+    test()
+"""
+
 if __name__ == "__main__":
     optparser = argparse.ArgumentParser(description="TelcoBriges SBC stats parser. Executes a command, parses response \
     and returns JSON data. Can be used in Zabbix")
@@ -218,10 +280,10 @@ if __name__ == "__main__":
     optparser.add_argument("--sbc_ssh_key", type=str, help="SSH key for SBC auth, used only if data gathered over SSH")
     optparser.add_argument("--sbc_password", type=str, help="SBC password, used only if data gathered over SSH")
     optparser.add_argument("--llevel", type=str, help="Log level, DEBUG/INFO/WARN/ERROR, Default: INFO")
-    optparser.add_argument("--lfile", type=str, help="Log file, Default: /var/log/sbc_stats_parser.log")
+    optparser.add_argument("--lfile", type=str, help="Log file, Default: /var/log/zabbix/sbc_stats_parser.log")
 
-    requiredNamed.add_argument("--command", type=str, help="Command to execute to get data from host. \
-    Something like \"/bin/cat tb.txt\" or \"/usr/local/bin/tbstatus /nap\".")
+    # requiredNamed.add_argument("--command", type=str, help="Command to execute to get data from host. \
+    # Something like \"/bin/cat tb.txt\" or \"/usr/local/bin/tbstatus /nap\".")
     requiredNamed.add_argument("--operation", type=str, help="Can be LLD or Data, Default: LLD", required=True)
 
     sbc_ssh_key = None
@@ -233,9 +295,9 @@ if __name__ == "__main__":
     else:
         print("Unknown operation %s" % args.operation)
         sys.exit(1)
-    cmd = args.command
+    # cmd = args.command
     if not args.lfile:
-        lfile = "/var/log/sbc_stats_parser.log"
+        lfile = "/var/log/zabbix/sbc_stats_parser.log"
     else:
         lfile = args.lfile
 
@@ -257,6 +319,8 @@ if __name__ == "__main__":
     if args.sbc_password:
         sbc_password = args.sbc_password
 
+    cmd = "cat log.txt"
+
     sbc = Sbc(loglevel=llevel, logfile=lfile, command=cmd)
 
     if use_ssh:
@@ -265,6 +329,8 @@ if __name__ == "__main__":
     if operation == "LLD":
         result = json.dumps(sbc.sbc_items_lld())
     elif operation == "Data":
-        result = json.dumps(sbc.sbc_get_items())
+        # result = json.dumps(sbc.sbc_get_items_text())
+        result = sbc.sbc_get_items_text()
 
     print(result)
+

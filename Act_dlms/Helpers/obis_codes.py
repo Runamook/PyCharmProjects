@@ -625,6 +625,8 @@ zabbix_obis_codes = {
     "31.25": "currentPhaseL1",
     "51.25": "currentPhaseL2",
     "71.25": "currentPhaseL3",
+    "cos_phi": "CosinusPhi",
+    "tan_phi": "TangensPhi"
     }
 
 transform_set = {
@@ -664,5 +666,7 @@ transform_set = {
     "apparentPowerTotal": "totalFactor",
     "currentPhaseL1": "currentRatio",
     "currentPhaseL2": "currentRatio",
-    "currentPhaseL3": "currentRatio"
+    "currentPhaseL3": "currentRatio",
+    "CosinusPhi": "None",
+    "TangensPhi": "None"
 }

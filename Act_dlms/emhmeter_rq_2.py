@@ -22,6 +22,8 @@ from serial.serialutil import SerialException
 
 # Version with redis queue
 # TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
+# TODO line 540 unknown OBIS codes are skipped
+# TODO: Separate queues: frequent queries, slow queries
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -366,7 +368,7 @@ class GetTable:
 
         re_key = re.compile('^(.+)[(]')
         re_dt = re.compile('([(].+[)])')
-        re_value = re.compile('[(]([0-9]+\\.[0-9]+)')
+        re_value = re.compile('[(](-?[0-9]+\\.[0-9]+)')
         pre_results = []
         results = {}
 
@@ -395,12 +397,38 @@ class GetTable:
                     value = re_value.search(line).group()[1:]
                     pre_results.append((key, value))
 
+        pre_results = self.enrich_data(pre_results)
         epoch = datetime.datetime.strptime(cur_date + cur_time, "%y%m%d%H%M%S").strftime("%s")
         results[epoch] = pre_results  # {epoch: [(obis_code:val), (), (), ...]}
         # logger.debug(f"Results: {results}")
         logger.debug("Finished parsing table 4 output")
         final_result = {"table4": results}
         return final_result
+
+    def enrich_data(self, tuple_list):
+        """
+        [(k,v),(k,v),(k,v)]
+
+        """
+        active_power = None
+        reactive_power = None
+
+        for tup in tuple_list:
+            if tup[0] == "1.25":
+                active_power = float(tup[1])
+            if tup[0] == "3.25":
+                reactive_power = float(tup[1])
+        if active_power and reactive_power:
+            tan_phi = reactive_power / active_power
+            cos_phi = 1/((1 + tan_phi ** 2) ** 0.5)
+
+            tuple_list.append(("tan_phi", str(tan_phi)))
+            tuple_list.append(("cos_phi", str(cos_phi)))
+            logger.debug(f"Meter {self.meter_number} Active power = {active_power}, Reactive power = {reactive_power}, Cos phi = {cos_phi}")
+        else:
+            logger.debug(f"Meter {self.meter_number} cos phi not found - not enough data")
+
+        return tuple_list
 
 
 class GetErrors:
@@ -537,7 +565,10 @@ class ExportToZabbix:
             for metric_time in data[data_set_name]:  # Parse each timestamp dataset
                 for metric_tuple in data[data_set_name][metric_time]:  # Parse each key-value pair
                     # logger.debug(f"Host: {metric_host}, Tuple: {metric_tuple}, Time: {metric_time}")
-                    metric_key = zabbix_obis_codes[metric_tuple[0]]
+                    # metric_key = zabbix_obis_codes[metric_tuple[0]]
+                    metric_key = zabbix_obis_codes.get(metric_tuple[0])
+                    if not metric_key:
+                        continue
                     metric_value = ExportToZabbix.transform_metrics(self.meter_data, metric_key, metric_tuple[1])  # Apply transform
                     logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
                     zabbix_metrics.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=int(metric_time)))
