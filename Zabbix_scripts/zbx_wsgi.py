@@ -4,6 +4,7 @@ from pyzabbix import ZabbixMetric, ZabbixSender
 zabbix_server = 'zproxy1.zvez.ga'
 zabbix_host = 'Apt-Meters'
 metric_key = 'coldWater'
+water_multiplicator = 10
 
 
 def application(environ, start_response):
@@ -27,6 +28,8 @@ def application(environ, start_response):
 
 
 def make_metrics(value):
+
+    value = str(int(value) * water_multiplicator)
     # ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
 
     results = []
