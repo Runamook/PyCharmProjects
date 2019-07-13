@@ -355,6 +355,8 @@ class GetTable:
 
         if str(self.input_vars.get("table_no")) == "4":
             return self.parse_table4(data)
+        elif str(self.input_vars.get("table_no")) == "2":
+            return self.parse_table2(data)
 
     def parse_table4(self, data):
         # /EMH4\@01LZQJL0014F
@@ -405,9 +407,55 @@ class GetTable:
         final_result = {"table4": results}
         return final_result
 
+    def parse_table2(self, data):
+        logger.debug("Parsing table2 output")
+        logger.debug(data)
+        raise NotImplementedError
+
+        re_key = re.compile('^(.+)[(]')
+        re_dt = re.compile('([(].+[)])')
+        re_value = re.compile('[(](-?[0-9]+\\.[0-9]+)')
+        pre_results = []
+        results = {}
+
+        lines = data.split('\r\n')[1:]  # Remove header (meter id)
+        logger.debug(f"{self.meter_number}, {data}")
+        for line in lines:
+            # Attention: XC meter not found/available!
+            if len(line) < 5:
+                continue
+            if not re_key.search(line):
+                logger.debug(f"no key in line {line}")
+                continue
+            else:
+                key = re_key.search(line).group()[:-1]
+
+            if key == "0.9.1":
+                cur_time = re_dt.search(line).group()[2:-1]  # Strip first digit
+            elif key == "0.9.2":
+                cur_date = re_dt.search(line).group()[2:-1]  # Strip first digit
+            else:
+                if not re_value.search(line):
+                    logger.debug(f"Not found value X.X in line {line}")
+                    continue
+                else:
+                    # value = re_value.search(line).group()[1:-1]
+                    value = re_value.search(line).group()[1:]
+                    pre_results.append((key, value))
+
+        pre_results = self.enrich_data(pre_results)
+        epoch = datetime.datetime.strptime(cur_date + cur_time, "%y%m%d%H%M%S").strftime("%s")
+        results[epoch] = pre_results  # {epoch: [(obis_code:val), (), (), ...]}
+        # logger.debug(f"Results: {results}")
+        logger.debug("Finished parsing table 4 output")
+        final_result = {"table4": results}
+        return final_result
+
     def enrich_data(self, tuple_list):
         """
         [(k,v),(k,v),(k,v)]
+        adds cos_phi and tan_phi metrics to the list
+        Calculations are based on active and reactive power.
 
         """
         active_power = None
@@ -646,7 +694,19 @@ def create_input_vars(meter):
                          "server": "192.168.33.33",
                          "meter": meter
                          }
-    return {"P01": input_vars_p01, "Table4": input_vars_table4}
+
+    # Table 2
+    input_vars_table2 = {"port": MeterBase.get_port(meter["ip"]),
+                         "get_id": False,
+                         "table_no": "2",
+                         "meterNumber": meter["meterNumber"],
+                         "data_handler": "Table",
+                         "exporter": "Zabbix",
+                         "server": "192.168.33.33",
+                         "meter": meter
+                         }
+
+    return {"P01": input_vars_p01, "Table4": input_vars_table4, "Table2": input_vars_table2}
 # RQ mod
 
 
@@ -731,6 +791,78 @@ def rq_create_jobs():
         logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table4 for {meter['ip']}")
         # table4_q.enqueue(rq_push_table4, meter, result_ttl=10, ttl=300, failure_ttl=600)
         table4_q.enqueue(meta, input_vars_dict["Table4"], result_ttl=10, ttl=300, failure_ttl=600)
+
+
+def rq_create_table4_jobs(meter_list):
+    """
+    Receives list of meter dictionaries
+    Places jobs to queues for python RQ
+    """
+    table4_q = Queue(name="table4", connection=Redis())
+    logger.info("Connected to redis")
+
+    logger.info(f"{len(meter_list)} meters to be processed")
+    for meter in meter_list:
+        input_vars_dict = create_input_vars(meter)
+        meter_number = meter["meterNumber"]
+
+        logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table4 for {meter['ip']}")
+        table4_q.enqueue(meta, input_vars_dict["Table4"], result_ttl=10, ttl=300, failure_ttl=600)
+
+
+def rq_create_p01_jobs(meter_list):
+    """
+    Receives list of meter dictionaries
+    Places jobs to queues for python RQ
+    """
+    p01_q = Queue(name="p01", connection=Redis())
+    logger.info("Connected to redis")
+
+    # list_of_meters = get_json()
+
+    logger.info(f"{len(meter_list)} meters to be processed")
+    p01_running_jobs, p01_failed_jobs = get_job_meta(p01_q)
+    for meter in meter_list:
+        # ttl - job ttl, won't be executed on expiry
+        # default_timeout - job shall be executed in default_timeout or marked as failed
+        # result_ttl - store successful result
+        # failure_ttl - store failed job
+
+        # Before putting a job into a queue check if there is a failed
+        # or pending job for that meter already in queue
+        # Find a job by meterId - only one job for a meter id can exist in a queue at a time
+        timestamp = MeterBase.get_dt()                                              # This is used for P01 query
+        input_vars_dict = create_input_vars(meter)
+        current_timestamp = datetime.datetime.strptime(timestamp[1:], '%y%m%d%H%M')     # This is used for comparing
+        meter_number = meter["meterNumber"]
+
+        new_job = {"meterNumber": meter_number, "timestamp": timestamp}
+        if new_job["meterNumber"] in p01_failed_jobs.keys():
+            # If job is found in "failed" queue
+            existing_job = p01_failed_jobs[meter_number]
+            job_start_time = existing_job["timestamp"]
+            existing_timestamp = datetime.datetime.strptime(job_start_time[1:], '%y%m%d%H%M')
+            # If the job was started less than 24 hours ago - requeue
+            delta = (current_timestamp - existing_timestamp).total_seconds()
+            if delta < 86400:                                                             # Compare timestamps
+                logger.debug(f"Meter {meter_number} :: Requeueing failed P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
+                p01_q.failed_job_registry.requeue(existing_job["job_id"])
+            elif delta > 86400:
+                logger.debug(f"Meter {meter_number} :: Removing failed P.01 job {existing_job['meterNumber']} after 24h, start time: {job_start_time[1:]} UTC")
+                p01_q.failed_job_registry.remove(p01_q.fetch_job(existing_job["job_id"]))
+        elif new_job["meterNumber"] in p01_running_jobs.keys():
+            # If job is found in "running/waiting" queue
+            existing_job = p01_running_jobs[meter_number]
+            job_start_time = existing_job["timestamp"]
+
+            logger.debug(f"Meter {meter_number} :: Pending P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
+            pass
+        else:
+            # New job, not found anywhere
+            logger.debug(f"Meter {meter_number} :: New P.01 job {new_job['meterNumber']}")
+            # p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
+            p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
+        logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table4 for {meter['ip']}")
 
 # RQ mod
 
