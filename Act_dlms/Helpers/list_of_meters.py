@@ -101,7 +101,14 @@ list_of_meters = [{
 
 
 list_of_meters_2 = [
-   {
+    {
+        "meterNumber": "08032334",
+        "ip": "192.168.104.13",
+        "voltageRatio": 200,
+        "currentRatio": 6,
+        "totalFactor": "calculated"
+    },
+    {
       "meterNumber":"08032333",
       "ip":"192.168.104.11",
       "voltageRatio":200,
