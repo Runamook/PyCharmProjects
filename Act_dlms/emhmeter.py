@@ -423,6 +423,17 @@ class GetTable:
         pre_results = []
         results = {}
 
+        keys = [
+            '0.1.2', '1.2.1', '1.2.2', '1.6.1', '1.6.2', '1.8.0', '1.8.1', '1.8.2', '2.2.1', '2.2.2', '2.6.1',
+            '2.6.2', '2.8.0', '2.8.1', '2.8.2', '5.8.0', '5.8.1', '5.8.2', '6.8.0', '6.8.1', '6.8.2', '7.8.0',
+            '7.8.1', '7.8.2', '8.8.0', '8.8.1', '8.8.2'
+            ]
+        keys_with_interval = [
+            '1.6.1', '1.6.2', '1.8.0', '1.8.1', '1.8.2', '2.6.1', '2.6.2', '2.8.0', '2.8.1',
+            '2.8.2', '5.8.0', '5.8.1', '5.8.2', '6.8.0', '6.8.1', '6.8.2', '7.8.0', '7.8.1', '7.8.2', '8.8.0',
+            '8.8.1', '8.8.2'
+            ]
+
         lines = data.split('\r\n')[1:]  # Remove header /EMH4\@01LZQJL0014F
         logger.debug(f"{self.meter_number}, {data}")
         for line in lines:
@@ -439,7 +450,6 @@ class GetTable:
             interval = parsed_line.get("interval")
             value_dt = parsed_line.get("value_dt")
 
-            # logger.debug(f"{line}, key = {key}, value = {value}, interval = {interval}, value_dt = {value_dt}")
             if key == "0.9.1":
                 cur_time = value[1:]  # Strip first timezone digit
             elif key == "0.9.2":
@@ -447,18 +457,27 @@ class GetTable:
             elif key == "0.1.0":
                 cur_interval = value  # Strip first timezone digit
 
+            logger.debug(f"{line}, key = {key}, value = {value}, interval = {interval}, value_dt = {value_dt}")
             # If there is interval in key and the interval is not equal to current interval
+
+            if key in keys_with_interval and interval is None:
+                continue
+
             if interval:
                 if cur_interval == interval:
                     if value_dt:
-                        key = f"{key}_{value_dt}"
-                    else:
-                        key = f"{key}_NoTimeInterval"
+                        # key = f"{key}_{value_dt}"
+                        pre_results.append((f"{key}-time", value_dt))
+                    # else:
+                    #     key = f"{key}_NoTimeInterval"
                     pass
                 else:
                     continue          # Older intervals are not required
 
-            pre_results.append((key, value))
+            if key in keys:
+                pre_results.append((key, value))
+                if key != '0.1.2':
+                    pre_results.append((f"raw-{key}", value))
 
         # pre_results = self.enrich_data(pre_results)               # Cos phi
         epoch = datetime.datetime.strptime(cur_date + cur_time, "%y%m%d%H%M%S").strftime("%s")

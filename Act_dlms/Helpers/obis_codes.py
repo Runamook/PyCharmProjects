@@ -580,7 +580,6 @@ table_obis_codes = {
     "C.86.0": "Installation check"                          # Not implemented
     }
 
-# Translate meter (derived meter) codes to Zabbix keys
 zabbix_obis_codes = {
     "1.5.0": "positiveActiveDemand",
     "2.5.0": "negativeActiveDemand",
@@ -671,7 +670,38 @@ zabbix_obis_codes = {
     "7.8.2": "Z-1-1.7.8.2",
     "8.8.0": "Z-1-1.8.8.0",
     "8.8.1": "Z-1-1.8.8.1",
-    "8.8.2": "Z-1-1.8.8.2"
+    "8.8.2": "Z-1-1.8.8.2",
+    "raw-1.2.1": "Z-1-1.1.2.1-raw",
+    "raw-1.2.2": "Z-1-1.1.2.2-raw",
+    "raw-1.6.1": "Z-1-1.1.6.1-raw",
+    "raw-1.6.2": "Z-1-1.1.6.2-raw",
+    "raw-1.8.0": "Z-1-1.1.8.0-raw",
+    "raw-1.8.1": "Z-1-1.1.8.1-raw",
+    "raw-1.8.2": "Z-1-1.1.8.2-raw",
+    "raw-2.2.1": "Z-1-1.2.2.1-raw",
+    "raw-2.2.2": "Z-1-1.2.2.2-raw",
+    "raw-2.6.1": "Z-1-1.2.6.1-raw",
+    "raw-2.6.2": "Z-1-1.2.6.2-raw",
+    "raw-2.8.0": "Z-1-1.2.8.0-raw",
+    "raw-2.8.1": "Z-1-1.2.8.1-raw",
+    "raw-2.8.2": "Z-1-1.2.8.2-raw",
+    "raw-5.8.0": "Z-1-1.5.8.0-raw",
+    "raw-5.8.1": "Z-1-1.5.8.1-raw",
+    "raw-5.8.2": "Z-1-1.5.8.2-raw",
+    "raw-6.8.0": "Z-1-1.6.8.0-raw",
+    "raw-6.8.1": "Z-1-1.6.8.1-raw",
+    "raw-6.8.2": "Z-1-1.6.8.2-raw",
+    "raw-7.8.0": "Z-1-1.7.8.0-raw",
+    "raw-7.8.1": "Z-1-1.7.8.1-raw",
+    "raw-7.8.2": "Z-1-1.7.8.2-raw",
+    "raw-8.8.0": "Z-1-1.8.8.0-raw",
+    "raw-8.8.1": "Z-1-1.8.8.1-raw",
+    "raw-8.8.2": "Z-1-1.8.8.2-raw",
+    "0.1.2": "Z-1-1.0.1.2",
+    "1.6.1-time": "Z-1-1.1.6.1-time",
+    "1.6.2-time": "Z-1-1.1.6.2-time",
+    "2.6.1-time": "Z-1-1.2.6.1-time",
+    "2.6.2-time": "Z-1-1.2.6.2-time"
 }
 
 transform_set = {
@@ -758,5 +788,37 @@ transform_set = {
     "Z-1-1.7.8.2": "totalFactor",
     "Z-1-1.8.8.0": "totalFactor",
     "Z-1-1.8.8.1": "totalFactor",
-    "Z-1-1.8.8.2": "totalFactor"
+    "Z-1-1.8.8.2": "totalFactor",
+    "Z-1-1.1.2.1-raw": "None",
+    "Z-1-1.1.2.2-raw": "None",
+    "Z-1-1.1.6.1-raw": "None",
+    "Z-1-1.1.6.2-raw": "None",
+    "Z-1-1.1.8.0-raw": "None",
+    "Z-1-1.1.8.1-raw": "None",
+    "Z-1-1.1.8.2-raw": "None",
+    "Z-1-1.2.2.1-raw": "None",
+    "Z-1-1.2.2.2-raw": "None",
+    "Z-1-1.2.6.1-raw": "None",
+    "Z-1-1.2.6.2-raw": "None",
+    "Z-1-1.2.8.0-raw": "None",
+    "Z-1-1.2.8.1-raw": "None",
+    "Z-1-1.2.8.2-raw": "None",
+    "Z-1-1.5.8.0-raw": "None",
+    "Z-1-1.5.8.1-raw": "None",
+    "Z-1-1.5.8.2-raw": "None",
+    "Z-1-1.6.8.0-raw": "None",
+    "Z-1-1.6.8.1-raw": "None",
+    "Z-1-1.6.8.2-raw": "None",
+    "Z-1-1.7.8.0-raw": "None",
+    "Z-1-1.7.8.1-raw": "None",
+    "Z-1-1.7.8.2-raw": "None",
+    "Z-1-1.8.8.0-raw": "None",
+    "Z-1-1.8.8.1-raw": "None",
+    "Z-1-1.8.8.2-raw": "None",
+    "Z-1-1.0.1.2": "None",
+    "Z-1-1.1.6.1-time": "None",
+    "Z-1-1.1.6.2-time": "None",
+    "Z-1-1.2.6.1-time": "None",
+    "Z-1-1.2.6.2-time": "None"
 }
+
