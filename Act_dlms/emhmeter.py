@@ -296,7 +296,12 @@ class GetP01:
 
         logger.debug(f"{self.meter_number} Parsing P.01 output")
         # logger.debug(f"{self.meter_number} {data}")
-        keys = ["bill-1.5.0", "bill-2.5.0", "bill-5.5.0", "bill-6.5.0", "bill-7.5.0", "bill-8.5.0"]
+        keys = [
+            "bill-1.5.0", "bill-2.5.0", "bill-5.5.0", "bill-6.5.0", "bill-7.5.0", "bill-8.5.0"
+        ]
+        keys_raw = [
+            "bill-raw-1.5.0", "bill-raw-2.5.0", "bill-raw-5.5.0", "bill-raw-6.5.0", "bill-raw-7.5.0", "bill-raw-8.5.0"
+        ]
 
         lines = data.split('\r\n')
         pre_header = lines[0].split("(")                                    # Strip closing parenthesis
@@ -308,6 +313,8 @@ class GetP01:
             raise
         # Strip header line and all short lines
         # Reorder a list, cause newest values are the last by default
+        log = header[2]
+        # logger.debug(f"Log = {log}")
         lines = list(filter(lambda x: len(x) > 6, lines[1:]))[::-1]
         # logger.debug(f"Header {header}, time {base_dt}, lines {lines}")
         results = {}
@@ -319,7 +326,9 @@ class GetP01:
                 value_counter = 0
                 for value in values:
                     result.append((keys[value_counter], value[:-1]))
+                    result.append((keys_raw[value_counter], value[:-1]))
                     value_counter += 1
+            result.append(("bill-Log", log))
             results[(base_dt + datetime.timedelta(minutes=counter*15)).strftime("%s")] = result
             logger.debug(f"{self.meter_number} Intermediate result {results}")
             counter += 1
