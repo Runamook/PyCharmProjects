@@ -6,11 +6,11 @@ import datetime
 import re
 import requests
 try:
-    from Act_dlms.Helpers.obis_codes import zabbix_obis_codes, transform_set
+    from .Helpers.obis_codes import zabbix_obis_codes, transform_set
 except ImportError:
     from Helpers.obis_codes import zabbix_obis_codes, transform_set
 try:
-    from Act_dlms.Helpers.list_of_meters import list_of_meters as list_of_meters
+    from .Helpers.list_of_meters import list_of_meters as list_of_meters
 except ImportError:
     from Helpers.list_of_meters import list_of_meters as list_of_meters
 from pyzabbix import ZabbixMetric, ZabbixSender

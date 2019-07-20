@@ -1,0 +1,6 @@
+pyserial
+py-zabbix
+requests
+argparse
+redis
+rq

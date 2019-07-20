@@ -1,0 +1,4432 @@
+[
+  {
+    "MeterNumber": "04682656",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.62",
+    "InstallationDate": "2014-12-16T10:55:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04682782",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.63",
+    "InstallationDate": "2014-06-12T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "05896194",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.66",
+    "InstallationDate": "2016-11-30T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770300",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.67",
+    "InstallationDate": "2014-07-30T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682631",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.68",
+    "InstallationDate": "2014-10-08T12:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "05222628",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.69",
+    "InstallationDate": "2016-05-13T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "04874633",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.70",
+    "InstallationDate": "2014-12-10T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06205087",
+    "Manufacturer": "",
+    "IP": "10.124.0.243",
+    "InstallationDate": "2017-06-01T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06205123",
+    "Manufacturer": "",
+    "IP": "10.124.0.244",
+    "InstallationDate": "2017-07-11T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "05939074",
+    "Manufacturer": "",
+    "IP": "10.124.0.245",
+    "InstallationDate": "2017-05-24T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 15,
+    "TotalFactor": 215
+  },
+  {
+    "MeterNumber": "05939029",
+    "Manufacturer": "",
+    "IP": "10.124.0.246",
+    "InstallationDate": "2017-06-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06205104",
+    "Manufacturer": "",
+    "IP": "10.124.0.251",
+    "InstallationDate": "2017-09-27T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05939047",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.252",
+    "InstallationDate": "2017-06-13T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 30,
+    "TotalFactor": 230
+  },
+  {
+    "MeterNumber": "05939072",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.253",
+    "InstallationDate": "2017-06-13T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "05939052",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.254",
+    "InstallationDate": "2017-06-13T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04690918",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.255",
+    "InstallationDate": "2018-08-22T07:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205124",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.1",
+    "InstallationDate": "2017-06-13T16:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "04770282",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.4",
+    "InstallationDate": "2017-12-20T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "06205085",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.5",
+    "InstallationDate": "2017-06-14T14:46:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 60,
+    "TotalFactor": 160
+  },
+  {
+    "MeterNumber": "06205084",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.6",
+    "InstallationDate": "2017-06-14T13:42:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05296225",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.7",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "06205088",
+    "Manufacturer": "",
+    "IP": "10.124.1.9",
+    "InstallationDate": "2018-01-10T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05939051",
+    "Manufacturer": "",
+    "IP": "10.124.1.10",
+    "InstallationDate": "2017-11-15T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 30,
+    "TotalFactor": 230
+  },
+  {
+    "MeterNumber": "05939068",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.12",
+    "InstallationDate": "2017-06-27T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "06205118",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.13",
+    "InstallationDate": "2017-06-29T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 100,
+    "TotalFactor": 200
+  },
+  {
+    "MeterNumber": "06920254",
+    "Manufacturer": "",
+    "IP": "10.124.1.14",
+    "InstallationDate": "2018-06-09T18:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 300,
+    "TotalFactor": 301
+  },
+  {
+    "MeterNumber": "05222639",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.14",
+    "InstallationDate": "2017-06-09T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "06205107",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.15",
+    "InstallationDate": "2017-06-17T15:22:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "1ELS0003464599",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.16",
+    "InstallationDate": "2017-07-07T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205080",
+    "Manufacturer": "",
+    "IP": "10.124.1.17",
+    "InstallationDate": "2017-07-11T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05222633",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.21",
+    "InstallationDate": "2015-10-13T10:25:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04389650",
+    "Manufacturer": "",
+    "IP": "10.124.1.24",
+    "InstallationDate": "2018-04-12T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04690917",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.26",
+    "InstallationDate": "2016-11-29T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "03429064",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.27",
+    "InstallationDate": "2016-12-20T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "07777734",
+    "Manufacturer": "",
+    "IP": "10.124.1.28",
+    "InstallationDate": "2018-04-11T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "05296172",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.29",
+    "InstallationDate": "2017-02-22T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "05939133",
+    "Manufacturer": "",
+    "IP": "10.124.1.30",
+    "InstallationDate": "2016-11-30T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04690919",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.32",
+    "InstallationDate": "2017-03-22T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05896199",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.33",
+    "InstallationDate": "2016-09-13T11:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "05896189",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.34",
+    "InstallationDate": "2016-07-11T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05896201",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.35",
+    "InstallationDate": "2017-02-22T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "04690921",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.36",
+    "InstallationDate": "2017-04-18T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682670",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.37",
+    "InstallationDate": "2018-04-10T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682670",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.37",
+    "InstallationDate": "2018-04-10T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05939069",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.38",
+    "InstallationDate": "2017-05-05T12:20:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05939134",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.39",
+    "InstallationDate": "2017-04-25T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04650386",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.44",
+    "InstallationDate": "2018-10-23T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "06205116",
+    "Manufacturer": "",
+    "IP": "10.124.1.45",
+    "InstallationDate": "2017-05-25T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 120,
+    "TotalFactor": 320
+  },
+  {
+    "MeterNumber": "05939031",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.46",
+    "InstallationDate": "2017-05-05T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05939031",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.46",
+    "InstallationDate": "2017-05-05T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939125",
+    "Manufacturer": "",
+    "IP": "10.124.1.47",
+    "InstallationDate": "2017-04-27T14:50:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939026",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.49",
+    "InstallationDate": "2017-04-19T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "07279384",
+    "Manufacturer": "",
+    "IP": "10.124.1.51",
+    "InstallationDate": "2018-01-10T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205081",
+    "Manufacturer": "",
+    "IP": "10.124.1.53",
+    "InstallationDate": "2017-03-07T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "05939131",
+    "Manufacturer": "",
+    "IP": "10.124.1.55",
+    "InstallationDate": "2017-03-14T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205094",
+    "Manufacturer": "",
+    "IP": "10.124.1.56",
+    "InstallationDate": "2017-03-06T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "06205092",
+    "Manufacturer": "",
+    "IP": "10.124.1.59",
+    "InstallationDate": "2017-04-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04409357",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.60",
+    "InstallationDate": "2017-02-06T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05939056",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.61",
+    "InstallationDate": "2017-02-08T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "03429059",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.62",
+    "InstallationDate": "2019-03-04T08:54:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04409389",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.63",
+    "InstallationDate": "2017-04-04T13:20:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "05296226",
+    "Manufacturer": "",
+    "IP": "10.124.1.66",
+    "InstallationDate": "2017-08-03T11:50:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939036",
+    "Manufacturer": "",
+    "IP": "10.124.1.67",
+    "InstallationDate": "2016-12-13T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "05939039",
+    "Manufacturer": "",
+    "IP": "10.124.1.68",
+    "InstallationDate": "2016-12-13T05:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04682764",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.70",
+    "InstallationDate": "2016-12-16T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "5939040",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.71",
+    "InstallationDate": "2016-12-16T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "06205108",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.73",
+    "InstallationDate": "2017-02-09T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 6,
+    "TotalFactor": 206
+  },
+  {
+    "MeterNumber": "06204997",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.74",
+    "InstallationDate": "2017-06-17T15:50:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205099",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.75",
+    "InstallationDate": "2017-02-09T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "06205099",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.75",
+    "InstallationDate": "2017-02-09T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04516157",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.76",
+    "InstallationDate": "2014-03-20T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06205115",
+    "Manufacturer": "",
+    "IP": "10.124.1.78",
+    "InstallationDate": "2017-04-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05939057",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.79",
+    "InstallationDate": "2017-02-09T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05939030",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.80",
+    "InstallationDate": "2017-01-26T16:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "05296169",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.81",
+    "InstallationDate": "2015-09-02T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05222612",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.82",
+    "InstallationDate": "2015-09-02T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "05296164",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.83",
+    "InstallationDate": "2015-09-02T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "5296220",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.84",
+    "InstallationDate": "2015-09-29T08:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296177",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.85",
+    "InstallationDate": "2015-09-02T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "03429050",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.86",
+    "InstallationDate": "2015-05-19T13:10:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05081223",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.87",
+    "InstallationDate": "2015-06-23T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "05081221",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.88",
+    "InstallationDate": "2015-06-23T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "05081225",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.89",
+    "InstallationDate": "2015-04-17T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05081224",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.90",
+    "InstallationDate": "2015-04-17T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05222638",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.91",
+    "InstallationDate": "2015-06-03T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "6205098",
+    "Manufacturer": "",
+    "IP": "10.124.1.92",
+    "InstallationDate": "2017-12-18T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "03359149",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.93",
+    "InstallationDate": "2019-02-26T13:18:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05296180",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.94",
+    "InstallationDate": "2015-09-29T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05222635",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.97",
+    "InstallationDate": "2015-07-10T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05296184",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.98",
+    "InstallationDate": "2016-06-01T16:35:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "04409386",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.101",
+    "InstallationDate": "2013-12-03T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05222611",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.102",
+    "InstallationDate": "2016-08-18T12:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "05222627",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.103",
+    "InstallationDate": "2015-07-13T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04682633",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.104",
+    "InstallationDate": "2016-03-22T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "05222631",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.105",
+    "InstallationDate": "2015-08-13T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 10,
+    "CurrentRatio": 100,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "05896192",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.108",
+    "InstallationDate": "2016-10-24T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429061",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.108",
+    "InstallationDate": "2015-05-19T14:20:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05222614",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.110",
+    "InstallationDate": "2015-06-23T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "06204998",
+    "Manufacturer": "",
+    "IP": "10.124.1.111",
+    "InstallationDate": "2017-09-25T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939126",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.113",
+    "InstallationDate": "2017-12-18T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05222623",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.114",
+    "InstallationDate": "2016-03-29T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "05222618",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.115",
+    "InstallationDate": "2015-08-13T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "05222620",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.116",
+    "InstallationDate": "2015-06-23T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05896202",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.117",
+    "InstallationDate": "2016-11-29T12:40:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05222621",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.118",
+    "InstallationDate": "2016-11-14T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05222616",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.119",
+    "InstallationDate": "2015-12-17T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "05222625",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.120",
+    "InstallationDate": "2015-08-13T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05222637",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.121",
+    "InstallationDate": "2015-08-25T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05222636",
+    "Manufacturer": "",
+    "IP": "10.124.1.122",
+    "InstallationDate": "2018-04-04T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "03429064",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.124",
+    "InstallationDate": "2015-05-19T16:40:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "03429051",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.125",
+    "InstallationDate": "2015-05-18T13:39:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429058",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.126",
+    "InstallationDate": "2015-05-18T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "03429049",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.128",
+    "InstallationDate": "2015-05-18T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "03429055",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.130",
+    "InstallationDate": "2015-05-19T10:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429066",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.131",
+    "InstallationDate": "2015-05-19T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429053",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.132",
+    "InstallationDate": "2015-05-19T09:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429060",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.133",
+    "InstallationDate": "2015-05-19T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03429069",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.134",
+    "InstallationDate": "2015-05-19T18:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "03429046",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.135",
+    "InstallationDate": "2015-05-19T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05296181",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.136",
+    "InstallationDate": "2015-09-29T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05296175",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.137",
+    "InstallationDate": "2016-08-30T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05296160",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.138",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05939025",
+    "Manufacturer": "",
+    "IP": "10.124.1.140",
+    "InstallationDate": "2017-08-18T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06205082",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.140",
+    "InstallationDate": "2017-06-17T15:41:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "05296168",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.141",
+    "InstallationDate": "2016-03-08T09:25:00",
+    "IsActive": true,
+    "VoltageRatio": 4,
+    "CurrentRatio": 200,
+    "TotalFactor": 204
+  },
+  {
+    "MeterNumber": "05896187",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.144",
+    "InstallationDate": "2016-06-13T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 60,
+    "TotalFactor": 260
+  },
+  {
+    "MeterNumber": "05896193",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.145",
+    "InstallationDate": "2016-06-13T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 100,
+    "TotalFactor": 300
+  },
+  {
+    "MeterNumber": "05896183",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.146",
+    "InstallationDate": "2016-06-08T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1100,
+    "CurrentRatio": 400,
+    "TotalFactor": 1500
+  },
+  {
+    "MeterNumber": "05896184",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.147",
+    "InstallationDate": "2016-06-08T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1100,
+    "CurrentRatio": 200,
+    "TotalFactor": 1300
+  },
+  {
+    "MeterNumber": "05896203",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.148",
+    "InstallationDate": "2016-09-13T17:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05896200",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.149",
+    "InstallationDate": "2017-03-09T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "03464606",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.153",
+    "InstallationDate": "2017-06-23T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296167",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.155",
+    "InstallationDate": "2016-05-31T10:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05296159",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.156",
+    "InstallationDate": "2016-05-26T10:50:00",
+    "IsActive": true,
+    "VoltageRatio": 60,
+    "CurrentRatio": 10,
+    "TotalFactor": 70
+  },
+  {
+    "MeterNumber": "04762911",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.157",
+    "InstallationDate": "2016-05-26T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296219",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.159",
+    "InstallationDate": "2016-05-04T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682635",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.161",
+    "InstallationDate": "2014-06-02T14:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05296179",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.162",
+    "InstallationDate": "2016-03-30T16:20:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05296162",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.165",
+    "InstallationDate": "2016-03-30T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "05939070",
+    "Manufacturer": "",
+    "IP": "10.124.1.166",
+    "InstallationDate": "2017-07-25T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682645",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.167",
+    "InstallationDate": "2016-09-20T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05939042",
+    "Manufacturer": "",
+    "IP": "10.124.1.168",
+    "InstallationDate": "2017-12-01T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04690926",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.169",
+    "InstallationDate": "2016-11-28T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "5939127",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.170",
+    "InstallationDate": "2016-11-29T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05222624",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.172",
+    "InstallationDate": "2016-01-16T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04690915",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.173",
+    "InstallationDate": "2016-12-21T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05081226",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.174",
+    "InstallationDate": "2016-01-19T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05296182",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.175",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 25,
+    "CurrentRatio": 20,
+    "TotalFactor": 45
+  },
+  {
+    "MeterNumber": "05296185",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.176",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "06013851",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.178",
+    "InstallationDate": "2016-07-13T11:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1100,
+    "CurrentRatio": 1200,
+    "TotalFactor": 2300
+  },
+  {
+    "MeterNumber": "03429057",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.179",
+    "InstallationDate": "2019-02-26T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05296178",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.179",
+    "InstallationDate": "2015-12-10T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 15,
+    "TotalFactor": 215
+  },
+  {
+    "MeterNumber": "05296183",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.180",
+    "InstallationDate": "2015-12-10T12:05:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "04682787",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.181",
+    "InstallationDate": "2014-05-26T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05296166",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.182",
+    "InstallationDate": "2015-11-16T17:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04682653",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.14",
+    "InstallationDate": "2014-05-15T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 160,
+    "TotalFactor": 161
+  },
+  {
+    "MeterNumber": "04650370",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.23",
+    "InstallationDate": "2015-02-03T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "03359143",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.20",
+    "InstallationDate": "2013-09-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650372",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.25",
+    "InstallationDate": "2014-05-09T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "04682641",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.45",
+    "InstallationDate": "2014-05-15T09:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "04682747",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.47",
+    "InstallationDate": "2014-05-26T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06205105",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.13",
+    "InstallationDate": "2016-12-15T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 60,
+    "TotalFactor": 260
+  },
+  {
+    "MeterNumber": "04409381",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.8",
+    "InstallationDate": "2013-11-18T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04682642",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.12",
+    "InstallationDate": "2014-05-15T08:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "04762926",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.19",
+    "InstallationDate": "2016-12-20T18:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04690925",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.34",
+    "InstallationDate": "2014-06-16T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04650396",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.24",
+    "InstallationDate": "2014-05-12T16:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04682783",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.36",
+    "InstallationDate": "2014-06-03T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650402",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.26",
+    "InstallationDate": "2014-04-22T11:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04409370",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.2",
+    "InstallationDate": "2013-11-04T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "06920244",
+    "Manufacturer": "",
+    "IP": "10.124.0.4",
+    "InstallationDate": "2018-04-25T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "04682772",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.44",
+    "InstallationDate": "2014-05-20T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05081220",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.40",
+    "InstallationDate": "2015-03-18T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650366",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.35",
+    "InstallationDate": "2014-12-10T09:50:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "06920281",
+    "Manufacturer": "",
+    "IP": "10.124.2.134",
+    "InstallationDate": "2018-01-30T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205103",
+    "Manufacturer": "",
+    "IP": "10.124.2.133",
+    "InstallationDate": "2018-01-11T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 100,
+    "TotalFactor": 300
+  },
+  {
+    "MeterNumber": "07777732",
+    "Manufacturer": "",
+    "IP": "10.124.2.137",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "05081215",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.136",
+    "InstallationDate": "2018-01-11T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04409380",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.138",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "07451471",
+    "Manufacturer": "",
+    "IP": "10.124.2.141",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682640",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.144",
+    "InstallationDate": "2019-03-14T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04682790",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.146",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 30,
+    "CurrentRatio": 1,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "07279393",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.145",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "07279393",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.145",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "07451461",
+    "Manufacturer": "",
+    "IP": "10.124.2.149",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682754",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.148",
+    "InstallationDate": "2019-03-25T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "04650397",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.150",
+    "InstallationDate": "2019-03-26T08:47:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "07451472",
+    "Manufacturer": "",
+    "IP": "10.124.2.151",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296171",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.153",
+    "InstallationDate": "2019-03-25T09:10:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "06205096",
+    "Manufacturer": "",
+    "IP": "10.124.2.156",
+    "InstallationDate": "2018-06-26T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06920295",
+    "Manufacturer": "",
+    "IP": "10.124.2.158",
+    "InstallationDate": "2018-01-11T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 100,
+    "TotalFactor": 300
+  },
+  {
+    "MeterNumber": "06920257",
+    "Manufacturer": "",
+    "IP": "10.124.2.157",
+    "InstallationDate": "2019-03-04T11:07:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "05222615",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.159",
+    "InstallationDate": "2018-01-10T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04291181",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.164",
+    "InstallationDate": "2018-01-11T08:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "05296165",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.163",
+    "InstallationDate": "2018-01-11T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "07279383",
+    "Manufacturer": "",
+    "IP": "10.124.2.165",
+    "InstallationDate": "2018-01-10T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "07279390",
+    "Manufacturer": "",
+    "IP": "10.124.2.167",
+    "InstallationDate": "2018-01-10T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682644",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.166",
+    "InstallationDate": "2018-07-02T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "07777735",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.170",
+    "InstallationDate": "2018-07-31T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "07777743",
+    "Manufacturer": "",
+    "IP": "10.124.2.171",
+    "InstallationDate": "2018-07-25T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "07777731",
+    "Manufacturer": "",
+    "IP": "10.124.2.173",
+    "InstallationDate": "2018-08-17T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "07777729",
+    "Manufacturer": "",
+    "IP": "10.124.2.172",
+    "InstallationDate": "2018-08-27T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04180627",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.176",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 160,
+    "TotalFactor": 360
+  },
+  {
+    "MeterNumber": "05939062",
+    "Manufacturer": "",
+    "IP": "10.124.2.175",
+    "InstallationDate": "2019-02-07T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 150,
+    "CurrentRatio": 10,
+    "TotalFactor": 160
+  },
+  {
+    "MeterNumber": "05939043",
+    "Manufacturer": "",
+    "IP": "10.124.2.178",
+    "InstallationDate": "2019-03-26T11:39:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "07777730",
+    "Manufacturer": "",
+    "IP": "10.124.2.180",
+    "InstallationDate": "2018-10-09T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04762929",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.187",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "1EMH0005211722",
+    "Manufacturer": "",
+    "IP": "10.124.1.191",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "03429054",
+    "Manufacturer": "Elster",
+    "IP": "10.124.1.193",
+    "InstallationDate": "2019-02-25T09:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "06165682",
+    "Manufacturer": "",
+    "IP": "10.124.1.195",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "07777740",
+    "Manufacturer": "",
+    "IP": "10.124.1.196",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "1EMH0005211723",
+    "Manufacturer": "",
+    "IP": "10.124.1.198",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682766",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.200",
+    "InstallationDate": "2019-03-25T16:03:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05222622",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.202",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 100,
+    "TotalFactor": 200
+  },
+  {
+    "MeterNumber": "05222629",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.205",
+    "InstallationDate": "2018-07-02T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04770330",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.207",
+    "InstallationDate": "2017-08-22T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "06205097",
+    "Manufacturer": "",
+    "IP": "10.124.1.206",
+    "InstallationDate": "2017-08-23T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "06920291",
+    "Manufacturer": "",
+    "IP": "10.124.1.208",
+    "InstallationDate": "2017-11-30T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205095",
+    "Manufacturer": "",
+    "IP": "10.124.1.210",
+    "InstallationDate": "2017-08-30T11:55:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06920287",
+    "Manufacturer": "",
+    "IP": "10.124.1.209",
+    "InstallationDate": "2017-09-13T14:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06920287",
+    "Manufacturer": "",
+    "IP": "10.124.1.209",
+    "InstallationDate": "2017-09-13T14:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296227",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.211",
+    "InstallationDate": "2017-07-25T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04389662",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.213",
+    "InstallationDate": "2018-01-11T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04682780",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.67",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 30,
+    "TotalFactor": 230
+  },
+  {
+    "MeterNumber": "06205001",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.68",
+    "InstallationDate": "2017-07-12T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939132",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.72",
+    "InstallationDate": "2017-07-12T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296221",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.70",
+    "InstallationDate": "2017-07-12T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06205081",
+    "Manufacturer": "",
+    "IP": "10.124.2.74",
+    "InstallationDate": "2017-07-11T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04389652",
+    "Manufacturer": "",
+    "IP": "10.124.2.73",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "06013848",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.77",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "06920294",
+    "Manufacturer": "",
+    "IP": "10.124.2.78",
+    "InstallationDate": "2018-01-11T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 100,
+    "TotalFactor": 300
+  },
+  {
+    "MeterNumber": "05296173",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.82",
+    "InstallationDate": "2018-10-23T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "07279387",
+    "Manufacturer": "",
+    "IP": "10.124.2.91",
+    "InstallationDate": "2018-11-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05296225",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.93",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "03429065",
+    "Manufacturer": "Elster",
+    "IP": "10.124.2.94",
+    "InstallationDate": "2019-02-27T08:43:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "03429065",
+    "Manufacturer": "Elster",
+    "IP": "10.124.2.94",
+    "InstallationDate": "2019-02-27T08:43:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06920252",
+    "Manufacturer": "",
+    "IP": "10.124.2.96",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "05211727",
+    "Manufacturer": "",
+    "IP": "10.124.2.97",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 100,
+    "TotalFactor": 100
+  },
+  {
+    "MeterNumber": "05296161",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.102",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "04770286",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.104",
+    "InstallationDate": "2019-02-28T08:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05896204",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.103",
+    "InstallationDate": "2019-01-22T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "7279386",
+    "Manufacturer": "",
+    "IP": "10.124.2.105",
+    "InstallationDate": "2018-11-06T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06920249",
+    "Manufacturer": "",
+    "IP": "10.124.2.107",
+    "InstallationDate": "2017-03-10T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "06920240",
+    "Manufacturer": "",
+    "IP": "10.124.2.106",
+    "InstallationDate": "2018-11-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "06920250",
+    "Manufacturer": "",
+    "IP": "10.124.2.109",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "06205102",
+    "Manufacturer": "",
+    "IP": "10.124.2.111",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04770298",
+    "Manufacturer": "",
+    "IP": "10.124.2.113",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05896197",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.112",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05222613",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.114",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "07279397",
+    "Manufacturer": "",
+    "IP": "10.124.2.116",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05939038",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.117",
+    "InstallationDate": "2018-10-10T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04409382",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.119",
+    "InstallationDate": "2019-03-25T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "05296158",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.118",
+    "InstallationDate": "2019-03-26T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05296170",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.120",
+    "InstallationDate": "2019-02-20T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 15,
+    "TotalFactor": 215
+  },
+  {
+    "MeterNumber": "04682672",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.122",
+    "InstallationDate": "2019-02-28T11:28:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "7455503",
+    "Manufacturer": "",
+    "IP": "10.124.2.121",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 100,
+    "TotalFactor": 100
+  },
+  {
+    "MeterNumber": "03429062",
+    "Manufacturer": "Elster",
+    "IP": "10.124.2.125",
+    "InstallationDate": "2019-02-25T11:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "06205112",
+    "Manufacturer": "",
+    "IP": "10.124.2.124",
+    "InstallationDate": "2017-12-28T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05939027",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.127",
+    "InstallationDate": "2017-11-29T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "06205113",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.129",
+    "InstallationDate": "2017-11-29T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "05896198",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.130",
+    "InstallationDate": "2017-11-29T13:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "05296174",
+    "Manufacturer": "",
+    "IP": "10.124.1.252",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 30,
+    "TotalFactor": 130
+  },
+  {
+    "MeterNumber": "06920290",
+    "Manufacturer": "",
+    "IP": "10.124.1.251",
+    "InstallationDate": "2018-01-08T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06920286",
+    "Manufacturer": "",
+    "IP": "10.124.1.255",
+    "InstallationDate": "2018-03-01T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "06920283",
+    "Manufacturer": "",
+    "IP": "10.124.1.254",
+    "InstallationDate": "2018-03-01T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "06165684",
+    "Manufacturer": "",
+    "IP": "10.124.2.1",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06920277",
+    "Manufacturer": "",
+    "IP": "10.124.2.3",
+    "InstallationDate": "2018-03-08T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 300,
+    "TotalFactor": 301
+  },
+  {
+    "MeterNumber": "06920251",
+    "Manufacturer": "",
+    "IP": "10.124.2.6",
+    "InstallationDate": "2018-08-06T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "03429058",
+    "Manufacturer": "Elster",
+    "IP": "10.124.2.5",
+    "InstallationDate": "2019-02-27T13:41:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05939035",
+    "Manufacturer": "",
+    "IP": "10.124.2.7",
+    "InstallationDate": "2017-12-04T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 10,
+    "CurrentRatio": 100,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "06920278",
+    "Manufacturer": "",
+    "IP": "10.124.2.9",
+    "InstallationDate": "2017-12-01T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06920292",
+    "Manufacturer": "",
+    "IP": "10.124.2.8",
+    "InstallationDate": "2017-12-01T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06920285",
+    "Manufacturer": "",
+    "IP": "10.124.2.10",
+    "InstallationDate": "2017-11-08T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04874638",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.13",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "6920243",
+    "Manufacturer": "",
+    "IP": "10.124.2.56",
+    "InstallationDate": "2018-04-24T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "05896191",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.62",
+    "InstallationDate": "2018-03-22T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "05081217",
+    "Manufacturer": "EMH",
+    "IP": "10.124.2.64",
+    "InstallationDate": "2018-03-22T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "06920248",
+    "Manufacturer": "",
+    "IP": "10.124.2.65",
+    "InstallationDate": "2018-03-08T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06920246",
+    "Manufacturer": "",
+    "IP": "10.124.2.65",
+    "InstallationDate": "2018-03-08T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06920270",
+    "Manufacturer": "",
+    "IP": "10.124.2.65",
+    "InstallationDate": "2018-03-08T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "06920261",
+    "Manufacturer": "",
+    "IP": "10.124.1.221",
+    "InstallationDate": "2018-01-22T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "07279391",
+    "Manufacturer": "",
+    "IP": "10.124.1.226",
+    "InstallationDate": "2018-01-24T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "6920242",
+    "Manufacturer": "",
+    "IP": "10.124.1.227",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 100,
+    "TotalFactor": 100
+  },
+  {
+    "MeterNumber": "06920260",
+    "Manufacturer": "",
+    "IP": "10.124.1.229",
+    "InstallationDate": "2018-02-21T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "07279385",
+    "Manufacturer": "",
+    "IP": "10.124.1.231",
+    "InstallationDate": "2018-02-08T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "06920247",
+    "Manufacturer": "",
+    "IP": "10.124.1.232",
+    "InstallationDate": "2018-04-25T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "06920245",
+    "Manufacturer": "",
+    "IP": "10.124.1.234",
+    "InstallationDate": "2018-03-14T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "6920258",
+    "Manufacturer": "",
+    "IP": "10.124.1.235",
+    "InstallationDate": "2018-04-24T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05939054",
+    "Manufacturer": "",
+    "IP": "10.124.1.236",
+    "InstallationDate": "2018-05-24T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 250,
+    "TotalFactor": 251
+  },
+  {
+    "MeterNumber": "06205091",
+    "Manufacturer": "EMH",
+    "IP": "10.124.1.238",
+    "InstallationDate": "2018-05-24T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 250,
+    "TotalFactor": 251
+  },
+  {
+    "MeterNumber": "05939066",
+    "Manufacturer": "",
+    "IP": "10.124.1.239",
+    "InstallationDate": "2018-05-17T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "05939050",
+    "Manufacturer": "",
+    "IP": "10.124.1.241",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "07777733",
+    "Manufacturer": "",
+    "IP": "10.124.1.243",
+    "InstallationDate": "2018-10-17T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "06920253",
+    "Manufacturer": "",
+    "IP": "10.124.1.244",
+    "InstallationDate": "2018-06-09T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "06920238",
+    "Manufacturer": "",
+    "IP": "10.124.1.248",
+    "InstallationDate": "2018-01-18T08:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 20,
+    "TotalFactor": 220
+  },
+  {
+    "MeterNumber": "06920241",
+    "Manufacturer": "",
+    "IP": "10.124.1.186",
+    "InstallationDate": "2018-07-18T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04874643",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.71",
+    "InstallationDate": "2014-12-12T11:25:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04770292",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.72",
+    "InstallationDate": "2014-07-09T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770283",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.73",
+    "InstallationDate": "2014-09-24T18:23:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 4,
+    "TotalFactor": 104
+  },
+  {
+    "MeterNumber": "04682629",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.74",
+    "InstallationDate": "2014-10-08T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 4,
+    "TotalFactor": 104
+  },
+  {
+    "MeterNumber": "04770318",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.75",
+    "InstallationDate": "2014-07-15T10:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682767",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.76",
+    "InstallationDate": "2014-10-22T10:15:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "04690927",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.76",
+    "InstallationDate": "2016-08-19T09:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04389659",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.77",
+    "InstallationDate": "2015-03-04T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04409407",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.78",
+    "InstallationDate": "2014-12-10T09:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04762924",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.79",
+    "InstallationDate": "2014-07-14T09:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04770316",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.80",
+    "InstallationDate": "2014-07-11T14:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770315",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.81",
+    "InstallationDate": "2014-07-11T12:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "06165683",
+    "Manufacturer": "",
+    "IP": "10.124.0.82",
+    "InstallationDate": "2018-09-01T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "04770286",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.82",
+    "InstallationDate": "2014-07-11T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04516167",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.83",
+    "InstallationDate": "2015-03-18T16:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04770299",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.84",
+    "InstallationDate": "2014-07-29T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04770307",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.87",
+    "InstallationDate": "2014-07-22T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770294",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.88",
+    "InstallationDate": "2014-09-03T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770329",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.89",
+    "InstallationDate": "2014-09-01T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770320",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.90",
+    "InstallationDate": "2014-09-23T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04762918",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.91",
+    "InstallationDate": "2014-09-29T08:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682748",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.92",
+    "InstallationDate": "2014-09-28T12:57:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04762927",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.93",
+    "InstallationDate": "2014-10-02T08:35:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04762928",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.94",
+    "InstallationDate": "2014-09-30T10:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682761",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.95",
+    "InstallationDate": "2014-08-13T18:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04770284",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.96",
+    "InstallationDate": "2014-07-08T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "04770296",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.97",
+    "InstallationDate": "2014-07-08T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770293",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.99",
+    "InstallationDate": "2014-07-09T10:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770295",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.100",
+    "InstallationDate": "2014-07-09T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770290",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.101",
+    "InstallationDate": "2014-07-09T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770301",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.102",
+    "InstallationDate": "2014-07-09T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770288",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.103",
+    "InstallationDate": "2014-07-11T10:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770306",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.104",
+    "InstallationDate": "2014-10-07T14:10:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04770328",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.105",
+    "InstallationDate": "2014-07-07T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04770317",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.106",
+    "InstallationDate": "2014-07-07T11:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770287",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.107",
+    "InstallationDate": "2014-09-24T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "04770325",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.109",
+    "InstallationDate": "2014-09-30T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770326",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.110",
+    "InstallationDate": "2014-09-10T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770303",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.111",
+    "InstallationDate": "2014-07-23T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "04770314",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.112",
+    "InstallationDate": "2014-07-29T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04682661",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.113",
+    "InstallationDate": "2014-07-04T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 150,
+    "CurrentRatio": 50,
+    "TotalFactor": 200
+  },
+  {
+    "MeterNumber": "04682652",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.114",
+    "InstallationDate": "2014-12-15T10:45:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04762925",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.117",
+    "InstallationDate": "2014-10-02T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04516152",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.118",
+    "InstallationDate": "2014-08-12T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "04690922",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.119",
+    "InstallationDate": "2014-08-07T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682628",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.120",
+    "InstallationDate": "2014-08-06T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04682634",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.121",
+    "InstallationDate": "2014-08-06T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04682781",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.122",
+    "InstallationDate": "2014-08-07T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "6204999",
+    "Manufacturer": "",
+    "IP": "10.124.0.123",
+    "InstallationDate": "2017-09-25T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682625",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.124",
+    "InstallationDate": "2014-08-06T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04762909",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.125",
+    "InstallationDate": "2014-08-26T08:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04762917",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.127",
+    "InstallationDate": "2014-10-01T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04770324",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.129",
+    "InstallationDate": "2014-09-10T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770309",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.131",
+    "InstallationDate": "2014-07-10T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04409408",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.132",
+    "InstallationDate": "2014-10-15T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04770289",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.134",
+    "InstallationDate": "2014-07-10T10:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04770322",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.135",
+    "InstallationDate": "2014-07-08T11:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04516159",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.136",
+    "InstallationDate": "2014-09-10T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04762993",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.137",
+    "InstallationDate": "2014-07-08T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04770297",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.138",
+    "InstallationDate": "2014-07-07T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770331",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.139",
+    "InstallationDate": "2014-07-07T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770304",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.140",
+    "InstallationDate": "2014-07-30T12:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650378",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.141",
+    "InstallationDate": "2014-12-16T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04770319",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.142",
+    "InstallationDate": "2014-12-15T13:17:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04874641",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.143",
+    "InstallationDate": "2014-12-11T13:10:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04516160",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.144",
+    "InstallationDate": "2014-12-15T16:02:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04682636",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.145",
+    "InstallationDate": "2015-04-22T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "04770308",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.148",
+    "InstallationDate": "2014-11-25T16:15:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650364",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.149",
+    "InstallationDate": "2015-03-10T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "04770285",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.150",
+    "InstallationDate": "2014-12-08T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "05081222",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.154",
+    "InstallationDate": "2015-03-17T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04770323",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.155",
+    "InstallationDate": "2014-12-08T11:50:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 20,
+    "TotalFactor": 120
+  },
+  {
+    "MeterNumber": "04650360",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.156",
+    "InstallationDate": "2014-12-08T12:45:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "4516166",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.158",
+    "InstallationDate": "2015-02-23T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 120,
+    "TotalFactor": 320
+  },
+  {
+    "MeterNumber": "04516150",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.159",
+    "InstallationDate": "2015-02-23T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 300,
+    "TotalFactor": 301
+  },
+  {
+    "MeterNumber": "06920282",
+    "Manufacturer": "",
+    "IP": "10.124.0.160",
+    "InstallationDate": "2017-12-23T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04180615",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.161",
+    "InstallationDate": "2015-04-28T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 3,
+    "TotalFactor": 203
+  },
+  {
+    "MeterNumber": "04409375",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.163",
+    "InstallationDate": "2015-01-21T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04690929",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.165",
+    "InstallationDate": "2015-02-18T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04516151",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.166",
+    "InstallationDate": "2015-04-28T12:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04409392",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.167",
+    "InstallationDate": "2015-03-04T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682794",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.170",
+    "InstallationDate": "2015-02-03T10:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "04389655",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.172",
+    "InstallationDate": "2015-02-24T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05081227",
+    "Manufacturer": "",
+    "IP": "10.124.0.173",
+    "InstallationDate": "2018-05-08T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04180613",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.175",
+    "InstallationDate": "2013-10-29T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04762932",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.177",
+    "InstallationDate": "2015-05-18T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05081218",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.178",
+    "InstallationDate": "2015-06-23T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05222630",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.179",
+    "InstallationDate": "2016-02-24T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "06205122",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.180",
+    "InstallationDate": "2017-06-17T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "05222640",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.181",
+    "InstallationDate": "2015-06-02T10:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 200,
+    "TotalFactor": 201
+  },
+  {
+    "MeterNumber": "04770311",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.182",
+    "InstallationDate": "2015-02-18T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "05081216",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.183",
+    "InstallationDate": "2015-06-22T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "03359135",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.186",
+    "InstallationDate": "2017-06-23T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "05081230",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.188",
+    "InstallationDate": "2015-04-29T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "05081231",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.189",
+    "InstallationDate": "2015-04-29T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "08650108",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.191",
+    "InstallationDate": "0001-01-01T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04682666",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.192",
+    "InstallationDate": "2018-04-19T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04682752",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.193",
+    "InstallationDate": "2014-08-27T13:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04762922",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.195",
+    "InstallationDate": "2014-12-11T17:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04874637",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.196",
+    "InstallationDate": "2014-10-20T09:32:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 40,
+    "TotalFactor": 240
+  },
+  {
+    "MeterNumber": "04516155",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.197",
+    "InstallationDate": "2014-12-11T15:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770321",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.198",
+    "InstallationDate": "2014-12-15T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 2,
+    "TotalFactor": 202
+  },
+  {
+    "MeterNumber": "04516145",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.199",
+    "InstallationDate": "2014-12-16T16:42:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04650387",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.200",
+    "InstallationDate": "2015-03-17T11:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04389656",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.202",
+    "InstallationDate": "2015-01-29T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "04409413",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.203",
+    "InstallationDate": "2014-12-15T14:47:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 10,
+    "TotalFactor": 210
+  },
+  {
+    "MeterNumber": "04682650",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.204",
+    "InstallationDate": "2014-12-08T10:45:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "04389654",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.205",
+    "InstallationDate": "2015-01-29T11:30:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 4,
+    "TotalFactor": 104
+  },
+  {
+    "MeterNumber": "04682613",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.206",
+    "InstallationDate": "2015-01-29T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04682753",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.207",
+    "InstallationDate": "2014-11-12T13:20:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04650393",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.208",
+    "InstallationDate": "2014-11-25T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "04516154",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.209",
+    "InstallationDate": "2014-11-25T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 10,
+    "TotalFactor": 110
+  },
+  {
+    "MeterNumber": "06920255",
+    "Manufacturer": "",
+    "IP": "10.124.0.211",
+    "InstallationDate": "2018-06-09T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 500,
+    "TotalFactor": 501
+  },
+  {
+    "MeterNumber": "04762931",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.212",
+    "InstallationDate": "2015-04-02T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04762910",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.213",
+    "InstallationDate": "2015-01-09T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04682648",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.214",
+    "InstallationDate": "2015-04-08T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04874650",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.218",
+    "InstallationDate": "2014-10-13T11:45:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 5,
+    "TotalFactor": 105
+  },
+  {
+    "MeterNumber": "04874651",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.219",
+    "InstallationDate": "2014-10-13T09:35:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04682614",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.220",
+    "InstallationDate": "2014-11-11T10:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04874648",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.221",
+    "InstallationDate": "2014-12-17T09:30:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04874634",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.222",
+    "InstallationDate": "2014-12-12T09:40:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "05896205",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.223",
+    "InstallationDate": "2016-11-29T14:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 20,
+    "TotalFactor": 21
+  },
+  {
+    "MeterNumber": "04770310",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.224",
+    "InstallationDate": "2014-10-21T10:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 60,
+    "TotalFactor": 61
+  },
+  {
+    "MeterNumber": "04874636",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.226",
+    "InstallationDate": "2014-12-11T14:35:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04874636",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.226",
+    "InstallationDate": "2015-03-19T16:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04874646",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.227",
+    "InstallationDate": "2014-10-14T10:18:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04650368",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.228",
+    "InstallationDate": "2014-10-14T13:48:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04874645",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.230",
+    "InstallationDate": "2014-10-23T08:10:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "04409358",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.231",
+    "InstallationDate": "2013-11-20T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04874639",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.232",
+    "InstallationDate": "2014-10-21T11:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "04874642",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.233",
+    "InstallationDate": "2014-10-14T09:05:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 100,
+    "TotalFactor": 101
+  },
+  {
+    "MeterNumber": "04650380",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.234",
+    "InstallationDate": "2014-04-24T11:45:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 80,
+    "TotalFactor": 81
+  },
+  {
+    "MeterNumber": "04874649",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.236",
+    "InstallationDate": "2014-10-21T13:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770291",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.238",
+    "InstallationDate": "2014-09-24T11:21:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  },
+  {
+    "MeterNumber": "04770305",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.239",
+    "InstallationDate": "2014-11-20T08:22:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 30,
+    "TotalFactor": 31
+  },
+  {
+    "MeterNumber": "03464600",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.240",
+    "InstallationDate": "2014-01-10T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 4,
+    "TotalFactor": 5
+  },
+  {
+    "MeterNumber": "03359151",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.3",
+    "InstallationDate": "2012-10-18T09:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 150,
+    "TotalFactor": 151
+  },
+  {
+    "MeterNumber": "03429068",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.5",
+    "InstallationDate": "2013-02-26T15:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "03359144",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.4",
+    "InstallationDate": "2013-06-12T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 40,
+    "TotalFactor": 41
+  },
+  {
+    "MeterNumber": "1ELS0003417657",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.0",
+    "InstallationDate": "2012-11-15T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 200,
+    "CurrentRatio": 5,
+    "TotalFactor": 205
+  },
+  {
+    "MeterNumber": "03429070",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.6",
+    "InstallationDate": "2013-02-26T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "03417654",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.2",
+    "InstallationDate": "2012-09-14T08:00:00",
+    "IsActive": true,
+    "VoltageRatio": 100,
+    "CurrentRatio": 40,
+    "TotalFactor": 140
+  },
+  {
+    "MeterNumber": "03359133",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.8",
+    "InstallationDate": "2013-02-26T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "03359138",
+    "Manufacturer": "Elster",
+    "IP": "172.25.113.9",
+    "InstallationDate": "2013-02-26T19:00:00",
+    "IsActive": true,
+    "VoltageRatio": 0,
+    "CurrentRatio": 0,
+    "TotalFactor": 0
+  },
+  {
+    "MeterNumber": "1ELS0003464598",
+    "Manufacturer": "Elster",
+    "IP": "10.124.0.11:9000",
+    "InstallationDate": "2014-01-16T17:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 1,
+    "TotalFactor": 2
+  },
+  {
+    "MeterNumber": "04409362",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.46:8000",
+    "InstallationDate": "2013-11-19T00:00:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 120,
+    "TotalFactor": 121
+  },
+  {
+    "MeterNumber": "04409409",
+    "Manufacturer": "EMH",
+    "IP": "10.124.0.46:8000",
+    "InstallationDate": "2014-02-26T14:30:00",
+    "IsActive": true,
+    "VoltageRatio": 1,
+    "CurrentRatio": 50,
+    "TotalFactor": 51
+  }
+]

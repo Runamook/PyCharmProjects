@@ -9,7 +9,7 @@ import argparse
 from redis import Redis
 from rq import Queue
 try:
-    from Act_dlms.Helpers.list_of_meters import list_of_meters_2 as list_of_meters
+    from .Helpers.list_of_meters import list_of_meters_2 as list_of_meters
 except ImportError:
     from Helpers.list_of_meters import list_of_meters_2 as list_of_meters
 
