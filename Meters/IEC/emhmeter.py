@@ -21,9 +21,6 @@ from rq import Queue
 from serial.serialutil import SerialException
 
 # Version with redis queue
-# TODO: Incorrect date in header ['P.0', 'ERROR'], lines: ['P.01(ERROR)', '']
-# TODO line 540 unknown OBIS codes are skipped
-# TODO: Separate queues: frequent queries, slow queries
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -561,6 +558,8 @@ class GetTable:
         return tuple_list
 
 
+'''
+
 class GetErrors:
 
     @staticmethod
@@ -590,8 +589,6 @@ class GetP98:
     def parse(selfinput_vars, data):
         pass
 
-    '''
-
     def get_p99logbook(self):
         logger.debug("Requesting latest P.99")
         with MeterBase(self.meter, self.timeout) as m:
@@ -618,6 +615,192 @@ class GetP98:
             return m.sendcmd_and_decode_response("R5".encode(), f"P.211()".encode())
 
     '''
+
+
+class GetP200:
+
+    history_days = 30           # Days old logs to insert
+
+    """
+    p200_result = {
+        "P.200_Bit15": "0",
+        "P.200_Bit14": "0",
+        "P.200_Bit13": "0",
+        "P.200_Bit12": "0",
+        "P.200_Bit11": "0",
+        "P.200_Bit10": "0",
+        "P.200_Bit9": "0",
+        "P.200_Bit8": "0",
+        "P.200_Bit7": "0",
+        "P.200_Bit6": "0",
+        "P.200_Bit5": "0",
+        "P.200_Bit4": "0",
+        "P.200_Bit3": "0",
+        "P.200_Bit2": "0",
+        "P.200_Bit1": "0",
+        "P.200_Bit0": "0"
+    }
+    """
+
+    def __init__(self, input_vars):
+        self.input_vars = input_vars
+        self.meter_number = input_vars["meter"]["meterNumber"]
+
+    def get(self):
+        # Query every X minutes. P.200(ERROR) - means no events
+        logger.debug(f"{self.meter_number} :: Requesting P.200")
+        with MeterBase(self.input_vars) as m:
+            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
+            return m.sendcmd_and_decode_response("R5".encode(), f"P.200()".encode())
+
+    def parse(self, data):
+        # Input
+        # P.200(1180807015448)(00002000)()(0)
+        # P.200(1180807015448)(00001C00)()(0)
+
+        logger.debug(f"{self.meter_number} Parsing P.200 output")
+        logger.debug(f"{self.meter_number} {data}")
+
+        results = dict()
+
+        lines = data.split('\r\n')
+        for line in lines:
+            if len(line) < 5:
+                continue
+
+            event_dt, bit_tuple_list = self.parse_line(line)
+            if not event_dt and not bit_tuple_list:
+                continue
+            else:
+                epoch = event_dt.strftime("%s")
+                if epoch in results:
+                    epoch = str(int(epoch) + 1)                 # Dirty hack
+                results[epoch] = bit_tuple_list
+
+        # {epoch: [(obis_code:val), (), (), ...]}
+        final_result = {"p200": results}
+
+        return final_result
+
+    def parse_line(self, line):
+        # P.200(1180807015448)(00002000)()(0)
+        re_dt = re.compile('^P.200[(](.+?)[)]')  # ? for non-greedy match
+        re_event = re.compile('^P.200[(].+?[)][(](.+?)[)]')
+
+        if "(ERROR)" in line:
+            event_dt = datetime.datetime.now().strftime("%s")
+            event = "00000000"
+        else:
+            # Get the 1180807015448 value, strip the first char
+            pre_dt = re_dt.search(line).groups()[0][1:]
+            event_dt = datetime.datetime.strptime(pre_dt, "%y%m%d%H%M%S")
+            event = re_event.search(line).groups()[0]
+
+        if (datetime.datetime.now() - event_dt).days > GetP200.history_days:
+            # Too old event
+            logger.debug(f"Meter {self.meter_number} P.200 skipping old event from {event_dt}, {line}")
+            return None, None
+        else:
+            # 32 bit numeric: 00002000
+            bin_event = bin(int(event, base=16))[2:]        # Convert string to bits and strip leading '0b'
+            while len(bin_event) < 32:
+                bin_event = f"0{bin_event}"
+
+            bin_event = bin_event[16:]                      # Only 16 bits are in use
+            logger.debug(f"Meter {self.meter_number} P.200 log {event} = {bin_event} at {event_dt}")
+            results = []
+            counter = 0
+            for bit in bin_event:
+                key = f"P.200_Bit{counter}"
+                counter += 1
+                results.append((key, bit))
+
+            return event_dt, results
+
+
+class GetP211:
+
+    history_days = 30          # Days old logs to insert
+    p211_result = {
+        "2000": "0",
+        "23A6": "0",
+        "234C": "0",
+        "334C": "0",
+        "234D": "0",
+        "334D": "0",
+        "234E": "0",
+        "334E": "0"
+    }
+
+    def __init__(self, input_vars):
+        self.input_vars = input_vars
+        self.meter_number = input_vars["meter"]["meterNumber"]
+
+    def get(self):
+        logger.debug(f"{self.meter_number} :: Requesting P.211")
+        with MeterBase(self.input_vars) as m:
+            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
+            return m.sendcmd_and_decode_response("R5".encode(), f"P.211()".encode())
+
+    def parse(self, data):
+        # Input
+        # P.211(1180807015448)(2000)()(0)
+        # Or
+        # No data returned for P.211 at socket://192.168.104.14:8000
+
+        logger.debug(f"{self.meter_number} Parsing P.211 output")
+        logger.debug(f"{self.meter_number} {data}")
+
+        results = dict()
+        lines = data.split('\r\n')
+        for line in lines:
+            if len(line) < 5:
+                continue
+
+            event_dt, event = self.parse_line(line)
+            if not event_dt and not event:
+                continue
+            else:
+                epoch = event_dt.strftime("%s")
+                if epoch in results:
+                    epoch = str(int(epoch) + 1)                 # Dirty hack
+                results[epoch] = event
+
+        # {epoch: [(obis_code:val), (), (), ...]}
+        final_result = {"p211": results}
+
+        return final_result
+
+    def parse_line(self, line):
+        # P.211(1180807015448)(2000)()(0)
+        # P.211(1070721151001)(23A6)()(1)(C.86.1)()(00001100)
+
+        re_dt = re.compile('^P.211[(](.+?)[)]')  # ? for non-greedy match
+        re_event = re.compile('^P.211[(].+?[)][(](.+?)[)]')
+
+        if not re_dt.search(line) or not re_event.search(line):
+            raise ValueError(f"No P.211 data found in {line}")
+
+        # Get the 1180807015448 value, strip the first char
+        pre_dt = re_dt.search(line).groups()[0][1:]
+        event_dt = datetime.datetime.strptime(pre_dt, "%y%m%d%H%M%S")
+        event = re_event.search(line).groups()[0]
+
+        if (datetime.datetime.now() - event_dt).days > GetP211.history_days:
+            # Too old event
+            logger.debug(f"Meter {self.meter_number} P.211 skipping old event from {event_dt}, {line}")
+            return None, None
+        else:
+            # 16 bit numeric: 2000
+            if event.lower() != "23a6":
+                GetP211.p211_result[event] = "1"
+            else:
+                GetP211.p211_result[event] = line
+            logger.debug(f"Meter {self.meter_number} P.211 log {event} at {event_dt}")
+            results = [(key, GetP211.p211_result[key]) for key in GetP211.p211_result]
+
+            return event_dt, results
+
 # Handlers END
 
 # Exporters START
@@ -740,6 +923,10 @@ def meta(input_vars):
         data_handler = GetP01(input_vars)
     elif input_vars["data_handler"] == "Table":
         data_handler = GetTable(input_vars)
+    elif input_vars["data_handler"] == "P.200":
+        data_handler = GetP200(input_vars)
+    elif input_vars["data_handler"] == "P.211":
+        data_handler = GetP211(input_vars)
 
     if input_vars["exporter"] == "Zabbix":
         exporter = ExportToZabbix(input_vars)
@@ -769,6 +956,22 @@ def create_input_vars(meter):
                       "server": "192.168.33.33",
                       "meter": meter
                       }
+    # P.200
+    input_vars_p200 = {"port": MeterBase.get_port(meter["ip"]),
+                      "timestamp": MeterBase.get_dt(),
+                      "data_handler": "P.200",
+                      "exporter": "Zabbix",
+                      "server": "192.168.33.33",
+                      "meter": meter
+                      }
+    # P.211
+    input_vars_p211 = {"port": MeterBase.get_port(meter["ip"]),
+                      "timestamp": MeterBase.get_dt(),
+                      "data_handler": "P.211",
+                      "exporter": "Zabbix",
+                      "server": "192.168.33.33",
+                      "meter": meter
+                      }
 
     # Table 4
     input_vars_table4 = {"port": MeterBase.get_port(meter["ip"]),
@@ -792,7 +995,12 @@ def create_input_vars(meter):
                          "meter": meter
                          }
 
-    return {"P01": input_vars_p01, "Table4": input_vars_table4, "Table1": input_vars_table1}
+    return {"P01": input_vars_p01,
+            "Table4": input_vars_table4,
+            "Table1": input_vars_table1,
+            "P200": input_vars_p200,
+            "P211": input_vars_p211
+            }
 # RQ mod
 
 
@@ -823,66 +1031,6 @@ def get_job_meta(queue):
             continue
 
     return running_jobs, failed_jobs
-
-
-"""
-def rq_create_jobs():
-    
-    # Receives list of meter dictionaries
-    # Places jobs to queues for python RQ
-    
-    p01_q = Queue(name="p01", connection=Redis())
-    table4_q = Queue(name="table4", connection=Redis())
-    logger.info("Connected to redis")
-
-    # list_of_meters = get_json()
-
-    logger.info(f"{len(list_of_meters)} meters to be processed")
-    p01_running_jobs, p01_failed_jobs = get_job_meta(p01_q)
-    for meter in list_of_meters:
-        # ttl - job ttl, won't be executed on expiry
-        # default_timeout - job shall be executed in default_timeout or marked as failed
-        # result_ttl - store successful result
-        # failure_ttl - store failed job
-
-        # Before putting a job into a queue check if there is a failed
-        # or pending job for that meter already in queue
-        # Find a job by meterId - only one job for a meter id can exist in a queue at a time
-        timestamp = MeterBase.get_dt()                                              # This is used for P01 query
-        input_vars_dict = create_input_vars(meter)
-        current_timestamp = datetime.datetime.strptime(timestamp[1:], '%y%m%d%H%M')     # This is used for comparing
-        meter_number = meter["meterNumber"]
-
-        new_job = {"meterNumber": meter_number, "timestamp": timestamp}
-        if new_job["meterNumber"] in p01_failed_jobs.keys():
-            # If job is found in "failed" queue
-            existing_job = p01_failed_jobs[meter_number]
-            job_start_time = existing_job["timestamp"]
-            existing_timestamp = datetime.datetime.strptime(job_start_time[1:], '%y%m%d%H%M')
-            # If the job was started less than 24 hours ago - requeue
-            delta = (current_timestamp - existing_timestamp).total_seconds()
-            if delta < 86400:                                                             # Compare timestamps
-                logger.debug(f"Meter {meter_number} :: Requeueing failed P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
-                p01_q.failed_job_registry.requeue(existing_job["job_id"])
-            elif delta > 86400:
-                logger.debug(f"Meter {meter_number} :: Removing failed P.01 job {existing_job['meterNumber']} after 24h, start time: {job_start_time[1:]} UTC")
-                p01_q.failed_job_registry.remove(p01_q.fetch_job(existing_job["job_id"]))
-        elif new_job["meterNumber"] in p01_running_jobs.keys():
-            # If job is found in "running/waiting" queue
-            existing_job = p01_running_jobs[meter_number]
-            job_start_time = existing_job["timestamp"]
-
-            logger.debug(f"Meter {meter_number} :: Pending P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
-            pass
-        else:
-            # New job, not found anywhere
-            logger.debug(f"Meter {meter_number} :: New P.01 job {new_job['meterNumber']}")
-            # p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
-            p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
-        logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table4 for {meter['ip']}")
-        # table4_q.enqueue(rq_push_table4, meter, result_ttl=10, ttl=300, failure_ttl=600)
-        table4_q.enqueue(meta, input_vars_dict["Table4"], result_ttl=10, ttl=300, failure_ttl=600)
-"""
 
 
 def rq_create_table1_jobs(meter_list, test):
@@ -982,6 +1130,25 @@ def rq_create_p01_jobs(meter_list, test):
             # p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
             p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
 
+
+def rq_create_logbook_jobs(meter_list, test):
+    if test:
+        q = Queue(name=f"test-logbook", connection=Redis())
+    else:
+        q = Queue(name=f"logbook", connection=Redis())
+    logger.info("Connected to redis")
+
+    logger.info(f"{len(meter_list)} meters to be processed")
+    for meter in meter_list:
+        input_vars_dict = create_input_vars(meter)
+        meter_number = meter["meterNumber"]
+
+        logger.debug(f"Meter {meter_number} :: enqueueing loogbooks for {meter['ip']}")
+        new_job = {"meterNumber": meter_number, "timestamp": datetime.datetime.utcnow().strftime('%s')}
+        q.enqueue(meta, input_vars_dict[f"P200"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
+        q.enqueue(meta, input_vars_dict[f"P211"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
+
+
 # RQ mod
 
 
@@ -994,4 +1161,4 @@ if __name__ == "__main__":
 
     # (venv) [root@vsrvenomos00123 app]# rq worker p01 table4
     logger.setLevel("DEBUG")
-    rq_create_jobs()
+    rq_create_p01_jobs()

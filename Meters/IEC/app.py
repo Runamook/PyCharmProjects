@@ -1,8 +1,8 @@
 #!/opt/meter_iec/venv/bin/python
 try:
-    from .emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, logger, get_job_meta
+    from .emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, rq_create_logbook_jobs, logger, get_job_meta
 except ImportError:
-    from emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, logger, get_job_meta
+    from emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, logger, rq_create_logbook_jobs, get_job_meta
 import time
 import sys
 import argparse
@@ -22,6 +22,8 @@ def main(dataset, frequent, llevel, test):
         job = rq_create_table1_jobs
     elif dataset == "t4":
         job = rq_create_table4_jobs
+    elif dataset == "logbook":
+        job = rq_create_logbook_jobs
     else:
         job = rq_create_p01_jobs
 
@@ -34,33 +36,6 @@ def main(dataset, frequent, llevel, test):
         job(list_of_meters, test)
 
     return
-
-
-"""
-def get_job_meta(queue):
-
-    running_jobs = {}
-    for job_id in queue.job_ids:                          # job_id - '52ad7ebf-f8f1-4ac2-9cc8-c1a165b6675b'
-        if queue.fetch_job(job_id) is None:
-            logger.debug(f"Jobs :: Skipping None type job {job_id}")
-            continue
-        meta = queue.fetch_job(job_id).meta
-        meta["job_id"] = job_id                           # Add job_id key to meta dictionary
-        logger.debug(f"Jobs :: found meta: {meta}")
-        running_jobs[meta["meterNumber"]] = meta          # running_jobs = {meterNumber : {meta}, meterNumber: {} ...}
-
-    failed_jobs = {}
-    for job_id in queue.failed_job_registry.get_job_ids():
-        if queue.fetch_job(job_id) is None:
-            logger.debug(f"Jobs :: Skipping None type job {job_id}")
-            continue
-        meta = queue.fetch_job(job_id).meta
-        meta["job_id"] = job_id
-        logger.debug(f"Jobs :: found meta: {meta}")
-        failed_jobs[meta["meterNumber"]] = meta
-
-    return running_jobs, failed_jobs
-"""
 
 
 def requeue_jobs(q_name, test):
@@ -85,11 +60,11 @@ if __name__ == "__main__":
     optparser.add_argument("--frequent", type=str, help="If True - pushes 6 jobs in a minute. Default: False")
     optparser.add_argument("--test", type=str, help="Changes queue names. Default: False")
     optparser.add_argument("--requeue", type=str, help="Requeue failed jobs, only for Table1")
-    required.add_argument("--dataset", type=str, help="p01, t1, t4", required=True)
+    required.add_argument("--dataset", type=str, help="p01, t1, t4, logbook", required=True)
 
     args = optparser.parse_args()
 
-    valid_datasets = ["p01", "t1", "t4"]
+    valid_datasets = ["p01", "t1", "t4", "logbook"]
     valid_loglevels = ["DEBUG", "INFO", "WARN", "CRITICAL"]
 
     if args.dataset in valid_datasets:
