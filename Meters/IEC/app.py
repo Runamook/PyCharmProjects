@@ -1,8 +1,8 @@
 #!/opt/meter_iec/venv/bin/python
 try:
-    from .emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, rq_create_logbook_jobs, logger, get_job_meta
+    from .emhmeter import *
 except ImportError:
-    from emhmeter import rq_create_table1_jobs, rq_create_p01_jobs, rq_create_table4_jobs, logger, rq_create_logbook_jobs, get_job_meta
+    from emhmeter import *
 import time
 import sys
 import argparse
@@ -24,6 +24,8 @@ def main(dataset, frequent, llevel, test):
         job = rq_create_table4_jobs
     elif dataset == "logbook":
         job = rq_create_logbook_jobs
+    elif dataset == "time":
+        job = rq_create_time_jobs
     else:
         job = rq_create_p01_jobs
 
@@ -60,11 +62,11 @@ if __name__ == "__main__":
     optparser.add_argument("--frequent", type=str, help="If True - pushes 6 jobs in a minute. Default: False")
     optparser.add_argument("--test", type=str, help="Changes queue names. Default: False")
     optparser.add_argument("--requeue", type=str, help="Requeue failed jobs, only for Table1")
-    required.add_argument("--dataset", type=str, help="p01, t1, t4, logbook", required=True)
+    required.add_argument("--dataset", type=str, help="p01, t1, t4, time, logbook", required=True)
 
     args = optparser.parse_args()
 
-    valid_datasets = ["p01", "t1", "t4", "logbook"]
+    valid_datasets = ["p01", "t1", "t4", "logbook", "time"]
     valid_loglevels = ["DEBUG", "INFO", "WARN", "CRITICAL"]
 
     if args.dataset in valid_datasets:

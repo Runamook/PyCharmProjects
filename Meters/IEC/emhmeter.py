@@ -19,7 +19,9 @@ import sys
 from redis import Redis
 from rq import Queue
 from serial.serialutil import SerialException
-
+from time import sleep
+import pytz
+from random import random
 # Version with redis queue
 
 
@@ -95,8 +97,11 @@ class MeterBase:
 
     CTLBYTES = SOH + STX + ETX
     LineEnd = [ETX, LF, EOT]
+    lock_limit = 120                # Time to wait for lock before raising IOerror
+    lock_timeout = 300              # Time for a lock to timeout in Redis
 
     def __init__(self, input_vars):
+        self.r = Redis()
         self.port = input_vars["port"]
         self.meter_number = input_vars["meter"]["meterNumber"]
         self.timeout = input_vars.get("timeout") or 300
@@ -109,6 +114,9 @@ class MeterBase:
 
     def __enter__(self):
         logger.debug(f"{self.meter_number} Opening connection to {self.port}")
+
+        # Lock the meter
+        # self.lock()
         try:
             self.ser = serial.serial_for_url(self.port,
                                              baudrate=300,
@@ -254,6 +262,26 @@ class MeterBase:
 
         return port
 
+    def lock(self):
+        # Tries to install a lock sign for a meter in redis
+        # If the lock is installed - no on can query the meter
+        # There is a total limit of MeterBase.lock_limit seconds to wait for lock
+
+        start = datetime.datetime.now()
+        while not self.r.get(self.meter_number):
+            logger.debug(f"Meter {self.meter_number} locked - waiting")
+            sleep(random())
+            now = datetime.datetime.now()
+            if (now - start).total_seconds() < MeterBase.lock_limit:
+                logger.error(f"Unable to lock the meter in {MeterBase.lock_limit} seconds")
+                raise IOError
+        logger.debug(f"Meter {self.meter_number} not locked - locking")
+        self.r.set(self.meter_number, '1', ex={MeterBase.lock_timeout})
+        return True
+
+    def unlock(self):
+        self.r.delete(self.meter_number)
+        logger.debug(f"Meter {self.meter_number} removed lock")
 
 # Handlers START
 
@@ -277,6 +305,10 @@ class GetP01:
     def __init__(self, input_vars):
         self.input_vars = input_vars
         self.meter_number = input_vars["meter"]["meterNumber"]
+        if input_vars["meter"].get("Manufacturer"):
+            self.manufacturer = input_vars["meter"]["Manufacturer"]
+        else:
+            self.manufacturer = "EMH"
 
     def get(self):
         timestamp = self.input_vars['timestamp']
@@ -286,13 +318,23 @@ class GetP01:
             return m.sendcmd_and_decode_response("R5".encode(), f"P.01({timestamp};)".encode())
 
     def parse(self, data):
-        # Input
+        # Input EMH
         # P.01(1190417001500)(00000000)(15)(6)(1.5)(kW)(2.5)(kW)(5.5)(kvar)(6.5)(kvar)(7.5)(kvar)(8.5)(kvar)
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
+        # Input MetCom
+        # P.01(1190728163000)(08)(15)(12)(1-0:1.5.0)(kW)(1-0:2.5.0)(kW)(1-0:5.5.0)(kvar)(1-0:6.5.0)(kvar)(1-0:7.5.0)(kvar)(1-0:8.5.0)(kvar)(1-0:1.8.0)(kWh)(1-0:2.8.0)(kWh)(1-0:5.8.0)(kvarh)(1-0:6.8.0)(kvarh)(1-0:7.8.0)(kvarh)(1-0:8.8.0)(kvarh)
+        # (0.0000)(0.4080)(0.0000)(0.1007)(0.0000)(0.0000)(00000.389)(00203.845)(00000.000)(00050.998)(00000.529)(00002.826)
+        # (0.0000)(0.3499)(0.0000)(0.0795)(0.0000)(0.0000)(00000.389)(00203.933)(00000.000)(00051.018)(00000.529)(00002.826)
 
         logger.debug(f"{self.meter_number} Parsing P.01 output")
         # logger.debug(f"{self.meter_number} {data}")
+        if self.manufacturer == "EMH":
+            return self.parse_emh(data)
+        elif self.manufacturer == "MetCom":
+            return self.parse_metcom(data)
+
+    def parse_emh(self, data):
         keys = [
             "bill-1.5.0", "bill-2.5.0", "bill-5.5.0", "bill-6.5.0", "bill-7.5.0", "bill-8.5.0"
         ]
@@ -301,30 +343,24 @@ class GetP01:
         ]
 
         lines = data.split('\r\n')
-        pre_header = lines[0].split("(")                                    # Strip closing parenthesis
-        header = [elem[:-1] for elem in pre_header]                         # Strip opening parenthesis
-        try:
-            base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
-        except ValueError:
-            logger.error(f"{self.meter_number} Incorrect date in header {header}, lines: {lines}")
-            raise
-        # Strip header line and all short lines
-        # Reorder a list, cause newest values are the last by default
-        log = header[2]
-        # logger.debug(f"Log = {log}")
-        lines = list(filter(lambda x: len(x) > 6, lines[1:]))[::-1]
+        header, base_dt, log = self.get_header_data(lines[0])
+
+        lines = self.filter_lines(lines)
         # logger.debug(f"Header {header}, time {base_dt}, lines {lines}")
         results = {}
         counter = 0
         for line in lines:
-            if len(line) > 5:
-                result = []
-                values = line.split("(")[1:]            # First value is an empty string
-                value_counter = 0
-                for value in values:
+            result = []
+            values = line.split("(")[1:]            # First value is an empty string
+            value_counter = 0
+            for value in values:
+                try:
                     result.append((keys[value_counter], value[:-1]))
                     result.append((keys_raw[value_counter], value[:-1]))
-                    value_counter += 1
+                except IndexError:
+                    logger.error(f"Error while parsing {line}, value  \"{value}\"")
+                    raise IndexError
+                value_counter += 1
             result.append(("bill-Log", log))
             results[(base_dt + datetime.timedelta(minutes=counter*15)).strftime("%s")] = result
             logger.debug(f"{self.meter_number} Intermediate result {results}")
@@ -335,6 +371,63 @@ class GetP01:
         final_result = {"p01": results}
         logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
         return final_result
+
+    def parse_metcom(self, data):
+        keys = [
+            "bill-1.5.0", "bill-2.5.0", "bill-5.5.0", "bill-6.5.0", "bill-7.5.0", "bill-8.5.0",
+            "bill-1.8.0", "bill-2.8.0", "bill-5.8.0", "bill-6.8.0", "bill-7.8.0", "bill-8.8.0"
+        ]
+        keys_raw = [
+            "bill-raw-1.5.0", "bill-raw-2.5.0", "bill-raw-5.5.0", "bill-raw-6.5.0", "bill-raw-7.5.0", "bill-raw-8.5.0",
+            "bill-raw-1.8.0", "bill-raw-2.8.0", "bill-raw-5.8.0", "bill-raw-6.8.0", "bill-raw-7.8.0", "bill-raw-8.8.0"
+        ]
+
+        lines = data.split('\r\n')
+        header, base_dt = self.get_header_data(lines[0])
+        lines = self.filter_lines(lines)
+        # logger.debug(f"Header {header}, time {base_dt}, lines {lines}")
+        results = {}
+        counter = 0
+        for line in lines:
+            result = []
+            values = line.split("(")[1:]            # First value is an empty string
+            value_counter = 0
+            for value in values:
+                result.append((keys[value_counter], value[:-1]))
+                result.append((keys_raw[value_counter], value[:-1]))
+                value_counter += 1
+            results[(base_dt + datetime.timedelta(minutes=counter*15)).strftime("%s")] = result
+            logger.debug(f"{self.meter_number} Intermediate result {results}")
+            counter += 1
+
+        # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
+        # logger.debug(f"Results: {results}")
+        final_result = {"p01": results}
+        logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
+        return final_result
+
+    def get_header_data(self, line):
+        # Parse P.01 first line
+        pre_header = line.split("(")                                    # Strip closing parenthesis
+        header = [elem[:-1] for elem in pre_header]                     # Strip opening parenthesis
+        try:
+            base_dt = datetime.datetime.strptime(header[1][1:], "%y%m%d%H%M%S")
+        except ValueError:
+            logger.error(f"{self.meter_number} Incorrect date in header {header}, lines: {lines}")
+            raise
+        if self.manufacturer == "EMH":
+            # Return log in header[2] for EMH
+            return header, base_dt, header[2]
+        return header, base_dt
+
+    @staticmethod
+    def filter_lines(lines):
+        # Filter out short lines, where there is no data (probably)
+        # Strip header line and all short lines
+        # Reorder a list, cause newest values are the last by default
+
+        short_line = 6
+        return list(filter(lambda x: len(x) > short_line, lines[1:]))[::-1]
 
 
 class GetTable:
@@ -801,6 +894,170 @@ class GetP211:
 
             return event_dt, results
 
+
+class GetTime:
+
+    def __init__(self, input_vars):
+        self.input_vars = input_vars
+        self.meter_number = input_vars["meter"]["meterNumber"]
+        self.results = dict()
+
+    def _get(self, what):
+        # results = dict()
+        # Get time
+        if what == "time":
+            obis = "0.9.1"
+            name = "time"
+        elif what == "date":
+            obis = "0.9.2"
+            name = "date"
+        else:
+            logger.error(f"Incorrect input {what}, use \"time\" or \"date\"")
+            raise KeyError
+
+        delta = datetime.timedelta(seconds=14)
+        ref_time = datetime.datetime.utcnow() + delta
+        self.results[name] = [ref_time, None]
+        logger.debug(f"===================== Getting {name} ===================== ")
+        value = self.query("R5", f"{obis}()")
+        if obis not in value:
+            logger.error(f"Unable to receive {name}. Received: \"{value}\"")
+            value = f"{obis}(error)"
+        self.results[name][1] = value
+        logger.debug(f"{self.results}")
+        if what == "time":
+            self.make_pause()
+        return
+
+    def query(self, cmd, data):
+        with MeterBase(self.input_vars) as m:
+            m.sendcmd_and_decode_response(b"/" + b"?" + self.meter_number.encode() + b"!\r\n")
+            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
+            result = m.sendcmd_and_decode_response(cmd.encode(), data.encode())
+            cmd = MeterBase.SOH + b'B0' + MeterBase.ETX
+            m.sendcmd_and_decode_response(cmd + MeterBase.bcc(cmd))
+            return result
+
+    @staticmethod
+    def make_pause():
+        pause = 25
+        logger.debug(f"Pausing for {pause} seconds")
+        sleep(pause)
+        return
+
+    def check(self, what, value):
+
+        # 0.9.2(1190724), 0.9.1(1221856)
+        re_in_parenthesis = re.compile('^0.9..[(](.+?)[)]')
+        logger.debug(f"Checking meter {what} \"{value}\"")
+
+        reference_value = value[0]
+        checked_value = value[1]
+
+        found_value = re_in_parenthesis.search(checked_value).groups()[0]
+
+        if what == "date":
+            return self.check_date(reference_value, found_value)
+        elif what == "time":
+            return self.check_time(reference_value, found_value)
+
+    @staticmethod
+    def check_date(ref_value, checked_value):
+        # datetime object, string
+        if checked_value != "error":
+            ref_value = ref_value.strftime("%y%m%d")
+        else:
+            ref_value = "010000"
+        checked_value = checked_value[1:]
+        logger.debug(f"Checking {ref_value} == {checked_value}")
+        return ref_value == checked_value
+
+    @staticmethod
+    def check_time(ref_value, checked_value):
+        # datetime object, string
+
+        # Select meter TZ based on response
+        if checked_value[0] == "1":
+            local_tz = pytz.timezone("Europe/Berlin")  # UTC +2
+        elif checked_value[0] == "2":
+            local_tz = pytz.timezone("UTC")
+        else:
+            local_tz = pytz.timezone("Europe/Moscow")  # UTC +3
+
+        # Generate "now" time in UTC
+        utc_now = pytz.utc.localize(datetime.datetime.utcnow())
+
+        # ref_value is UTC already, insert TZ info into object
+        ref_value = pytz.utc.localize(ref_value)
+        # Adjust it to actual meter TZ
+        ref_value = ref_value.astimezone(local_tz)
+
+        if checked_value != "error":
+            now_date = utc_now.strftime("%y%m%d")
+        else:
+            now_date = "010000"
+
+        # Take meter TZ now date (generated by script), add to meter TZ now time (received from meter)
+        checked_value = datetime.datetime.strptime(now_date + checked_value[1:], "%y%m%d%H%M%S")
+        # Insert local_tz into datetime object
+        checked_value = local_tz.localize(checked_value)
+
+        # Now both objects are in local TZ
+        logger.debug(f"Checking {ref_value} == {checked_value}")
+
+        # Compare
+        delta = (checked_value - ref_value).total_seconds()
+        logger.debug(f"Delta = {delta}")
+
+        allowable_delta = 6  # Seconds
+        return abs(delta) <= allowable_delta
+
+    def get(self):
+
+        self.input_vars["get_id"] = False
+
+        self._get("time")
+        self._get("date")
+
+        for key in self.results.keys():
+            if self.check(key, self.results[key]):
+                logger.debug(f"{key} is correct")
+                self.results[key].append("0")
+            else:
+                logger.debug(f"{key} is incorrect")
+                self.results[key].append("1")
+
+        return self.results
+
+    def parse(self, data):
+        # Input
+        # {'time': [datetime.datetime(2019, 7, 27, 13, 43, 28, 274370), '0.9.1(1154336)', '0'],
+        # 'date': [datetime.datetime(2019, 7, 27, 13, 44, 20, 519825), '0.9.2(1190727)', '1']},
+
+        logger.debug(f"{self.meter_number} Parsing time output")
+        logger.debug(f"{self.meter_number} {data}")
+
+        results = dict()
+
+        for key in data.keys():
+            if key == "time":
+                obis = "0.9.1"
+            elif key == "date":
+                obis = "0.9.2"
+
+            epoch = str(int(data[key][0].strftime("%s")) + 7200)
+            item_value = data[key][1]
+            trigger_value = data[key][2]
+
+            results[epoch] = [(f"{obis}-value", item_value), (f"{obis}-trigger", trigger_value)]
+
+        # {epoch: [(obis_code, val), (), (), ...]}
+
+        final_result = {"time": results}
+        logger.debug(f"{final_result}")
+        return final_result
+
+
 # Handlers END
 
 # Exporters START
@@ -927,6 +1184,8 @@ def meta(input_vars):
         data_handler = GetP200(input_vars)
     elif input_vars["data_handler"] == "P.211":
         data_handler = GetP211(input_vars)
+    elif input_vars["data_handler"] == "Time":
+        data_handler = GetTime(input_vars)
 
     if input_vars["exporter"] == "Zabbix":
         exporter = ExportToZabbix(input_vars)
@@ -995,11 +1254,22 @@ def create_input_vars(meter):
                          "meter": meter
                          }
 
+    # Time
+    input_vars_time = {"port": MeterBase.get_port(meter["ip"]),
+                         "get_id": False,
+                         "meterNumber": meter["meterNumber"],
+                         "data_handler": "Time",
+                         "exporter": "Zabbix",
+                         "server": "192.168.33.33",
+                         "meter": meter
+                         }
+
     return {"P01": input_vars_p01,
             "Table4": input_vars_table4,
             "Table1": input_vars_table1,
             "P200": input_vars_p200,
-            "P211": input_vars_p211
+            "P211": input_vars_p211,
+            "Time": input_vars_time
             }
 # RQ mod
 
@@ -1147,6 +1417,23 @@ def rq_create_logbook_jobs(meter_list, test):
         new_job = {"meterNumber": meter_number, "timestamp": datetime.datetime.utcnow().strftime('%s')}
         q.enqueue(meta, input_vars_dict[f"P200"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
         q.enqueue(meta, input_vars_dict[f"P211"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
+
+
+def rq_create_time_jobs(meter_list, test):
+    if test:
+        q = Queue(name=f"test-logbook", connection=Redis())
+    else:
+        q = Queue(name=f"logbook", connection=Redis())
+    logger.info("Connected to redis")
+
+    logger.info(f"{len(meter_list)} meters to be processed")
+    for meter in meter_list:
+        input_vars_dict = create_input_vars(meter)
+        meter_number = meter["meterNumber"]
+
+        logger.debug(f"Meter {meter_number} :: enqueueing time for {meter['ip']}")
+        new_job = {"meterNumber": meter_number, "timestamp": datetime.datetime.utcnow().strftime('%s')}
+        q.enqueue(meta, input_vars_dict[f"Time"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
 
 
 # RQ mod

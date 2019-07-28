@@ -158,3 +158,14 @@ list_of_meters_2 = [
       "totalFactor":"calculated"
    }
 ]
+
+list_of_meters_metcom = [
+    {
+        "meterNumber": "1MCS0010001205",
+        "ip": "10.124.2.68",
+        "voltageRatio": 150,
+        "Manufacturer": "MetCom",
+        "currentRatio": 5,
+        "totalFactor": "calculated"
+    }
+]

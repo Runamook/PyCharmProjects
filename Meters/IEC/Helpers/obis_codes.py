@@ -593,12 +593,24 @@ zabbix_obis_codes = {
     "bill-6.5.0": "Z-1-1.6.29.0",
     "bill-7.5.0": "Z-1-1.7.29.0",
     "bill-8.5.0": "Z-1-1.8.29.0",
+    "bill-1.8.0": "Z-1-1.1.8.0-bill",
+    "bill-2.8.0": "Z-1-1.2.8.0-bill",
+    "bill-5.8.0": "Z-1-1.5.8.0-bill",
+    "bill-6.8.0": "Z-1-1.6.8.0-bill",
+    "bill-7.8.0": "Z-1-1.7.8.0-bill",
+    "bill-8.8.0": "Z-1-1.8.8.0-bill",
     "bill-raw-1.5.0": "Z-1-1.1.29.0-raw",
     "bill-raw-2.5.0": "Z-1-1.2.29.0-raw",
     "bill-raw-5.5.0": "Z-1-1.5.29.0-raw",
     "bill-raw-6.5.0": "Z-1-1.6.29.0-raw",
     "bill-raw-7.5.0": "Z-1-1.7.29.0-raw",
     "bill-raw-8.5.0": "Z-1-1.8.29.0-raw",
+    "bill-raw-1.8.0": "Z-1-1.1.8.0-bill-raw",
+    "bill-raw-2.8.0": "Z-1-1.2.8.0-bill-raw",
+    "bill-raw-5.8.0": "Z-1-1.5.8.0-bill-raw",
+    "bill-raw-6.8.0": "Z-1-1.6.8.0-bill-raw",
+    "bill-raw-7.8.0": "Z-1-1.7.8.0-bill-raw",
+    "bill-raw-8.8.0": "Z-1-1.8.8.0-bill-raw",
     "bill-Log": "Z-1-1.Log",
     # "bill-1.5.0": "positiveActiveDemandBill",
     # "bill-2.5.0": "negativeActiveDemandBill",
@@ -725,7 +737,11 @@ zabbix_obis_codes = {
     "234D": "Z-1-1.234D",
     "334D": "Z-1-1.334D",
     "234E": "Z-1-1.234E",
-    "334E": "Z-1-1.334E"
+    "334E": "Z-1-1.334E",
+    "0.9.1-value": "Z-1-1.0.9.1-value",
+    "0.9.2-value": "Z-1-1.0.9.2-value",
+    "0.9.1-trigger": "Z-1-1.0.9.1-trigger",
+    "0.9.2-trigger": "Z-1-1.0.9.2-trigger"
 }
 
 transform_set = {
@@ -867,6 +883,22 @@ transform_set = {
     "Z-1-1.234D": "None",
     "Z-1-1.334D": "None",
     "Z-1-1.234E": "None",
-    "Z-1-1.334E": "None"
+    "Z-1-1.334E": "None",
+    "Z-1-1.0.9.1-value": "None",
+    "Z-1-1.0.9.2-value": "None",
+    "Z-1-1.0.9.1-trigger": "None",
+    "Z-1-1.0.9.2-trigger": "None",
+    "Z-1-1.1.8.0-bill": "totalFactor",
+    "Z-1-1.2.8.0-bill": "totalFactor",
+    "Z-1-1.5.8.0-bill": "totalFactor",
+    "Z-1-1.6.8.0-bill": "totalFactor",
+    "Z-1-1.7.8.0-bill": "totalFactor",
+    "Z-1-1.8.8.0-bill": "totalFactor",
+    "Z-1-1.1.8.0-bill-raw": "None",
+    "Z-1-1.2.8.0-bill-raw": "None",
+    "Z-1-1.5.8.0-bill-raw": "None",
+    "Z-1-1.6.8.0-bill-raw": "None",
+    "Z-1-1.7.8.0-bill-raw": "None",
+    "Z-1-1.8.8.0-bill-raw": "None"
 }
 
