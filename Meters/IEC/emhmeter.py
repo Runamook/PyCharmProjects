@@ -116,7 +116,8 @@ class MeterBase:
         logger.debug(f"{self.meter_number} Opening connection to {self.port}")
 
         # Lock the meter
-        # self.lock()
+        self.lock()
+
         try:
             self.ser = serial.serial_for_url(self.port,
                                              baudrate=300,
@@ -136,6 +137,7 @@ class MeterBase:
     def __exit__(self, exc_type, exc_value, traceback):
         logger.debug(f"{self.meter_number} Closing connection")
         self.ser.close()
+        self.unlock()
 
     def sendcmd(self, cmd, data=None, etx=ETX):
         # Remember IEC 62056-21 timers:
@@ -268,15 +270,20 @@ class MeterBase:
         # There is a total limit of MeterBase.lock_limit seconds to wait for lock
 
         start = datetime.datetime.now()
-        while not self.r.get(self.meter_number):
-            logger.debug(f"Meter {self.meter_number} locked - waiting")
+
+        # While redis returns the value - sleep and repeat
+        counter = 1
+        while self.r.get(self.meter_number):
+            if counter % 10 == 0:
+                logger.debug(f"Meter {self.meter_number} locked - waiting")
             sleep(random())
+            counter += 1
             now = datetime.datetime.now()
-            if (now - start).total_seconds() < MeterBase.lock_limit:
+            if (now - start).total_seconds() > MeterBase.lock_limit:
                 logger.error(f"Unable to lock the meter in {MeterBase.lock_limit} seconds")
                 raise IOError
         logger.debug(f"Meter {self.meter_number} not locked - locking")
-        self.r.set(self.meter_number, '1', ex={MeterBase.lock_timeout})
+        self.r.set(self.meter_number, "1", ex=MeterBase.lock_timeout)
         return True
 
     def unlock(self):
