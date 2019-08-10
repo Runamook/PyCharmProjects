@@ -17,7 +17,7 @@
 #
 #################################################################
 
-import sys, tkinter, serial, time, _thread 
+import sys, tkinter, serial, time, _thread
 
 global g_info_datum
 global g_info_zeit
@@ -129,15 +129,17 @@ crc_table =    [0x00, 0x02 ,0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14
                 0xCD, 0xCF, 0xC1, 0xC3, 0xC5, 0xC7, 0xF9, 0xFB, 0xFD, 0xFF, 0xF1, 0xF3, 0xF5,
                 0xF7, 0xE9, 0xEB, 0xED, 0xEF, 0xE1, 0xE3, 0xE5, 0xE7]
 
-############ start getdata - task ##############
+# ########### start getdata - task ##############
+
+
 def getdata_task(parameter):
     global port
     global buffer
     global crc_test
     
-    buffer=[0 for x in range(50)]
+    buffer = [0 for x in range(50)]
 
-    def  crc_testen(length):
+    def crc_testen(length):
         global crc_test
         crc_test = True
         crc = 0 
@@ -150,7 +152,7 @@ def getdata_task(parameter):
             else:
                 crc_test = False         
 
-    ### Datum / Uhrzeit ##            
+    # ## Datum / Uhrzeit ##
     def DatumUhrzeitMsg():
         global g_info_datum
         global g_info_zeit
@@ -158,16 +160,16 @@ def getdata_task(parameter):
         for x in range (4,14):
             buffer[x] = ord(port.read())
         crc_testen(12)
-        if crc_test == True:
-            iyear      = int(buffer[4]+2000)
-            imonth     = int(buffer[5])
-            ihour      = int(buffer[6])
-            iday       = int(buffer[7])
-            iminute    = int(buffer[8])
-            isecond    = int(buffer[9])
+        if crc_test:
+            iyear = int(buffer[4]+2000)
+            imonth = int(buffer[5])
+            ihour = int(buffer[6])
+            iday = int(buffer[7])
+            iminute = int(buffer[8])
+            isecond = int(buffer[9])
             idayofweek = int(buffer[10])
-            g_info_datum=format(iday,"2d")+"."+format(imonth,"2d")+"."+format(iyear,"4d")
-            g_info_zeit =format(ihour,"2d")+":"+format(iminute,"2d")+":"+format(isecond,"2d")
+            g_info_datum = format(iday, "2d")+"."+format(imonth, "2d")+"."+format(iyear, "4d")
+            g_info_zeit = format(ihour, "2d")+":"+format(iminute, "2d")+":"+format(isecond, "2d")
 
             if g_current_display=="system":
                 temptext="DA:"
@@ -395,7 +397,7 @@ def getdata_task(parameter):
                 g_i_hexheader_counter+=1
                 g_thread_lock.release()
 
-    ### Requestmessage ##            
+    # Requestmessage ##
     def RequestMsg():
         for x in range (4,21):
             buffer[x] = ord(port.read())
@@ -412,51 +414,49 @@ def getdata_task(parameter):
                 
                 g_thread_lock.acquire()
                 global g_i_hexheader_counter
-                g_i_hexheader_counter+=1
+                g_i_hexheader_counter += 1
                 g_thread_lock.release()
-            
-    
-    ## check Msg-header and extract data
+
+    # check Msg-header and extract data
     def CheckMsgHeader(firstbyte):
         if firstbyte == 0x88:
             buffer[0] = firstbyte
             for x in range (1,4):
                 buffer[x] = ord(port.read())
             if buffer[1] == 0:
-                ## Telegram: Heizgeraet (88001800) ##
+                # Telegram: Heizgeraet (88001800) ##
                 if buffer[2] == 0x18:
                     if buffer[3] == 0:
                         HeizgeraetMsg()
-                ## Telegram: Heizkreis1 (88001900) ##
+                # Telegram: Heizkreis1 (88001900) ##
                 elif buffer[2] == 0x19:
                     if buffer[3] == 0:
                         HeizkreisMsg()
-                ## Telegram: Warmwasser (88003400) ##
+                # Telegram: Warmwasser (88003400) ##
                 elif buffer[2] == 0x34:
                     if buffer[3] == 0:
                         WarmwasserMsg()
-                ## Telegram: Request    (88000700) ##
+                # Telegram: Request    (88000700) ##
                 elif buffer[2] == 0x07:
                     if buffer[3] == 0:
                         RequestMsg()
 
-        ## Telegram: HK2 / Datum ##
+        # Telegram: HK2 / Datum ##
         if firstbyte == 0x90:
             buffer[0] = firstbyte
-            for x in range (1,4):
+            for x in range(1, 4):
                 buffer[x] = ord(port.read())
             if buffer[1] == 0:
-                ## Telegram: Heizkreis2 (9000FF00) ##
+                # Telegram: Heizkreis2 (9000FF00) ##
                 if buffer[2] == 0xff:
                     if buffer[3] == 0:
                         HeizkreisMsg_FW100_200Msg()
-                ## Telegram: Datum / Uhrzeit (90000600) ##
+                # Telegram: Datum / Uhrzeit (90000600) ##
                 elif buffer[2] == 6:
                     if buffer[3] == 0:
                         DatumUhrzeitMsg()
 
-            
-        ## Telegram: ISM Solarinfo (B000FF00) ##
+        # Telegram: ISM Solarinfo (B000FF00) ##
         elif firstbyte == 0xb0:
             buffer[0] = firstbyte
             for x in range (1,4):
@@ -465,19 +465,17 @@ def getdata_task(parameter):
                 if buffer[2] == 0xff:
                     if buffer[3] == 0:
                         SolarMsg()
-        
 
-    ######## endless - loop until end
+    # ####### endless - loop until end
     while g_thread_run:
         global g_update_request
         global g_i_hexheader_counter
 
-        
-        read_byte=ord(port.read())
+        read_byte = ord(port.read())
         CheckMsgHeader(read_byte)
         
         g_thread_lock.acquire()
-        if g_update_request==True:
+        if g_update_request:
             if (g_i_hexheader_counter % 40) == 0:
                 Hextext_bytecomment()
             g_update_request=False
@@ -487,18 +485,20 @@ def getdata_task(parameter):
     
 ################################################
 
-###### grafische anzeigeroutinen    
+# ##### grafische anzeigeroutinen
 def ende():
     g_thread_run=0
     sys.exit(0)
 
+
 def Lokalezeit():
     text.insert("end", "                                 \n","u")
     text.insert("end", "Aktuelles Datum / Zeit           \n","u")
-    datum='        Datum: ' + time.strftime("%d:%m:%Y")+'\n'
-    zeit ='        Zeit : ' + time.strftime("%H:%M:%S")+'\n'
+    datum = '        Datum: ' + time.strftime("%d:%m:%Y")+'\n'
+    zeit = '        Zeit : ' + time.strftime("%H:%M:%S")+'\n'
     text.insert("end", datum)
     text.insert("end", zeit)
+
 
 def system_button():
     global g_current_display
@@ -506,42 +506,46 @@ def system_button():
     clear()
     Lokalezeit()
     System()
-    
+
+
 def System():
-    text.insert("end", "Systemstatus Junkers Heatronic3  \n","b_ye")
+    text.insert("end", "Systemstatus Junkers Heatronic3  \n", "b_ye")
     Info()
     Heizgeraet()
     Heizkreis()
     Warmwasser()
     Solar()
-    text.insert("end", "                                 \n","u")
+    text.insert("end", "                                 \n", "u")
+
 
 def Info():
-    text.insert("end", "System-Infos                     \n","b_gray")
-    datum=' System-Datum: ' + g_info_datum+'\n'
+    text.insert("end", "System-Infos                     \n", "b_gray")
+    datum = ' System-Datum: ' + g_info_datum+'\n'
     text.insert("end", datum)
-    uhrzeit=' System-Zeit : ' + g_info_zeit+'\n'
+    uhrzeit = ' System-Zeit : ' + g_info_zeit+'\n'
     text.insert("end", uhrzeit)
+
 
 def Heizgeraet_button():
     global g_current_display
-    g_current_display="heizgeraet"
+    g_current_display = "heizgeraet"
     clear()
     Lokalezeit()
     Heizgeraet()
 
+
 def Heizgeraet():
-    text.insert("end", "Heizgeraet                       \n","b_or")
-    temptext=" T-Vorlauf Soll       : "+format(g_heizgeraet_i_vorlauf_soll,"2d")+'   Grad\n'
-    text.insert("end",temptext)
-    temptext=" T-Vorlauf ist        : "+format(g_heizgeraet_f_vorlauf_ist,".1f")+' Grad\n'
-    text.insert("end",temptext)
-    temptext=" T-Ruecklauf          : "+format(g_heizgeraet_f_ruecklauf,".1f")+' Grad\n'
-    text.insert("end",temptext)
-    temptext=" T-Mischer            : "+format(g_heizgeraet_f_mischer,".1f")+' Grad\n'
-    text.insert("end",temptext)
+    text.insert("end", "Heizgeraet                       \n", "b_or")
+    temptext = " T-Vorlauf Soll       : "+format(g_heizgeraet_i_vorlauf_soll, "2d")+'   Grad\n'
+    text.insert("end", temptext)
+    temptext = " T-Vorlauf ist        : "+format(g_heizgeraet_f_vorlauf_ist, ".1f")+' Grad\n'
+    text.insert("end", temptext)
+    temptext = " T-Ruecklauf          : "+format(g_heizgeraet_f_ruecklauf, ".1f")+' Grad\n'
+    text.insert("end", temptext)
+    temptext = " T-Mischer            : "+format(g_heizgeraet_f_mischer, ".1f")+' Grad\n'
+    text.insert("end", temptext)
     temptext=" Betriebsmodus        : "+GetStrBetriebsmodus(g_heizgeraet_i_betriebsmodus)+' (Heizen/Warmwasser)\n'
-    text.insert("end",temptext)
+    text.insert("end", temptext)
     temptext=" Brenner              : "+GetStrOnOff(g_heizgeraet_b_brenner)+'\n'
     text.insert("end",temptext)
     temptext=" Leistung             : "+format(g_heizgeraet_i_leistung,"d")+'    %\n'
@@ -786,13 +790,13 @@ def anzeigesteuerung():
         System()
 
 
+# #################################
 
-##################################
-        
+
 def openport():
     global port
     try:
-        port = serial.Serial("/dev/ttyUSB0", 9600 )
+        port = serial.Serial("/dev/ttyUSB0", 9600)
     except:
         antwort = tkinter.messagebox.askokcancel("Fehler","Keine Verbindung mit USB-Port \
                      Versuch mit COM-Port ?")
@@ -804,8 +808,10 @@ def openport():
                 ende()
         else:
             ende()
-          
-########## main block ############
+
+
+# ######### main block ############
+
 
 openport()
 
@@ -838,7 +844,7 @@ bsola = tkinter.Button(fr3, text="Solar", command = Solar_button)
 bsola.pack(padx=5, pady=5, side="left")
 
 
-#frame for hexdump
+# frame for hexdump
 hexdumpfr = tkinter.Frame(main, width=1000, relief="sunken", bd=1)
 hexdumpfr.pack(side="left", expand=1, fill="both")
 global hextext
@@ -847,7 +853,7 @@ hextext.pack(side="left", expand=1, fill="both")
 colourconfig(hextext)
 Hextext_bytecomment()
 
-#frame for data
+# frame for data
 datafr = tkinter.Frame(main, width=1, relief="sunken", bd=4)
 datafr.pack(side="left", fill="both")
 text = tkinter.Text(datafr)
@@ -857,5 +863,5 @@ colourconfig(text)
 getdata_threadID = _thread.start_new_thread(getdata_task, (0,))
 
 main.mainloop()
-############ end main - task ###############
+# ########### end main - task ###############
 

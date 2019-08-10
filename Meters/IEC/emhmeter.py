@@ -126,6 +126,7 @@ class MeterBase:
                                              timeout=self.timeout)
         except SerialException:
             logger.error(f"{self.meter_number} Timeout when connecting to {self.port}")
+            self.unlock()
             raise SerialException
         time.sleep(1)
         if self.get_id:
@@ -272,11 +273,11 @@ class MeterBase:
         start = datetime.datetime.now()
 
         # While redis returns the value - sleep and repeat
-        counter = 1
+        counter = 0
         while self.r.get(self.meter_number):
             if counter % 10 == 0:
                 logger.debug(f"Meter {self.meter_number} locked - waiting")
-            sleep(random())
+            sleep(1 + random())
             counter += 1
             now = datetime.datetime.now()
             if (now - start).total_seconds() > MeterBase.lock_limit:
@@ -1437,7 +1438,9 @@ def rq_create_p01_jobs(meter_list, test):
             # New job, not found anywhere
             logger.debug(f"Meter {meter_number} :: New P.01 job {new_job['meterNumber']}")
             # p01_q.enqueue(rq_push_p01, meter, timestamp, meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
-            p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=900, failure_ttl=600)
+            # 604800 = 7 days
+            # 2419200 = 28 days
+            p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=2419200, failure_ttl=2419200, job_timeout=900)
 
 
 def rq_create_logbook_jobs(meter_list, test):
