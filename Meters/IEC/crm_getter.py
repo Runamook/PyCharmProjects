@@ -153,11 +153,12 @@ class RedistoJob:
     }
     not_implemented = ["p211", "table2", "table3"]
 
-    def __init__(self, llevel):
+    def __init__(self, llevel, test=False):
         self.logger = create_logger(loglevel=llevel,
                                     instance_name="RedisToJob",
                                     log_filename=CRMtoRedis.generic_log
                                     )
+        self.test = test
         try:
             self.redis_conn = Redis(charset="utf-8", decode_responses=True)
         except Exception as e:
@@ -248,7 +249,7 @@ class RedistoJob:
             meter_list = [meter]                            # rq_create... expects list of meters
             job_function = self.job_functions[job_type]     # Determine job push function
             try:
-                job_function(meter_list)                        # Push job
+                job_function(meter_list, test=self.test)                        # Push job
                 self.redis_conn.set(f"CRM:{meter_number}:{job_type}", epoch)
             except Exception as e:
                 self.logger.error(f"Meter {meter_number} error while pushing job")
@@ -265,5 +266,6 @@ class RedistoJob:
 if __name__ == "__main__":
     a = CRMtoRedis(llevel="DEBUG")
     a.run()
-    b = RedistoJob(llevel="DEBUG")
+    test = True
+    b = RedistoJob(llevel="DEBUG", test=test)
     b.run()
