@@ -1,4 +1,4 @@
-list_of_meters = [{
+list_of_meters_1 = [{
         "meterNumber": "05939068",
         "Manufacturer": "EMH",
         "ip": "10.124.1.12",
@@ -164,8 +164,21 @@ list_of_meters_metcom = [
         "meterNumber": "1MCS0010001205",
         "ip": "10.124.2.68",
         "voltageRatio": 150,
-        "Manufacturer": "MetCom",
+        "Manufacturer": "Metcom",
         "currentRatio": 5,
         "totalFactor": "calculated"
+    }
+]
+
+list_of_meters_emh = [
+    {
+        "meterNumber": "06205102",
+        "Manufacturer": "",
+        "ip": "10.124.2.111",
+        "InstallationDate": "2018-10-10T10:00:00",
+        "IsActive": True,
+        "voltageRatio": 200,
+        "currentRatio": 10,
+        "totalFactor": 210
     }
 ]

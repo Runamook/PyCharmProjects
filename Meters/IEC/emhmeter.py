@@ -314,9 +314,9 @@ class GetP01:
         self.input_vars = input_vars
         self.meter_number = input_vars["meter"]["meterNumber"]
         if input_vars["meter"].get("Manufacturer"):
-            self.manufacturer = input_vars["meter"]["Manufacturer"]
+            self.manufacturer = input_vars["meter"]["Manufacturer"].lower()
         else:
-            self.manufacturer = "EMH"
+            self.manufacturer = "emh"
 
     def get(self):
         timestamp = self.input_vars['timestamp']
@@ -330,16 +330,16 @@ class GetP01:
         # P.01(1190417001500)(00000000)(15)(6)(1.5)(kW)(2.5)(kW)(5.5)(kvar)(6.5)(kvar)(7.5)(kvar)(8.5)(kvar)
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
         # (0.014)(0.000)(0.013)(0.000)(0.000)(0.000)
-        # Input MetCom
+        # Input Metcom
         # P.01(1190728163000)(08)(15)(12)(1-0:1.5.0)(kW)(1-0:2.5.0)(kW)(1-0:5.5.0)(kvar)(1-0:6.5.0)(kvar)(1-0:7.5.0)(kvar)(1-0:8.5.0)(kvar)(1-0:1.8.0)(kWh)(1-0:2.8.0)(kWh)(1-0:5.8.0)(kvarh)(1-0:6.8.0)(kvarh)(1-0:7.8.0)(kvarh)(1-0:8.8.0)(kvarh)
         # (0.0000)(0.4080)(0.0000)(0.1007)(0.0000)(0.0000)(00000.389)(00203.845)(00000.000)(00050.998)(00000.529)(00002.826)
         # (0.0000)(0.3499)(0.0000)(0.0795)(0.0000)(0.0000)(00000.389)(00203.933)(00000.000)(00051.018)(00000.529)(00002.826)
 
         logger.debug(f"{self.meter_number} Parsing P.01 output")
-        # logger.debug(f"{self.meter_number} {data}")
-        if self.manufacturer == "EMH":
+        logger.debug(f"{self.meter_number} {data}")
+        if self.manufacturer == "emh":
             return self.parse_emh(data)
-        elif self.manufacturer == "MetCom":
+        elif self.manufacturer == "metcom":
             return self.parse_metcom(data)
 
     def parse_emh(self, data):
@@ -371,7 +371,7 @@ class GetP01:
                 value_counter += 1
             result.append(("bill-Log", log))
             results[(base_dt + datetime.timedelta(minutes=counter*15)).strftime("%s")] = result
-            logger.debug(f"{self.meter_number} Intermediate result {results}")
+            # logger.debug(f"{self.meter_number} Intermediate result {results}")
             counter += 1
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
@@ -405,7 +405,7 @@ class GetP01:
                 result.append((keys_raw[value_counter], value[:-1]))
                 value_counter += 1
             results[(base_dt + datetime.timedelta(minutes=counter*15)).strftime("%s")] = result
-            logger.debug(f"{self.meter_number} Intermediate result {results}")
+            # logger.debug(f"{self.meter_number} Intermediate result {results}")
             counter += 1
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
@@ -423,19 +423,21 @@ class GetP01:
         except ValueError:
             logger.error(f"{self.meter_number} Incorrect date in header {header}, line: {line}")
             raise
-        if self.manufacturer == "EMH":
+        if self.manufacturer == "emh":
             # Return log in header[2] for EMH
             return header, base_dt, header[2]
         return header, base_dt
 
-    @staticmethod
-    def filter_lines(lines):
+    def filter_lines(self, lines):
         # Filter out short lines, where there is no data (probably)
         # Strip header line and all short lines
-        # Reorder a list, cause newest values are the last by default
 
         short_line = 6
-        return list(filter(lambda x: len(x) > short_line, lines[1:]))[::-1]
+        filtered1 = list(filter(lambda x: len(x) > short_line, lines[1:]))
+        # Filter lines header that can be repeated in long multi-line output
+        filtered2 = list(filter(lambda x: "P.01" not in x, filtered1))
+        logger.debug(f"{self.meter_number} Filtered data {filtered2}")
+        return filtered2
 
 
 class GetTable:

@@ -9,12 +9,12 @@ import argparse
 from redis import Redis
 from rq import Queue
 try:
-    from .Helpers.list_of_meters import list_of_meters_2 as list_of_meters
+    from .Helpers.list_of_meters import *
 except ImportError:
-    from Helpers.list_of_meters import list_of_meters_2 as list_of_meters
+    from Helpers.list_of_meters import *
 
 
-def main(dataset, frequent, llevel, test):
+def main(dataset, meter_list, frequent, llevel, test):
     logger.setLevel(llevel)
     logger.info(f"Starting app with dataset: {dataset}, frequent: {frequent}, test: {test}")
 
@@ -31,11 +31,11 @@ def main(dataset, frequent, llevel, test):
 
     if frequent == "True":
         for _ in range(5):
-            job(list_of_meters, test)
+            job(meter_list, test)
             time.sleep(10)
-        job(list_of_meters, test)
+        job(meter_list, test)
     elif frequent == "False":
-        job(list_of_meters, test)
+        job(meter_list, test)
 
     return
 
@@ -63,6 +63,7 @@ if __name__ == "__main__":
     optparser.add_argument("--test", type=str, help="Changes queue names. Default: False")
     optparser.add_argument("--requeue", type=str, help="Requeue failed jobs, only for Table1")
     required.add_argument("--dataset", type=str, help="p01, t1, t4, time, logbook", required=True)
+    required.add_argument("--meters", type=str, help="name of the meter list object from file", required=True)
 
     args = optparser.parse_args()
 
@@ -73,6 +74,20 @@ if __name__ == "__main__":
         dataset = args.dataset
     else:
         print("Unknown operation %s" % args.dataset)
+        sys.exit(1)
+
+    list_indicator = args.meters
+
+    if list_indicator == "list_of_meters_1":
+        used_list = list_of_meters_1
+    elif list_indicator == "list_of_meters_2":
+        used_list = list_of_meters_2
+    elif list_indicator == "list_of_meters_metcom":
+        used_list = list_of_meters_metcom
+    elif list_indicator == "list_of_meters_emh":
+        used_list = list_of_meters_emh
+    else:
+        print("Unknown meter list %s" % args.meters)
         sys.exit(1)
 
     if not args.frequent:
@@ -97,5 +112,5 @@ if __name__ == "__main__":
         else:
             requeue_jobs("table1", test)
     else:
-        main(dataset, frequent, llevel, test)
+        main(dataset=dataset, meter_list=used_list, frequent=frequent, llevel=llevel, test=test)
 
