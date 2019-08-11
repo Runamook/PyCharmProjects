@@ -9,10 +9,6 @@ try:
     from .Helpers.obis_codes import zabbix_obis_codes, transform_set
 except ImportError:
     from Helpers.obis_codes import zabbix_obis_codes, transform_set
-try:
-    from .Helpers.list_of_meters import list_of_meters as list_of_meters
-except ImportError:
-    from Helpers.list_of_meters import list_of_meters as list_of_meters
 from pyzabbix import ZabbixMetric, ZabbixSender
 import logging
 import sys
@@ -1345,7 +1341,7 @@ def get_job_meta(queue):
     return running_jobs, failed_jobs
 
 
-def rq_create_table1_jobs(meter_list, test):
+def rq_create_table1_jobs(meter_list, test=False):
     table_no = "1"
     if test:
         q = Queue(name=f"test-table{table_no}", connection=Redis(), default_timeout=3600)
@@ -1363,7 +1359,7 @@ def rq_create_table1_jobs(meter_list, test):
         q.enqueue(meta, input_vars_dict[f"Table{table_no}"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
 
 
-def rq_create_table4_jobs(meter_list, test):
+def rq_create_table4_jobs(meter_list, test=False):
     """
     Receives list of meter dictionaries
     Places jobs to queues for python RQ
@@ -1385,7 +1381,7 @@ def rq_create_table4_jobs(meter_list, test):
         q.enqueue(meta, input_vars_dict[f"Table{table_no}"], result_ttl=10, ttl=300, failure_ttl=600)
 
 
-def rq_create_p01_jobs(meter_list, test):
+def rq_create_p01_jobs(meter_list, test=False):
     """
     Receives list of meter dictionaries
     Places jobs to queues for python RQ
@@ -1445,7 +1441,7 @@ def rq_create_p01_jobs(meter_list, test):
             p01_q.enqueue(meta, input_vars_dict["P01"], meta=new_job, result_ttl=10, ttl=2419200, failure_ttl=2419200, job_timeout=900)
 
 
-def rq_create_logbook_jobs(meter_list, test):
+def rq_create_logbook_jobs(meter_list, test=False):
     if test:
         q = Queue(name=f"test-logbook", connection=Redis(), default_timeout=3600)
     else:
@@ -1463,7 +1459,7 @@ def rq_create_logbook_jobs(meter_list, test):
         q.enqueue(meta, input_vars_dict[f"P211"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
 
 
-def rq_create_time_jobs(meter_list, test):
+def rq_create_time_jobs(meter_list, test=False):
     if test:
         q = Queue(name=f"test-logbook", connection=Redis(), default_timeout=3600)
     else:

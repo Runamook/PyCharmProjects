@@ -8,17 +8,17 @@ except ImportError:
     from Helpers.create_logger import create_logger
 try:
     from emhmeter import *
-except ImportError:
+except ModuleNotFoundError:
     from .emhmeter import *
 
 
 class CRMtoRedis:
 
     url = "http://10.11.30.97:5000/api/MeteringPointWithSchedule"
-    generic_log = "/var/log/crm_to_redis.log"
+    generic_log = "/var/log/eg/crm_to_redis.log"
 
     def __init__(self, llevel):
-        self.logger = create_logger(loglevel=llevel, log_filename=self.generic_log)
+        self.logger = create_logger(loglevel=llevel, instance_name="CRMtoRedis", log_filename=self.generic_log)
 
     def transform_meter(self, meter):
         """
@@ -119,14 +119,14 @@ class CRMtoRedis:
             self.logger.debug(f"Found meter {meter}")
             new_meter = self.transform_meter(meter)
             if new_meter:
-                self.logger.debug(f"Transform to {meter}")
+                self.logger.debug(f"Transform to {new_meter}")
                 meter_list.append(new_meter)
 
         return json.dumps(meter_list)
 
     def push_to_redis(self, data):
         try:
-            r = Redis()
+            r = Redis(charset="utf-8", decode_responses=True)
             r.set("crm_response", data)
             self.logger.info(f"Pushed data to redis")
         except Exception as e:
@@ -140,7 +140,7 @@ class CRMtoRedis:
 
 class RedistoJob:
 
-    log_dir = "/var/log"
+    log_dir = "/var/log/eg"
     job_functions = {
         "p01": rq_create_p01_jobs,
         "p200": rq_create_logbook_jobs,
@@ -159,7 +159,7 @@ class RedistoJob:
                                     log_filename=CRMtoRedis.generic_log
                                     )
         try:
-            self.redis_conn = Redis()
+            self.redis_conn = Redis(charset="utf-8", decode_responses=True)
         except Exception as e:
             self.logger.error(f"{e} error when connecting to Redis")
             raise e
@@ -180,36 +180,80 @@ class RedistoJob:
         return data
 
     def create_jobs(self, meter):
+        """
+        Create redis jobs according to schedule in meter object
+        """
         self.logger.debug(f"Meter {meter['meterNumber']}, jobs {meter['schedule']}")
         for job_type in meter["schedule"].keys():
             self.check_for_job(meter, job_type)
 
     def check_for_job(self, meter, job_type):
+        """
+        Check if a jobs can be executed - the time in schedule has passed
+        :param meter - meter dict
+        :param job_type - string from schedule
+        """
+        push = False
         meter_number = meter["meterNumber"]
         interval = meter["schedule"][job_type]
+        # Search for job in redis
         job_time = self.redis_conn.get(f"CRM:{meter_number}:{job_type}")
         if job_time:
             # Such job was pushed to redis, should check time
             if self.check_time(job_time, interval):
                 push = True
         else:
-            # Job was never pushed to redis, pushing
+            # Job was never pushed to redis
             push = True
 
         if push:
             self.push_job(meter, job_type)
+        else:
+            self.logger.debug(f"Meter {meter_number}, skipping job {job_type}")
 
     def check_time(self, job_time, interval):
+        """
+        Checks if the interval has passed since job_time
+        :param job_time: epoch received from redis
+        :param interval: interval from API (now 24 Hours, will be epoch)
+        :return: boolean
+        """
         now = datetime.datetime.utcnow()
-        job_dt = datetime.datetime.strptime(job_time, "%s")
+        # self.logger.debug(f"Job time {job_time}")
+        job_dt = datetime.datetime.fromtimestamp(int(job_time))
+        interval = self.normalize_interval(interval)
         delta = datetime.timedelta(seconds=interval)
         return (now - delta) > job_dt
 
+    def normalize_interval(self, interval):
+        """
+        Fix interval so in is the number of seconds
+        :param interval: API response,
+        :return: interval in seconds
+        """
+        if interval.lower() == "24 hours":
+            interval = "86400"
+        return int(interval)
+
     def push_job(self, meter, job_type):
+        """
+        Push job to redis queue
+        :param meter: meter dict
+        :param job_type: string job from API schedule
+        """
+        meter_number = meter["meterNumber"]
+        epoch = datetime.datetime.strftime(datetime.datetime.utcnow(), "%s")
+        # Skip jobs that we don't want to do
         if job_type not in self.not_implemented:
-            meter_list = [meter]
-            job_function = self.job_functions[job_type]
-            job_function(meter_list)
+            meter_list = [meter]                            # rq_create... expects list of meters
+            job_function = self.job_functions[job_type]     # Determine job push function
+            try:
+                job_function(meter_list)                        # Push job
+                self.redis_conn.set(f"CRM:{meter_number}:{job_type}", epoch)
+            except Exception as e:
+                self.logger.error(f"Meter {meter_number} error while pushing job")
+                raise e
+            self.logger.debug(f"Meter {meter_number} pushed {job_type} job")
 
     def run(self):
         # Get data from redis, should be a list of dicts
@@ -221,3 +265,5 @@ class RedistoJob:
 if __name__ == "__main__":
     a = CRMtoRedis(llevel="DEBUG")
     a.run()
+    b = RedistoJob(llevel="DEBUG")
+    b.run()
