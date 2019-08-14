@@ -216,10 +216,23 @@ class MeterBase:
         return bytes([functools.reduce(operator.xor, data, 0)])
 
     @staticmethod
-    def get_dt():
+    def isint(value):
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def get_dt(ref_time="now"):
         # P.01 will always return the last complete 15-minutes segment
         # "21905171700"
-        now = datetime.datetime.utcnow()
+        if ref_time == "now":
+            now = datetime.datetime.utcnow()
+        elif ref_time == "24 Hours":
+            now = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+        elif MeterBase.isint(ref_time):
+            now = datetime.datetime.utcnow() - datetime.timedelta(seconds=int(ref_time))
         delta = datetime.timedelta(minutes=15)
 
         hour = now.hour
@@ -316,6 +329,7 @@ class GetP01:
 
     def get(self):
         timestamp = self.input_vars['timestamp']
+        # timestamp = "21906010000" # for historic data gather
         logger.debug(f"{self.meter_number} Requesting P.01 from {timestamp}")
         with MeterBase(self.input_vars) as m:
             m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
@@ -1165,7 +1179,7 @@ class ExportToZabbix:
         ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
         """
         logger.debug(f"{self.meter_number} creating metrics for Zabbix")
-        logger.debug(f"{data}, {self.meter_data}")
+        # logger.debug(f"{data}, {self.meter_data}")
         zabbix_metrics = []
         metric_host = f"Meter {self.meter_data['meterNumber']}"
 
@@ -1178,7 +1192,7 @@ class ExportToZabbix:
                     if not metric_key:
                         continue
                     metric_value = ExportToZabbix.transform_metrics(self.meter_data, metric_key, metric_tuple[1])  # Apply transform
-                    logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
+                    # logger.debug(f"{metric_host}, {metric_key}, {metric_value}, {metric_time}")
                     zabbix_metrics.append(ZabbixMetric(metric_host, metric_key, metric_value, clock=int(metric_time)))
 
         return zabbix_metrics
@@ -1246,8 +1260,13 @@ def meta(input_vars):
 def create_input_vars(meter):
 
     # P.01
+    if meter.get("schedule"):
+        p01_timestamp = MeterBase.get_dt(meter["schedule"]["p01"])
+    else:
+        p01_timestamp = MeterBase.get_dt()
+
     input_vars_p01 = {"port": MeterBase.get_port(meter["ip"]),
-                      "timestamp": MeterBase.get_dt(),
+                      "timestamp": p01_timestamp,
                       "data_handler": "P.01",
                       "exporter": "Zabbix",
                       "server": "192.168.33.33",
@@ -1406,7 +1425,8 @@ def rq_create_p01_jobs(meter_list, test=False):
         # Before putting a job into a queue check if there is a failed
         # or pending job for that meter already in queue
         # Find a job by meterId - only one job for a meter id can exist in a queue at a time
-        timestamp = MeterBase.get_dt()                                              # This is used for P01 query
+
+        timestamp = MeterBase.get_dt()  # This is used for P01 query
         input_vars_dict = create_input_vars(meter)
         current_timestamp = datetime.datetime.strptime(timestamp[1:], '%y%m%d%H%M')     # This is used for comparing
         meter_number = meter["meterNumber"]

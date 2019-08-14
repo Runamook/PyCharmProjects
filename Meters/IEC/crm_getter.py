@@ -1,15 +1,12 @@
-import requests
-from redis import Redis
 import json
-import datetime
 try:
     from .Helpers.create_logger import create_logger
 except ImportError:
     from Helpers.create_logger import create_logger
 try:
-    from emhmeter import *
-except ModuleNotFoundError:
     from .emhmeter import *
+except ModuleNotFoundError:
+    from emhmeter import *
 
 
 class CRMtoRedis:
@@ -144,7 +141,7 @@ class RedistoJob:
     job_functions = {
         "p01": rq_create_p01_jobs,
         "p200": rq_create_logbook_jobs,
-        "p211": None,                           # Collected wirh p200, additional job not required
+        "p211": None,                           # Collected with p200, additional job not required
         "table1": rq_create_table1_jobs,
         "table2": None,
         "table3": None,
@@ -153,12 +150,12 @@ class RedistoJob:
     }
     not_implemented = ["p211", "table2", "table3"]
 
-    def __init__(self, llevel, test=False):
+    def __init__(self, llevel, istest=False):
         self.logger = create_logger(loglevel=llevel,
                                     instance_name="RedisToJob",
                                     log_filename=CRMtoRedis.generic_log
                                     )
-        self.test = test
+        self.test = istest
         try:
             self.redis_conn = Redis(charset="utf-8", decode_responses=True)
         except Exception as e:
@@ -232,7 +229,7 @@ class RedistoJob:
         :param interval: API response,
         :return: interval in seconds
         """
-        if interval.lower() == "24 hours":
+        if interval == "24 Hours":
             interval = "86400"
         return int(interval)
 
@@ -267,5 +264,5 @@ if __name__ == "__main__":
     a = CRMtoRedis(llevel="DEBUG")
     a.run()
     test = True
-    b = RedistoJob(llevel="DEBUG", test=test)
+    b = RedistoJob(llevel="DEBUG", istest=test)
     b.run()
