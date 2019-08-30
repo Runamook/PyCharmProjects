@@ -65,4 +65,18 @@ def crc16(buffer, mode=CRC16_CCITT):
                     crc16ret = crc16ret >> 1
                 crc16ret &= 0xFFFF
 
-    return crc16ret
+    hex_string = hex(crc16ret)[2:]
+    while len(hex_string) < 4:
+        hex_string = '0' + hex_string
+    try:
+        byte1 = bytearray.fromhex(hex_string[:2])
+        byte2 = bytearray.fromhex(hex_string[2:])
+    except ValueError:
+        print(crc16ret)
+        print(hex_string)
+        raise ValueError
+
+    # return crc16ret
+
+    # Меркурий (MODBUS?) хочет видеть CRC байты в обратном порядке
+    return byte2 + byte1

@@ -18,7 +18,10 @@ from serial.serialutil import SerialException
 from time import sleep
 import pytz
 from random import random
-# Version with redis queue
+
+# TODO: Parse P.01 date strings inside of data
+# TODO: Add bytes received to debug "No data, waiting for 1."
+#
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -185,7 +188,7 @@ class MeterBase:
                 # If the last is read byte not ETX - wait for more data
                 if waited < wait_limit:
 
-                    logger.debug(f"{self.meter_number} No data, waiting for {timer} sec, {timer*wait_limit - timer*waited} sec left")
+                    logger.debug(f"{self.meter_number} No data, waiting for {timer} sec, {timer*wait_limit - timer*waited} sec left, {len(result)} bytes read")
                     time.sleep(timer)
                     waited += 1
                     continue
@@ -232,6 +235,8 @@ class MeterBase:
         elif ref_time == "24 Hours":
             now = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
         elif MeterBase.isint(ref_time):
+            if int(ref_time) > 2592000:          # 30 days
+                ref_time = 2592000
             now = datetime.datetime.utcnow() - datetime.timedelta(seconds=int(ref_time))
         delta = datetime.timedelta(minutes=15)
 
@@ -333,7 +338,10 @@ class GetP01:
         logger.debug(f"{self.meter_number} Requesting P.01 from {timestamp}")
         with MeterBase(self.input_vars) as m:
             m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.01({timestamp};)".encode())
+            if ";" in timestamp:
+                return m.sendcmd_and_decode_response("R5".encode(), f"P.01({timestamp})".encode())
+            else:
+                return m.sendcmd_and_decode_response("R5".encode(), f"P.01({timestamp};)".encode())
 
     def parse(self, data):
         # Input EMH
@@ -387,7 +395,7 @@ class GetP01:
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
         # logger.debug(f"Results: {results}")
         final_result = {"p01": results}
-        logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
+        # logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
         return final_result
 
     def parse_metcom(self, data):
@@ -405,7 +413,7 @@ class GetP01:
         lines = self.filter_lines(lines)
         # logger.debug(f"Header {header}, time {base_dt}, lines {lines}")
         results = {}
-        counter = 0
+        counter = 1                                 # Metcom data is 15 minutes behind in Zabbix
         for line in lines:
             result = []
             values = line.split("(")[1:]            # First value is an empty string
@@ -446,7 +454,7 @@ class GetP01:
         filtered1 = list(filter(lambda x: len(x) > short_line, lines[1:]))
         # Filter lines header that can be repeated in long multi-line output
         filtered2 = list(filter(lambda x: "P.01" not in x, filtered1))
-        logger.debug(f"{self.meter_number} Filtered data {filtered2}")
+        # logger.debug(f"{self.meter_number} Filtered data {filtered2}")
         return filtered2
 
 
@@ -669,65 +677,6 @@ class GetTable:
             logger.debug(f"Meter {self.meter_number} cos phi not found - not enough data")
 
         return tuple_list
-
-
-'''
-
-class GetErrors:
-
-    @staticmethod
-    def get(input_vars):
-        # Should be F.F(00000000)
-        logger.debug("Requesting errors F.F()")
-        with MeterBase(input_vars) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"F.F()".encode())
-
-    @staticmethod
-    def parse(selfinput_vars, data):
-
-        pass
-
-
-class GetP98:
-
-    @staticmethod
-    def get(input_vars):
-        logger.debug("Requesting latest P.98")
-        with MeterBase(input_vars) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.98()".encode())
-
-    @staticmethod
-    def parse(selfinput_vars, data):
-        pass
-
-    def get_p99logbook(self):
-        logger.debug("Requesting latest P.99")
-        with MeterBase(self.meter, self.timeout) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.99()".encode())
-
-    def get_p200logbook(self):
-        # Query every X minutes. P.200(ERROR) - means no events
-        logger.debug("Requesting latest P.200")
-        with MeterBase(self.meter, self.timeout) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.200()".encode())
-
-    def get_p210logbook(self):
-        logger.debug("Requesting latest P.210")
-        with MeterBase(self.meter, self.timeout) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.210()".encode())
-
-    def get_p211logbook(self):
-        logger.debug("Requesting latest P.210")
-        with MeterBase(self.meter, self.timeout) as m:
-            m.sendcmd_and_decode_response(MeterBase.ACK + b'051\r\n')
-            return m.sendcmd_and_decode_response("R5".encode(), f"P.211()".encode())
-
-    '''
 
 
 class GetP200:
@@ -1363,9 +1312,9 @@ def get_job_meta(queue):
 def rq_create_table1_jobs(meter_list, test=False):
     table_no = "1"
     if test:
-        q = Queue(name=f"test-table{table_no}", connection=Redis(), default_timeout=3600)
+        q = Queue(name=f"test-table{table_no}", connection=Redis(), default_timeout=604800)
     else:
-        q = Queue(name=f"table{table_no}", connection=Redis(), default_timeout=3600)
+        q = Queue(name=f"table{table_no}", connection=Redis(), default_timeout=604800)
     logger.info("Connected to redis")
 
     logger.info(f"{len(meter_list)} meters to be processed")
@@ -1375,7 +1324,7 @@ def rq_create_table1_jobs(meter_list, test=False):
 
         logger.debug(f"Meter {meter_number} :: enqueueing rq_push_table{table_no} for {meter['ip']}")
         new_job = {"meterNumber": meter_number, "timestamp": datetime.datetime.utcnow().strftime('%s')}
-        q.enqueue(meta, input_vars_dict[f"Table{table_no}"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
+        q.enqueue(meta, input_vars_dict[f"Table{table_no}"], meta=new_job, result_ttl=10, ttl=604800, failure_ttl=604800)
 
 
 def rq_create_table4_jobs(meter_list, test=False):
@@ -1496,7 +1445,26 @@ def rq_create_time_jobs(meter_list, test=False):
         q.enqueue(meta, input_vars_dict[f"Time"], meta=new_job, result_ttl=10, ttl=9000, failure_ttl=7200)
 
 
-# RQ mod
+# RQ mod end
+
+def direct_get(meter_list, data_handler, from_date="now", to_date="now", exporter="Zabbix"):
+    # >>> direct_get(l, "p01", from_date=21908172045, to_date=21908192045)
+    valid_handlers = ["P01", "Table4", "Table1", "P200", "P211", "Time"]
+    data_handler = data_handler.capitalize()
+    if data_handler not in valid_handlers:
+        logger.error(f"Invalid data handler {data_handler}, choose one of {valid_handlers}")
+        raise ValueError
+    for meter in meter_list:
+        input_vars_dict = create_input_vars(meter)
+        meter_number = meter["meterNumber"]
+        logger.debug(f"Meter {meter_number} direct request {data_handler} {input_vars_dict[data_handler]} to {to_date} for {meter['ip']}")
+
+        if from_date != "now":
+            input_vars_dict[data_handler]["timestamp"] = str(from_date)
+            if to_date != "now":
+                input_vars_dict[data_handler]["timestamp"] += f";{str(to_date)}"
+
+        meta(input_vars_dict[data_handler])
 
 
 if __name__ == "__main__":
