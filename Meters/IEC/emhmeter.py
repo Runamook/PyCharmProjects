@@ -20,8 +20,7 @@ import pytz
 from random import random
 
 # TODO: Parse P.01 date strings inside of data
-# TODO: Add bytes received to debug "No data, waiting for 1."
-#
+# TODO: Metcom meter provides limited dataset sometimes, which lead to gaps
 
 
 def create_logger(log_filename, instance_name, loglevel="INFO"):
@@ -1448,7 +1447,17 @@ def rq_create_time_jobs(meter_list, test=False):
 # RQ mod end
 
 def direct_get(meter_list, data_handler, from_date="now", to_date="now", exporter="Zabbix"):
-    # >>> direct_get(l, "p01", from_date=21908172045, to_date=21908192045)
+    """
+    l = [    {
+        "meterNumber": "1MSC0010001210",
+        "ip": "10.124.0.172",
+        "voltageRatio": 200,
+        "Manufacturer": "Metcom",
+        "currentRatio": 200,
+        "totalFactor": "calculated"
+    }   ]
+    direct_get(l, "p01", from_date=21908120000, to_date=21908172045)
+    """
     valid_handlers = ["P01", "Table4", "Table1", "P200", "P211", "Time"]
     data_handler = data_handler.capitalize()
     if data_handler not in valid_handlers:

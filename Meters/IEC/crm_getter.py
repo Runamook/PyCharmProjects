@@ -64,14 +64,14 @@ class CRMtoRedis:
             "currentRatio": 10,
             "totalFactor": 210
                       "schedule":{
-             "p01":"24 Hours",
-             "p200":"24 Hours",
-             "p211":"24 Hours",
-             "table1":"24 Hours",
-             "table2":"24 Hours",
-             "table3":"24 Hours",
-             "table4":"24 Hours",
-             "time":"24 Hours"
+             "p01":"3600",
+             "p200":"3600",
+             "p211":"3600",
+             "table1":"3600",
+             "table2":"3600",
+             "table3":"3600",
+             "table4":"3600",
+             "time":"3600"
           }
         }
 
@@ -193,16 +193,26 @@ class RedistoJob:
         """
         push = False
         meter_number = meter["meterNumber"]
-        interval = meter["schedule"][job_type]
-        # Search for job in redis
-        job_time = self.redis_conn.get(f"CRM:{meter_number}:{job_type}")
-        if job_time:
-            # Such job was pushed to redis, should check time
-            if self.check_time(job_time, interval):
-                push = True
+
+        if job_type == "table1":
+            if not self.requeue_jobs(job_type, meter_number):
+                # If the job was not requeued and it's not running
+                if datetime.datetime.now().day == 1:
+                    # Table1 should only be pushed at 1st day of month
+                    push = True
+                else:
+                    self.logger.debug(f"Meter {meter_number} skipping table1, not 1st day of month")
         else:
-            # Job was never pushed to redis
-            push = True
+            interval = meter["schedule"][job_type]
+            # Search for job in redis
+            job_time = self.redis_conn.get(f"CRM:{meter_number}:{job_type}")
+            if job_time:
+                # Such job was pushed to redis, should check time
+                if self.check_time(job_time, interval):
+                    push = True
+            else:
+                # Job was never pushed to redis
+                push = True
 
         if push:
             self.push_job(meter, job_type)
@@ -252,6 +262,27 @@ class RedistoJob:
                 self.logger.error(f"Meter {meter_number} error while pushing job")
                 raise e
             self.logger.debug(f"Meter {meter_number} pushed {job_type} job")
+
+    def requeue_jobs(self, q_name, meter_number):
+        if self.test:
+            q = Queue(name=f"test-{q_name}", connection=Redis())
+        else:
+            q = Queue(name=q_name, connection=Redis())
+
+        running_jobs, failed_jobs = get_job_meta(q)
+        self.logger.debug(f"Meter {meter_number} running jobs {running_jobs.get(meter_number)}, failed jobs {failed_jobs.get(meter_number)}")
+        if meter_number in failed_jobs:
+            # Meter query is failed, shall not be queued, but shall be requeued
+            job_id = failed_jobs[meter_number]["job_id"]
+            timestamp = failed_jobs[meter_number]["timestamp"]
+            q.failed_job_registry.requeue(job_id)
+            self.logger.debug(f"Meter {meter_number} requeued failed table1 job {job_id} at {timestamp}")
+            return True
+        elif meter_number in running_jobs:
+            logger.debug(f"Meter {meter_number} query for {q_name} is running")
+            # Query is running, no need to requeue or queue
+            return True
+        return False
 
     def run(self):
         # Get data from redis, should be a list of dicts
