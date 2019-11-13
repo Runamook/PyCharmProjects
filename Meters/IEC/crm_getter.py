@@ -7,12 +7,15 @@ try:
     from .emhmeter import *
 except ModuleNotFoundError:
     from emhmeter import *
+from time import sleep
+import datetime
 
 
 class CRMtoRedis:
 
     url = "http://10.11.30.97:5000/api/MeteringPointWithSchedule"
     generic_log = "/var/log/eg/crm_to_redis.log"
+    file_cache = "/tmp/_crm_to_redis_cache_1wed.txt"
 
     def __init__(self, llevel):
         self.logger = create_logger(loglevel=llevel, instance_name="CRMtoRedis", log_filename=self.generic_log)
@@ -100,19 +103,32 @@ class CRMtoRedis:
 
         return result
 
+    @staticmethod
+    def get_cache():
+        with open(CRMtoRedis.file_cache, 'r') as f:
+            return f.read()
+
+    @staticmethod
+    def update_cahce(value):
+        with open(CRMtoRedis.file_cache, 'w') as f:
+            f.write(value)
+        return
+
     def get_crm_data(self):
         """
         Parses data returned by API
         Transforms data to the format expected by emhmeter.py
         """
         try:
-            results = requests.get(self.url)
+            results = requests.get(self.url, timeout=10).json()
+            self.update_cahce(json.dumps(results))
         except Exception as e:
             self.logger.error(f"{e} error when getting data from {self.url}")
-            raise e
+            self.logger.warning(f"Reading cached data")
+            results = json.loads(self.get_cache())
 
         meter_list = []
-        for meter in results.json():
+        for meter in results:
             self.logger.debug(f"Found meter {meter}")
             new_meter = self.transform_meter(meter)
             if new_meter:
@@ -202,6 +218,11 @@ class RedistoJob:
                     push = True
                 else:
                     self.logger.debug(f"Meter {meter_number} skipping table1, not 1st day of month")
+
+        # Skip all, except for P01 for Metcom - they are not responding
+        elif meter['Manufacturer'].lower() == 'metcom' and job_type != 'p01':
+            push = False
+
         else:
             interval = meter["schedule"][job_type]
             # Search for job in redis
@@ -259,7 +280,7 @@ class RedistoJob:
                 job_function(meter_list, test=self.test)                        # Push job
                 self.redis_conn.set(f"CRM:{meter_number}:{job_type}", epoch)
             except Exception as e:
-                self.logger.error(f"Meter {meter_number} error while pushing job")
+                self.logger.error(f"Meter {meter_number} error {e} while pushing job")
                 raise e
             self.logger.debug(f"Meter {meter_number} pushed {job_type} job")
 
@@ -292,8 +313,16 @@ class RedistoJob:
 
 
 if __name__ == "__main__":
-    a = CRMtoRedis(llevel="DEBUG")
-    a.run()
-    test = True
-    b = RedistoJob(llevel="DEBUG", istest=test)
-    b.run()
+    for _ in range(5):
+        start = datetime.datetime.now()
+        a = CRMtoRedis(llevel="DEBUG")
+        a.run()
+        test = False
+        b = RedistoJob(llevel="DEBUG", istest=test)
+        b.run()
+        time_spent = int((datetime.datetime.now() - start).seconds)
+        if time_spent >= 10:
+            sleep(0)
+        else:
+            sleep(10 - time_spent)
+

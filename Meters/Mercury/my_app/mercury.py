@@ -1,9 +1,15 @@
 import binascii
-from Mercury.my_app.crc16_calc import *
+try:
+    from Mercury.my_app.crc16_calc import *
+except ModuleNotFoundError:
+    from crc16_calc import *
 import serial
 import logging
 import sys
 import time
+import json
+from pyzabbix import ZabbixMetric, ZabbixSender
+
 
 errors = {
     "08": {"code": "Е-08", "name": "Пусто"},
@@ -96,6 +102,26 @@ commands2 = {
     # "get_state": {"cmd": b'\x04\x14\x00', "response_size": 15, "name": "Состояние", "decoder": "None"}
 }
 
+commands3 = {
+    "channel_test": {"cmd": b'\x00', "response_size": 4, "name": "Тест канала", "decoder": "Initial"},
+    "channel_open": {"cmd": b'\x01\x01\x01\x01\x01\x01\x01\x01', "response_size": 4, "name": "Открытие канала",
+                     "decoder": "Initial"},
+    "get_power": {"cmd": b'\x05\x00\x00', "response_size": 19, "name": "Мощность", "decoder": "P"},
+    "get_u1": {"cmd": b'\x08\x11\x11', "response_size": 6, "name": "Напряжение Ф1", "decoder": "U"},
+    "get_u2": {"cmd": b'\x08\x11\x12', "response_size": 6, "name": "Напряжение Ф2", "decoder": "U"},
+    "get_u3": {"cmd": b'\x08\x11\x13', "response_size": 6, "name": "Напряжение Ф3", "decoder": "U"},
+    "get_i1": {"cmd": b'\x08\x11\x21', "response_size": 6, "name": "Ток Ф1", "decoder": "I"},
+    "get_i2": {"cmd": b'\x08\x11\x22', "response_size": 6, "name": "Ток Ф2", "decoder": "I"},
+    "get_i3": {"cmd": b'\x08\x11\x23', "response_size": 6, "name": "Ток Ф3", "decoder": "I"},
+    "get_p1": {"cmd": b'\x08\x11\x01', "response_size": 6, "name": "Мощность P1", "decoder": "P_inst"},
+    "get_p2": {"cmd": b'\x08\x11\x02', "response_size": 6, "name": "Мощность P2", "decoder": "P_inst"},
+    "get_p3": {"cmd": b'\x08\x11\x03', "response_size": 6, "name": "Мощность P3", "decoder": "P_inst"},
+    "get_angle_12": {"cmd": b'\x08\x11\x51', "response_size": 6, "name": "Угол между Ф1 и Ф2", "decoder": "sin"},
+    "get_angle_13": {"cmd": b'\x08\x11\x52', "response_size": 6, "name": "Угол между Ф1 и Ф3", "decoder": "sin"},
+    "get_angle_23": {"cmd": b'\x08\x11\x53', "response_size": 6, "name": "Угол между Ф2 и Ф3", "decoder": "sin"},
+    "get_freq": {"cmd": b'\x08\x11\x40', "response_size": 6, "name": "Частота", "decoder": "F"},
+}
+
 violations = {
     "channel_test": {"cmd": b'\x00', "response_size": 4, "name": "Тест канала", "decoder": "Initial"},
     # Теоретически, 111111 = 0x313131313131, запрос b'\x01\x01\x31\x31\x31\x31\x31\x31', но работает так
@@ -179,10 +205,12 @@ class Decoders:
 
         if self.decoded == "Initial":
             value = self.decode_generic()
-        elif self.decoded in ["I", "U", "F", "sin"]:
+        elif self.decoded in ["U", "F", "sin"]:
             value = self.decode_hex_to_dec_by_100()
+        elif self.decoded in ["I"]:
+            value = self.decode_hex_to_dec_by_1000()
         elif self.decoded in ["P_inst"]:
-            pass
+            value = self.decode_hex_to_dec_by_100_strip_byte()
         elif self.decoded in ["Temp"]:
             value = self.decode_hex_to_dec()
         elif self.decoded in ["P"]:
@@ -206,9 +234,23 @@ class Decoders:
         value = "0x" + value
         return int(value, base=16) / 100
 
+    def decode_hex_to_dec_by_1000(self):
+        value = self.normalize_3b(self.value.decode())
+        value = "0x" + value
+        return int(value, base=16) / 1000
+
     def decode_hex_to_dec(self):
         value = "0x" + self.value.decode()
         return int(value, base=16)
+
+    def decode_hex_to_dec_by_100_strip_byte(self):
+        value = self.normalize_3b(self.value.decode())
+        if len(value) == 5:
+            value = value[1:]
+        elif len(value) == 6:
+            value = value[2:]
+        value = "0x" + value
+        return int(value, base=16) / 100
 
     def decode_sin_koeff(self):
         value = self.normalize_2b(self.value.decode())
@@ -235,21 +277,35 @@ class Decoders:
         self.value = self.value.decode()
         # ffffffff = нет
 
-        active_plus = "A+ " + str(int("0x" + self.normalize_4b(self.value[:8]), base=16)) + " Вт*ч"
-        active_minus = "A- " + str(int("0x" + self.normalize_4b(self.value[8:16]), base=16)) + " Вт*ч"
-        reactive_plus = "R+ " + str(int("0x" + self.normalize_4b(self.value[16:24]), base=16)) + " вар*ч"
-        reactive_minus = "R- " + str(int("0x" + self.normalize_4b(self.value[24:]), base=16)) + " вар*ч"
+        result = dict()
+        # active_plus = "A+ " + str(int("0x" + self.normalize_4b(self.value[:8]), base=16)) + " Вт*ч"
+        # active_minus = "A- " + str(int("0x" + self.normalize_4b(self.value[8:16]), base=16)) + " Вт*ч"
+        # reactive_plus = "R+ " + str(int("0x" + self.normalize_4b(self.value[16:24]), base=16)) + " вар*ч"
+        # reactive_minus = "R- " + str(int("0x" + self.normalize_4b(self.value[24:]), base=16)) + " вар*ч"
+        active_plus = str(int("0x" + self.normalize_4b(self.value[:8]), base=16))
+        active_minus = str(int("0x" + self.normalize_4b(self.value[8:16]), base=16))
+        reactive_plus = str(int("0x" + self.normalize_4b(self.value[16:24]), base=16))
+        reactive_minus = str(int("0x" + self.normalize_4b(self.value[24:]), base=16))
 
-        if "4294967295" in active_plus:
-            active_plus = "A+ нет"
-        if "4294967295" in active_minus:
-            active_minus = "A- нет"
-        if "4294967295" in reactive_plus:
-            reactive_plus = "R+ нет"
-        if "4294967295" in reactive_minus:
-            reactive_minus = "R- нет"
+        result['active_plus'] = active_plus
+        result['active_minus'] = active_minus
+        result['reactive_plus'] = reactive_plus
+        result['reactive_minus'] = reactive_minus
 
-        return active_plus, active_minus, reactive_plus, reactive_minus
+        if "4294967295" in result['active_plus']:
+            # active_plus = "A+ нет"
+            result['active_plus'] = "0"
+        if "4294967295" in result['active_minus']:
+            # active_minus = "A- нет"
+            result['active_minus'] = "0"
+        if "4294967295" in result['reactive_plus']:
+            # reactive_plus = "R+ нет"
+            result['reactive_plus'] = "0"
+        if "4294967295" in result['reactive_minus']:
+            # reactive_minus = "R- нет"
+            result['reactive_minus'] = "0"
+
+        return result
 
     def strip_crc_id(self):
         # If first byte matches the address - strip it, it's an address
@@ -262,13 +318,15 @@ class Decoders:
 class Mercury:
     timeout = 1
 
-    def __init__(self, addr, lfile, commands, llevel="INFO", meter_type="230", port="/dev/ttyUSB0"):
+    def __init__(self, addr, lfile, commands, llevel="INFO", meter_type="230", port="/dev/ttyUSB0", mode="normal"):
         self.type = meter_type
         self.addr = int(addr)
         self.addr_byte = bytes([self.addr])
         self.port = port
         self.logger = create_logger(lfile, f"Mercury{self.type}", llevel)
         self.commands = commands
+        self.mode = mode
+        self.export_data = []
 
     def __enter__(self):
         self.logger.debug(f"{self.addr} Opening connection to {self.port}")
@@ -332,9 +390,49 @@ class Mercury:
             if not self.crc_check(response):
                 self.logger.error(f"CRC error, CMD: {cmd}, response: {response}")
             decoded_resp = self.decoder(binascii.hexlify(response), cmd)
-            print(f"{self.commands[cmd]['name']}: {decoded_resp}")
+            if self.mode == "normal":
+                print(f"{self.commands[cmd]['name']}: {decoded_resp}")
+            elif self.mode == "export":
+                self.export_data.append(json.loads(f'{{"{cmd}": "{decoded_resp}"}}'))
+        self.export()
+
+    def export(self):
+        # [{'channel_test': 'OK'},
+        # {'get_power': "{'active_plus': '59598256', 'active_minus': '0', 'reactive_plus': '2758489', 'reactive_minus': '0'}"},
+        # {'get_u1': '238.83'}, {'get_u2': '230.23'}, {'get_u3': '235.48'}, {'get_i1': '0.184'}, {'get_i2': '8.565'},
+        # {'get_i3': '2.086'}, {'get_p1': '36.57'}, {'get_p2': '647.95'}]
+        # ZabbixMetric('Zabbix server', 'WirkleistungP3[04690915]', 3, clock=1554851400))
+
+        host = "ZV-Electricity"
+        zserver = '127.0.0.1'
+
+        zsender = ZabbixSender(zserver)
+        zmetrics = []
+
+        banned = ['channel_test', 'channel_open']
+        for metric in self.export_data:
+            k = list(metric.keys())[0]
+            if k in banned:
+                continue
+            if k == 'get_power':
+                powers = json.loads(metric[k].replace("'", '"'))
+                for power in powers:
+                    zmetrics.append(ZabbixMetric(host, k + '_' + power, powers[power]))
+                    if power == 'active_plus':
+                        # For usage calculation
+                        zmetrics.append(ZabbixMetric(host, 'get_power_active_plus_consumption', powers[power]))
+                continue
+            zmetrics.append(ZabbixMetric(host, k, metric[k]))
+        # print(zmetrics)
+        zresponse = zsender.send(zmetrics)
+        print(zresponse)
 
 
 if __name__ == "__main__":
-    with Mercury(addr=174, commands=commands2, lfile="/dev/null", llevel="DEBUG") as m:
+    # meter_addr = 174
+    meter_addr = 88
+    # llevel = "DEBUG"
+    llevel = "INFO"
+
+    with Mercury(addr=meter_addr, commands=commands3, lfile="/dev/null", llevel=llevel, mode="export") as m:
         m.run()

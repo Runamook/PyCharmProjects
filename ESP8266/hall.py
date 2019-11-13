@@ -14,10 +14,9 @@ except ImportError:
 
 class HallSensor:
     pulse_processed = False
-    last_report = 0  # Time of the last report. Should be zero
+    last_report = 0  # Should be zero
     cache_file = "hall_cache.txt"
 
-    # LED logic is inverted - .on = off, .off = on
     led_pin = machine.Pin(2, machine.Pin.OUT)
     pulse_pin = machine.Pin(5, machine.Pin.IN, machine.Pin.PULL_UP)
 
@@ -34,30 +33,6 @@ class HallSensor:
 
         self.hall_counter = self.use_cache('r', self.cache_file)
 
-        # Привет
-        self.blinker(".−−. .−. .. .−− . −")
-        print('Starting hall sensor-based monitoring v 0.1')
-        print("\n\nServer {}:{}\nInterval {}\nCurrent counter: {}".format(
-            self.http_server,
-            self.http_port,
-            self.interval,
-            self.hall_counter
-        ))
-
-    def blinker(self, sequence):
-        # Logic is inverted: on = LED off, off = LED on
-        self.led_pin.on()
-        for i in sequence:
-            self.led_pin.off()
-            if i == '.':
-                time.sleep(0.2)
-            elif i == ' ':
-                self.led_pin.on()
-                time.sleep(0.3)
-            else:
-                time.sleep(0.1)
-            self.led_pin.on()
-
     @staticmethod
     def debouncer(pin):
         if pin.value() == 1:
@@ -71,9 +46,8 @@ class HallSensor:
             return result == 0
 
     def send_http(self, value, temp):
-        print('Trying to send "{}" over HTTP'.format(value))
         try:
-            url = "http://{}:{}/metric/{}/value/{}".format(self.http_server, self.http_port, temp, value)
+            url = "http://{}:{}/metric/{}/value/{}".format(self.http_server, self.http_port, hall, value)
             response = ur.get(url)
             if response.status_code == 200:
                 self.use_cache('w', self.cache_file, 0)
@@ -104,14 +78,10 @@ class HallSensor:
             if filename not in os.listdir():
                 return 0
             with open(filename, mode) as f:
-                cached_val = f.read()
-                if cached_val == '':
-                    return 0
-                else:
-                    return int(cached_val)
+                return int(f.read(value))
         elif mode == 'w':
             with open(filename, mode) as f:
-                f.write(str(value))
+                f.write(value)
             return
         else:
             print('Wrong mode "{}", use "r" or "w"'.format(mode))
@@ -121,6 +91,7 @@ class HallSensor:
         while True:
             if time.time() - self.last_report > self.interval:
                 http_success = self.send_http(self.hall_counter, 'hall')
+                # send_http() should return False if unable to send the value
 
                 if http_success:
                     self.hall_counter = 0
@@ -129,21 +100,15 @@ class HallSensor:
 
             if self.debouncer(self.pulse_pin):
                 # Pulse detected, pulse is LOW
-                self.led_pin.off()
+                self.led_pin.on()
                 if not self.pulse_processed:
                     self.hall_counter += 1
-                    print('Current value: {}, Current time: {}, Last Report: {}, Interval: {}'.format(
-                        self.hall_counter, time.time(), self.last_report, self.interval)
-                    )
                     self.use_cache('w', self.cache_file, self.hall_counter)
                     self.pulse_processed = True
             else:
-                self.led_pin.on()
+                self.led_pin.off()
                 self.pulse_processed = False
 
 
-my_agrs = {
-    'http_interval': 120
-}
-m = HallSensor(**my_agrs)
+m = HallSensor()
 m.main()

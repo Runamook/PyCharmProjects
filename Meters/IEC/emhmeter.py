@@ -393,6 +393,8 @@ class GetP01:
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
         # logger.debug(f"Results: {results}")
+        self.check_time(base_dt, results)
+
         final_result = {"p01": results}
         # logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
         return final_result
@@ -427,9 +429,30 @@ class GetP01:
 
         # Results = { epoch : [(obis_code, value), (), ...], epoch + 15m, [(), (), ...]}
         # logger.debug(f"Results: {results}")
+        self.check_time(base_dt, results)
+
         final_result = {"p01": results}
         logger.debug(f"{self.meter_number} Finished parsing P.01 output, result {final_result}")
         return final_result
+
+    def check_time(self, base_dt, results):
+
+        timestamp = self.input_vars['timestamp']
+        in_ts_to = None
+        if ';' in timestamp:
+            in_ts_to = timestamp.split(';')[1]
+        total_minutes = len(results) * 15
+        to_dt = base_dt + datetime.timedelta(minutes=total_minutes)
+        logger.debug(f'{self.meter_number} from {base_dt} to {to_dt}')
+
+        if in_ts_to:
+            time_to_check = datetime.datetime.strptime(in_ts_to[1:], "%y%m%d%H%M%S")
+        else:
+            time_to_check = datetime.datetime.now()
+        if (to_dt + datetime.timedelta(minutes=31)) < time_to_check:
+            logger.error(f'Not enough data received: from: {base_dt}, last received: {to_dt}')
+            raise ValueError
+        return
 
     def get_header_data(self, line):
         # Parse P.01 first line
@@ -1398,7 +1421,7 @@ def rq_create_p01_jobs(meter_list, test=False):
             existing_job = p01_running_jobs[meter_number]
             job_start_time = existing_job["timestamp"]
 
-            logger.debug(f"Meter {meter_number} :: Pending P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
+            logger.debug(f"Meter {meter_number} :: Running P.01 job {existing_job['meterNumber']}, start time: {job_start_time[1:]} UTC")
             pass
         else:
             # New job, not found anywhere
