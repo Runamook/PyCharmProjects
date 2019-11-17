@@ -2,51 +2,66 @@ import machine
 import os
 import time
 from umqtt.simple import MQTTClient
-import network
 
 try:
     import urequests.urequests as ur
 except ImportError:
     import urequests as ur
 
+# TODO: make it async
 
-# TODO: Add wifi sleep
-# TODO: Threading support
 
-class HallSensor:
-    version = 0.2
+class PulseDetector:
+    version = 0.3
     pulse_processed = False
-    last_report = 0  # Time of the last report. Should be zero
-    cache_file = "hall_cache.txt"
-    gas_value_init = 10000
 
-    # LED logic is inverted - .on = off, .off = on
+    # LED logic is inverted - .on = LED off, .off = LED on
     led_pin = machine.Pin(2, machine.Pin.OUT)
-    pulse_pin = machine.Pin(5, machine.Pin.IN, machine.Pin.PULL_UP)  # NodeMCU D1
 
-    def __init__(self, **kwargs):
+    def __init__(self, pulse_pin, **kwargs):
+        self.interval = kwargs.get('interval') or 300 * 1000  # How often to send data to server
+        self.cache_file = kwargs.get('cache_file') or "default_cache.txt"
+        self.pulse_pin = machine.Pin(pulse_pin, machine.Pin.IN, machine.Pin.PULL_UP)  # 5 = NodeMCU D1
+
+        self.pulse_counter = self.use_cache('r', self.cache_file)
+        self.report_status = "Never done"
+        self.last_report = 0  # Time of the last report. Should be zero
+
+        # HTTP variables
+        self.http_server, self.http_port, self.url_base = None, None, None
+
+        # MQTT variable
+        self.mqtt_client, self.mqtt_server, self.mqtt_port, self.mqtt_path = None, None, None, None
+        self.mqtt_username, self.mqtt_password = None, None
+
+    def set_http_params(self, **kwargs):
         self.http_server = kwargs.get('http_server') or '192.168.5.11'  # Server IP
         self.http_port = kwargs.get('http_port') or 8080  # Server port
-        self.interval = kwargs.get('http_interval') or 300 * 1000  # How often to send data to server
+        self.url_base = kwargs.get('url_base') or 'http://{}:{}/metric'.format(self.http_server, self.http_port)
 
+    def set_mqtt_params(self, **kwargs):
         self.mqtt_client = kwargs.get('mqtt_client') or 'nodemcu_home'
         self.mqtt_server = kwargs.get('mqtt_server') or 'soldier.cloudmqtt.com'
         self.mqtt_port = kwargs.get('mqtt_port') or 14585
         self.mqtt_username = kwargs.get('mqtt_username') or 'aaa'
-        self.mqtt_password = kwargs.get('mqtt_password') or 'sss'
+        self.mqtt_password = kwargs.get('mqtt_password') or 'ssss'
+        self.mqtt_path = kwargs.get('mqtt_path') or 'micropython/hall'
 
-        self.hall_counter = self.use_cache('r', self.cache_file)
-        self.report_status = "Never done"
-
+    def greeter(self):
         # Привет
         self.blinker(".−−. .−. .. .−− . −")
-        print('Starting hall sensor-based monitoring v 0.1')
-        print("\nServer {}:{}\nReporting every {} seconds\nCurrent counter: {}\n".format(
-            self.http_server,
-            self.http_port,
+        print('Starting pulse based monitoring v {}'.format(self.version))
+
+        print("\nReporting every {} seconds\nCurrent counter: {}\n".format(
             self.interval,
-            self.hall_counter
+            self.pulse_counter
         ))
+
+        if self.http_server:
+            print("Report method: HTTP Server: {}:{}\n".format(
+                self.http_server,
+                self.http_port
+            ))
 
     def blinker(self, sequence):
         # Logic is inverted: on = LED off, off = LED on
@@ -74,17 +89,16 @@ class HallSensor:
                 time.sleep(0.01)
             return result == 0
 
-    def send_http(self, value, temp):
-        gas_value = int(value) + HallSensor.gas_value_init
-        self.send_log('Trying to send "{}" over HTTP'.format(gas_value))
+    def send_http(self, value):
+        self.send_log('Trying to send "{}" over HTTP'.format(value))
         try:
-            url = "http://{}:{}/metric/{}/value/{}".format(self.http_server, self.http_port, temp, gas_value)
+            url = "{}/value/{}".format(self.url_base, value)
             response = ur.get(url)
             if response.status_code == 200:
 
                 # Reset cache and pending counter if data push was successful
                 self.use_cache('w', self.cache_file, 0)
-                self.hall_counter = 0
+                self.pulse_counter = 0
                 self.report_status = 'Success'
                 return True
             else:
@@ -94,7 +108,7 @@ class HallSensor:
             self.report_status = 'Failure, exception {}'.format(e)
             return False
 
-    def send_mqtt(self, value, temp):
+    def send_mqtt(self, value):
         try:
             client = MQTTClient(
                 client_id=self.mqtt_client,
@@ -103,14 +117,15 @@ class HallSensor:
                 user=self.mqtt_username,
                 password=self.mqtt_password)
             client.connect()
-            client.publish('micropython/hall/{}'.format(temp), str(value))
+            client.publish('{}/{}'.format(self.mqtt_path, str(value)))
             return True
-        except:
+        except Exception as e:
+            self.report_status += ' MQTT failure {}'.format(e)
             return False
 
     @staticmethod
     def send_log(log_string):
-        print('Version: {} Time: {} {}'.format(HallSensor.version, time.time(), log_string))
+        print('Version: {} Time: {} {}'.format(PulseDetector.version, time.time(), log_string))
 
     @staticmethod
     def use_cache(mode, filename, value=None):
@@ -133,38 +148,30 @@ class HallSensor:
             raise KeyError
 
     def main(self):
+        self.greeter()
+        if not (self.http_server or self.mqtt_server):
+            self.send_log('ERROR: No report method specified. Please select HTTP or MQTT')
+            return
         while True:
             if time.time() - self.last_report > self.interval:
-                http_success = self.send_http(self.hall_counter, 'hall')
-
+                if self.http_server:
+                    self.send_http(self.pulse_counter)
+                if self.mqtt_server:
+                    self.send_mqtt(self.pulse_counter)
                 # Reset last report, so there is no blocking in case server is down
                 self.last_report = time.time()
-
-                """
-                if http_success:
-                    self.send_mqtt(self.hall_counter, 'hall')
-                """
 
             if self.debouncer(self.pulse_pin):
                 # Pulse detected, pulse is LOW
                 self.led_pin.off()
                 if not self.pulse_processed:
-                    self.hall_counter += 1
+                    self.pulse_counter += 1
                     self.send_log(
                         'Current value: {}, Last Report: {}, Interval: {}, Last Report status: {}'.format(
-                            self.hall_counter, self.last_report, self.interval, self.report_status)
+                            self.pulse_counter, self.last_report, self.interval, self.report_status)
                     )
-                    self.use_cache('w', self.cache_file, self.hall_counter)
+                    self.use_cache('w', self.cache_file, self.pulse_counter)
                     self.pulse_processed = True
             else:
                 self.led_pin.on()
                 self.pulse_processed = False
-
-
-my_agrs = {
-    'http_interval': 120,
-    'http_server': '192.168.1.79'
-}
-
-m = HallSensor(**my_agrs)
-m.main()

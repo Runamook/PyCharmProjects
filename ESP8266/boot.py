@@ -1,4 +1,3 @@
-import uos, machine
 # uos.dupterm(None, 1) # disable REPL on UART(0)
 import gc
 import webrepl
@@ -12,10 +11,14 @@ def do_connect():
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.active(True)
-        sta_if.connect('Azaza', 'niggagetyourown')
+        sta_if.connect('Azaza', 'razdvapoltora1215rrr33')
         while not sta_if.isconnected():
             pass
     print('network config:', sta_if.ifconfig())
+
+
+# with open('webrepl_cfg.py', 'r') as f:
+#     print(f.read())
 
 do_connect()
 webrepl.start()
