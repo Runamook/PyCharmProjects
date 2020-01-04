@@ -90,9 +90,9 @@ class PulseDetector:
             return result == 0
 
     def send_http(self, value):
-        self.send_log('Trying to send "{}" over HTTP'.format(value))
         try:
             url = "{}/value/{}".format(self.url_base, value)
+            self.send_log('Trying to send "{}" over HTTP to {}'.format(value, url))
             response = ur.get(url)
             if response.status_code == 200:
 

@@ -19,6 +19,12 @@ Mjpeg имеет очень плохую степень сжатия в срав
 class VideoFiles:
     lock_name = "video_capture_in_progress"
     db_name = 'videofiles.db'
+    storage = '2 hour'
+    # four_cc = 'XVID'
+    # four_cc = 'X264'
+    four_cc = 'H264'
+    fps = 4
+    resolution = (640, 480)
 
     def __init__(self, filename, length):
         self.filename = filename
@@ -59,10 +65,13 @@ class VideoFiles:
         """
 
         self.set_lock()
-        video_fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        video_fourcc = cv2.VideoWriter_fourcc(*VideoFiles.four_cc)
         capture = cv2.VideoCapture(2)
         # Check frame.shape to get the read frame size
-        video_file = cv2.VideoWriter(self.filename, video_fourcc, 25, (640, 480), 1)
+        print('File = {}, Format = {}, FPS = {}, Resolution = {}'.format(
+            self.filename, VideoFiles.four_cc, VideoFiles.fps, VideoFiles.resolution)
+        )
+        video_file = cv2.VideoWriter(self.filename, video_fourcc, VideoFiles.fps, VideoFiles.resolution, 1)
         start = time.time()
         counter = 0
 
@@ -70,10 +79,10 @@ class VideoFiles:
             check, frame = capture.read()
             video_file.write(frame)
 
-            # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)            # Black/white video
-            # print(check)
-            # print(frame)
             """
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)            # Black/white video
+            print(check)
+            print(frame)
             cv2.imshow("Capturing", frame)                            # Show video in realtime
             key = cv2.waitKey(1)
         
@@ -83,10 +92,12 @@ class VideoFiles:
 
             counter += 1
 
-            if counter % 25 == 0:
-                print("In progress {} seconds".format(time.time() - start))
+            if counter % VideoFiles.fps == 0:
+                d = time.time() - start
+                print("{} frames in {} seconds. FPS = {}".format(counter, d, counter/d))
                 if time.time() - start > self.length:
                     break
+            time.sleep(0.25)
 
         capture.release()
         video_file.release()
@@ -99,27 +110,34 @@ class VideoFiles:
     def process_metadata(self):
 
         db_full_name = "{}/{}".format(os.path.dirname(self.filename), self.db_name)
-        conn = sqlite3.connect(db_full_name)
-        cursor = conn.cursor()
-        now = int(time.time())
+        try:
+            conn = sqlite3.connect(db_full_name)
+            cursor = conn.cursor()
+            now = int(time.time())
 
-        create_table = 'CREATE TABLE IF NOT EXISTS videos (dt INTEGER PRIMARY KEY,filename TEXT NOT NULL);'
-        insert_metadata = "INSERT INTO videos VALUES ('{}', '{}')".format(now, self.filename)
+            create_table = 'CREATE TABLE IF NOT EXISTS videos (dt INTEGER PRIMARY KEY,filename TEXT NOT NULL);'
+            insert_metadata = "INSERT INTO videos VALUES ('{}', '{}')".format(now, self.filename)
+            # Insert .avi filename, in is changed to .avi if video is sent to Telegram
+            insert_metadata_2 = "INSERT INTO videos VALUES ('{}', '{}')".format(now + 1, os.path.splitext(self.filename)[0] + '.avi')
 
-        cursor.execute(create_table)
-        cursor.execute(insert_metadata)
+            cursor.execute(create_table)
+            cursor.execute(insert_metadata)
+            cursor.execute(insert_metadata_2)
 
-        conn.commit()
+            conn.commit()
 
-        self.remove_old_videos(conn)
-        conn.close()
+            self.remove_old_videos(conn)
+            conn.close()
+        except Exception as e:
+            print('ERROR {}'.format(e))
+            pass
         return
 
     def remove_old_videos(self, conn):
 
         cursor = conn.cursor()
         select_old_videos = 'SELECT filename FROM videos WHERE dt < strftime("%s", "now", "-1 hour");'
-        delete_metadata = 'DELETE FROM videos WHERE dt < strftime("%s", "now", "-1 hour");'
+        delete_metadata = 'DELETE FROM videos WHERE dt < strftime("%s", "now", "-{}");'.format(VideoFiles.storage)
 
         for video_filename in cursor.execute(select_old_videos).fetchall():
             # [(file1,), (file2,), (file3,)]
