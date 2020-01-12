@@ -2,6 +2,7 @@ import machine
 import os
 import time
 from umqtt.simple import MQTTClient
+from .boot import do_connect, do_disconnect
 
 try:
     import urequests.urequests as ur
@@ -12,7 +13,7 @@ except ImportError:
 
 
 class PulseDetector:
-    version = 0.3
+    version = 0.4
     pulse_processed = False
 
     # LED logic is inverted - .on = LED off, .off = LED on
@@ -149,17 +150,22 @@ class PulseDetector:
 
     def main(self):
         self.greeter()
+        do_disconnect()
         if not (self.http_server or self.mqtt_server):
             self.send_log('ERROR: No report method specified. Please select HTTP or MQTT')
             return
         while True:
             if time.time() - self.last_report > self.interval:
-                if self.http_server:
-                    self.send_http(self.pulse_counter)
-                if self.mqtt_server:
-                    self.send_mqtt(self.pulse_counter)
-                # Reset last report, so there is no blocking in case server is down
-                self.last_report = time.time()
+                try:
+                    do_connect()
+                    if self.http_server:
+                        self.send_http(self.pulse_counter)
+                    if self.mqtt_server:
+                        self.send_mqtt(self.pulse_counter)
+                    # Reset last report, so there is no blocking in case server is down
+                    self.last_report = time.time()
+                finally:
+                    do_disconnect()
 
             if self.debouncer(self.pulse_pin):
                 # Pulse detected, pulse is LOW
