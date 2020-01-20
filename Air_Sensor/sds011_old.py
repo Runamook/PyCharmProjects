@@ -33,8 +33,6 @@ class SDS011:
     :param uart: The `UART` object to use.
     """
 
-    read_timeout = 1
-
     def __init__(self, uart):
         self._uart = uart
         self._pm25 = 0.0
@@ -118,35 +116,31 @@ class SDS011:
 
         Return True if a response has been received, False overwise.
         """
-
-        # Read stale data that may be in the buffer
-        self._uart.read()
-
         # Query measurement
         self.query()
+        # time.sleep(0.1)
 
         # Read measurement
-        start = time.time()
-        while self._uart.any() == 0:
-            time.sleep(0.1)
-            if time.time() - start > SDS011.read_timeout:
-                break
-        try:
-            header = self._uart.read(1)
-            # print('Header: {}'.format(header), end=' ')
-            if header == b'\xaa':
-                command = self._uart.read(1)
-                # print('Command: {}'.format(command), end=' ')
+        # Drops up to 512 characters before giving up finding a measurement pkt...
+        for i in range(512):
 
-                if command == b'\xc0':
-                    packet = self._uart.read(8)
-                    # print('packet: {}'.format(packet), end=' ')
-                    if packet != None:
-                        self.process_measurement(packet)
-                        return True
-        except Exception as e:
-            print('Problem attempting to read:', e)
-            sys.print_exception(e)
+            # uart.any()  # returns the number of characters waiting
+            try:
+                header = self._uart.read(1)
+                # print('Header: {}'.format(header), end=' ')
+                if header == b'\xaa':
+                    command = self._uart.read(1)
+                    # print('Command: {}'.format(command), end=' ')
+
+                    if command == b'\xc0':
+                        packet = self._uart.read(8)
+                        # print('packet: {}'.format(packet), end=' ')
+                        if packet != None:
+                            self.process_measurement(packet)
+                            return True
+            except Exception as e:
+                print('Problem attempting to read:', e)
+                sys.print_exception(e)
 
         # If we gave up finding a measurement pkt
         return False

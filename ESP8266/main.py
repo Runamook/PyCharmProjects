@@ -1,8 +1,8 @@
 import pulse_detector as pd
 
 base_agrs = {
-    'interval': 120,
-    'cache_file': 'gercon.txt'
+    'interval': 600,
+    'cache_file': 'cold_water_cache.txt.txt'
 }
 
 http_args = {

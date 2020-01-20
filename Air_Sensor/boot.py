@@ -13,7 +13,7 @@ def do_connect():
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.active(True)
-        sta_if.ifconfig(('192.168.5.14', '255.255.255.0', '192.168.5.1', '1.1.1.1'))
+        sta_if.ifconfig(('192.168.5.244', '255.255.255.0', '192.168.5.1', '1.1.1.1'))
         sta_if.connect('Azaza', 'razdvapoltora1215rrr33')
         while not sta_if.isconnected():
             pass

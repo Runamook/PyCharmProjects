@@ -1,66 +1,141 @@
+from machine import UART, Pin
 import time
-import serial
-
-ser = serial.Serial(
-    port='/dev/ttyUSB0',
-    baudrate=9600,
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,
-    timeout=None
-)
-
-# https://www.airnow.gov/index.cfm?action=aqibasics.aqi
-# https://en.wikipedia.org/wiki/Air_quality_index
-# PM2.5 rankings
-caqi = dict()
-caqi['Very low'] = (0, 15)
-caqi['Low'] = (15, 30)
-caqi['Medium'] = (30, 55)
-caqi['Hugh'] = (55, 110)
-caqi['Very high'] = (110, 1000)
+import sds011
+import uos
+from dht import DHT22
 
 
-def get_pm(hb, lb):
-    # PM2.5 (mkg/m3) = pm25hb * 256 + pm25lb/10
-    # PM10 (mkg/m3) = pm10hb * 256 + pm10lb/10
+class Meters:
 
-    return hb * 256 + lb / 10
+    warmup_time = 30
+    pause_time = 300
+    cycle = 10
 
+    def __init__(self, dht_pin, uart_no, **kwargs):
+        self._dht_sensor = DHT22(Pin(dht_pin))
+        self._temperature = None
+        self._humidity = None
+        self._p25 = 0
+        self._p10 = 0
+        self.warm_up_started = False
+        self.warm_up_start_time = 0
+        self.pause_started = False
+        self.pause_start_time = 0
 
-def decoder(message):
-    """
-        :param message: b'\xaa\xc0Y\x00\x98\x00\xfb\x16\x02\xab'
-        :return:
-        """
+        if uart_no == 0:
+            # disable REPL on UART(0)
+            uos.dupterm(None, 1)
+        uart = UART(uart_no, baudrate=9600)
+        uart.init(timeout=1, baudrate=9600)
+        self._dust_sensor = sds011.SDS011(uart)
 
-    header = message[0]
-    commander_no = message[1]
-    pm25lb = message[2]
-    pm25hb = message[3]
-    pm10lb = message[4]
-    pm10hb = message[5]
-    id1 = message[6]
-    id2 = message[7]
-    checksum = message[8]               # message[2] + ... + message[7]
-    tail = message[9]
+        self.screen_present = kwargs.get('screen_present') or False
+        if self.screen_present:
+            self.oled = None
+            self.init_oled(128, 64)
 
-    pm10 = float(get_pm(pm10hb, pm10lb))
-    pm25 = float(get_pm(pm25hb, pm25lb))
-
-    # return f"PM10 = {pm10} mkg/m3, PM2.5 = {pm25} mkg/m3"
-    return pm10, pm25
-
-
-for i in range(1000):
-    time.sleep(1)               # First measurement is always b''
-    x = ser.read_all()
-    if x != b'':
-        pm10, pm25 = decoder(x)
-        if pm10 > 999 or pm25 > 999:                  # 999 is sensor limit
-            print(f'Value to high, must be an error. Raw value {x}, decoded PM10 {pm10}, PM2.5 {pm25}')
-        print(f"PM10 = {pm10} mkg/m3, PM2.5 = {pm25} mkg/m3")
-    else:
-        print('No data returned')
+    def report_http(self):
         pass
+
+    @property
+    def temperature(self):
+        return self._temperature
+
+    @property
+    def humidity(self):
+        return self._humidity
+
+    @property
+    def p10(self):
+        return self._p10
+
+    @property
+    def p25(self):
+        return self._p25
+
+    def init_oled(self, oled_w, oled_h):
+        import ssd1306
+        from machine import I2C
+        i2c = I2C(sda=Pin(4), scl=Pin(5))              # SDA - D2, SCL - D1, 3.3v + G
+        self.oled = ssd1306.SSD1306_I2C(oled_w, oled_h, i2c)
+
+    def write_oled(self):
+        self.oled.fill(0)
+        self.oled.text("P10 {}  P25 {}".format(self._p10, self._p25), 0, 0, 1)
+        self.oled.text("Humid. : {} %".format(self._humidity), 0, 24, 1)
+        self.oled.text("Temp. : {} C".format(self._temperature), 0, 40, 1)
+        self.oled.show()
+
+    def update_temp_humid(self):
+        self._dht_sensor.measure()
+        self._temperature = self._dht_sensor.temperature()
+        self._humidity = self._dht_sensor.humidity()
+
+    def represent(self):
+        print('{} {} {}'.format('=' * 30, time.time(), '=' * 30))
+        print('T: {}C, H: {}%'.format(self._temperature, self._humidity))
+        print('PM25: {}, PM10: {}'.format(self._p25, self._p10))
+        if self.screen_present:
+            self.write_oled()
+
+    def init(self):
+        # time.sleep(1)
+        # self._dust_sensor.wake()
+        time.sleep(self.cycle)
+        self._dust_sensor.sleep()
+        # time.sleep(self.cycle)
+        # self._dust_sensor.sleep()
+
+    def main_loop(self):
+        self._dust_sensor.sleep()
+        time.sleep(self.cycle)
+        self._dust_sensor.sleep()
+        while True:
+            self.represent()
+
+            # DHT22 позволяет считывать показания раз в 2 секунды
+            time.sleep(self.cycle)
+            self.update_temp_humid()
+            print('DEBUG: Now = {}, pause ends at {}, warmup start time = {}, warmup = {}'
+                  .format(time.time(), (self.pause_start_time + self.pause_time), self.warm_up_start_time, self.warm_up_started))
+
+            if self.pause_start_time + Meters.pause_time > time.time():
+                print('DEBUG: Pause loop')
+                # Идет перерыв, не взаимодействуем с сенсором
+                continue
+            else:
+                print('DEBUG: Warmup loop')
+                # Перерыв закончился
+                if not self.warm_up_started:
+                    # Прогрев не начинался, стартуем
+                    self._dust_sensor.wake()
+                    self.warm_up_started = True
+                    self.warm_up_start_time = time.time()
+                    continue
+                if time.time() > self.warm_up_start_time + Meters.warmup_time:
+                    # Сенсор достаточно прогрет, можно читать
+                    status = self._dust_sensor.read()
+                    # time.sleep(0.5)
+                    pkt_status = self._dust_sensor.packet_status
+                    time.sleep(0.5)
+
+                    self._dust_sensor.sleep()
+                    if status is False:
+                        print('ERROR: {}: Measurement failed'.format(time.time()))
+                    elif pkt_status is False:
+                        print('ERROR: {}: Received corrupted data'.format(time.time()))
+                    else:
+                        self._p10 = self._dust_sensor.pm10
+                        self._p25 = self._dust_sensor.pm25
+                    self.warm_up_started = False
+                    self.pause_start_time = time.time()
+
+
+if __name__ == '__main__':
+    # measure()
+    extra_args = {
+        'screen_present': True
+    }
+    meters = Meters(16, 0, **extra_args)
+    meters.main_loop()
 

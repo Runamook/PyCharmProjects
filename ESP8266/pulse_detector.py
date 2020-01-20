@@ -2,7 +2,7 @@ import machine
 import os
 import time
 from umqtt.simple import MQTTClient
-from .boot import do_connect, do_disconnect
+from boot import do_connect, do_disconnect
 
 try:
     import urequests.urequests as ur
