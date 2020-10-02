@@ -1,6 +1,9 @@
 import machine
 import os
+import sys
 import time
+import utime
+import gc
 from umqtt.simple import MQTTClient
 from boot import do_connect, do_disconnect
 
@@ -9,11 +12,13 @@ try:
 except ImportError:
     import urequests as ur
 
+
 # TODO: make it async
 
 
 class PulseDetector:
-    version = 0.4
+    disconnect = False              # Enable to periodically disconnect ESP from WiFi
+    version = 0.5
     pulse_processed = False
 
     # LED logic is inverted - .on = LED off, .off = LED on
@@ -22,11 +27,12 @@ class PulseDetector:
     def __init__(self, pulse_pin, **kwargs):
         self.interval = kwargs.get('interval') or 300 * 1000  # How often to send data to server
         self.cache_file = kwargs.get('cache_file') or "default_cache.txt"
+        self.reset_timer = kwargs.get('reset_timer') or 21600  # Timer to reset the board; 21600 = 6h
         self.pulse_pin = machine.Pin(pulse_pin, machine.Pin.IN, machine.Pin.PULL_UP)  # 5 = NodeMCU D1
 
         self.pulse_counter = self.use_cache('r', self.cache_file)
         self.report_status = "Never done"
-        self.last_report = 0  # Time of the last report. Should be zero
+        self.last_report = time.time()  # Time of the last report.
 
         # HTTP variables
         self.http_server, self.http_port, self.url_base = None, None, None
@@ -50,12 +56,14 @@ class PulseDetector:
 
     def greeter(self):
         # Привет
-        self.blinker(".−−. .−. .. .−− . −")
+        # self.blinker(".−−. .−. .. .−− . −")
+        self.blinker("....")
         print('Starting pulse based monitoring v {}'.format(self.version))
 
-        print("\nReporting every {} seconds\nCurrent counter: {}\n".format(
+        print("\nReporting every {} seconds\nCurrent counter: {}\nReload every {}\n".format(
             self.interval,
-            self.pulse_counter
+            self.pulse_counter,
+            self.reset_timer
         ))
 
         if self.http_server:
@@ -126,7 +134,11 @@ class PulseDetector:
 
     @staticmethod
     def send_log(log_string):
-        print('Version: {} Time: {} {}'.format(PulseDetector.version, time.time(), log_string))
+        gc.collect()
+        mem_info = 'Free: {} Allocated: {}'.format(gc.mem_free(), gc.mem_alloc())
+        (year, month, mday, hour, minute, second, weekday, yearday) = utime.localtime()
+        _time = '[{}-{}-{} {}:{}:{} UTC-30min]'.format(mday, month, year, hour, minute, second)
+        print('Version: {} {} {}: {}'.format(PulseDetector.version, mem_info, _time, log_string))
 
     @staticmethod
     def use_cache(mode, filename, value=None):
@@ -148,16 +160,26 @@ class PulseDetector:
             print('Wrong mode "{}", use "r" or "w"'.format(mode))
             raise KeyError
 
+    @staticmethod
+    def reset(self):
+        # machine.reset()   # board crushes
+        # sys.exit() # no code executed after by default
+        pass
+
     def main(self):
         self.greeter()
-        do_disconnect()
+        if PulseDetector.disconnect:
+            do_disconnect()
         if not (self.http_server or self.mqtt_server):
             self.send_log('ERROR: No report method specified. Please select HTTP or MQTT')
             return
         while True:
+            if time.time() // self.reset_timer >= 1:
+                self.reset()
             if time.time() - self.last_report > self.interval:
                 try:
-                    do_connect()
+                    if PulseDetector.disconnect:
+                        do_connect()
                     if self.http_server:
                         self.send_http(self.pulse_counter)
                     if self.mqtt_server:
@@ -165,7 +187,10 @@ class PulseDetector:
                     # Reset last report, so there is no blocking in case server is down
                     self.last_report = time.time()
                 finally:
-                    do_disconnect()
+                    if PulseDetector.disconnect:
+                        do_disconnect()
+                    else:
+                        pass
 
             if self.debouncer(self.pulse_pin):
                 # Pulse detected, pulse is LOW
