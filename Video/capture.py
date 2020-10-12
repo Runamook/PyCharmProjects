@@ -4,8 +4,10 @@ import time
 from redis import Redis
 import sqlite3
 import os
+import datetime
 
 # https://gist.github.com/vscv/f7ef0f688fdf5e888dadfb8440830a3d
+# https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
 '''
 Скажем пару слов о кодеке mjpeg - видео формируется из последовательности картинок.
 Mjpeg имеет очень плохую степень сжатия в сравнении с h.264 и h.265 при формировании которых
@@ -25,6 +27,7 @@ class VideoFiles:
     four_cc = 'H264'
     fps = 4
     resolution = (640, 480)
+    camera_index = 0
 
     def __init__(self, filename, length):
         self.filename = filename
@@ -66,7 +69,7 @@ class VideoFiles:
 
         self.set_lock()
         video_fourcc = cv2.VideoWriter_fourcc(*VideoFiles.four_cc)
-        capture = cv2.VideoCapture(2)
+        capture = cv2.VideoCapture(VideoFiles.camera_index)
         # Check frame.shape to get the read frame size
         print('File = {}, Format = {}, FPS = {}, Resolution = {}'.format(
             self.filename, VideoFiles.four_cc, VideoFiles.fps, VideoFiles.resolution)
@@ -77,6 +80,8 @@ class VideoFiles:
 
         while True:
             check, frame = capture.read()
+            cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %H:%M:%S"),
+                        (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
             video_file.write(frame)
 
             """

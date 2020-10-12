@@ -4,8 +4,10 @@ import sys
 import time
 import utime
 import gc
-from umqtt.simple import MQTTClient
+import onewire
+import ds18x20
 from boot import do_connect, do_disconnect
+
 
 try:
     import urequests.urequests as ur
@@ -18,7 +20,7 @@ except ImportError:
 
 class PulseDetector:
     disconnect = False              # Enable to periodically disconnect ESP from WiFi
-    version = 0.5
+    version = 0.6
     pulse_processed = False
 
     # LED logic is inverted - .on = LED off, .off = LED on
@@ -37,22 +39,30 @@ class PulseDetector:
         # HTTP variables
         self.http_server, self.http_port, self.url_base = None, None, None
 
-        # MQTT variable
-        self.mqtt_client, self.mqtt_server, self.mqtt_port, self.mqtt_path = None, None, None, None
-        self.mqtt_username, self.mqtt_password = None, None
+        # Temperature variables
+        self.temp_adjustment = None
+        self.ds_sensor = None
+        self.ds_rom = None
+        self.temp = None
+
+    def set_temp_params(self, **kwargs):
+        self.temp_adjustment = kwargs.get('temp_adjustment') or 0
+        ds_pin = machine.Pin(kwargs.get('temp_sensor_pin'))
+        self.ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
+        ds_roms = self.ds_sensor.scan()
+        if len(ds_roms) > 1:
+            self.send_log('Error, more than one DS device found. I only can process one')
+            raise
+        elif len(ds_roms) < 1:
+            self.send_log('Error, no DS devices found but temperature reading is enabled')
+            raise
+        self.ds_rom = ds_roms[0]
+        print('Found DS device: ', self.ds_rom)
 
     def set_http_params(self, **kwargs):
         self.http_server = kwargs.get('http_server') or '192.168.5.11'  # Server IP
         self.http_port = kwargs.get('http_port') or 8080  # Server port
         self.url_base = kwargs.get('url_base') or 'http://{}:{}/metric'.format(self.http_server, self.http_port)
-
-    def set_mqtt_params(self, **kwargs):
-        self.mqtt_client = kwargs.get('mqtt_client') or 'nodemcu_home'
-        self.mqtt_server = kwargs.get('mqtt_server') or 'soldier.cloudmqtt.com'
-        self.mqtt_port = kwargs.get('mqtt_port') or 14585
-        self.mqtt_username = kwargs.get('mqtt_username') or 'aaa'
-        self.mqtt_password = kwargs.get('mqtt_password') or 'ssss'
-        self.mqtt_path = kwargs.get('mqtt_path') or 'micropython/hall'
 
     def greeter(self):
         # Привет
@@ -98,6 +108,12 @@ class PulseDetector:
                 time.sleep(0.01)
             return result == 0
 
+    def get_temp(self):
+        self.ds_sensor.convert_temp()
+        time.sleep_ms(750)
+        print(self.ds_sensor.read_temp(self.rom))
+
+
     def send_http(self, value):
         try:
             url = "{}/value/{}".format(self.url_base, value)
@@ -117,20 +133,21 @@ class PulseDetector:
             self.report_status = 'Failure, exception {}'.format(e)
             return False
 
-    def send_mqtt(self, value):
+    def get_temp(self):
+        self.temp = self.ds_sensor.read_temp(self.ds_rom)
+        self.ds_sensor.convert_temp()
+        if self.temp_adjustment:
+            self.temp += self.temp_adjustment
+
+    def send_temp(self, value):
         try:
-            client = MQTTClient(
-                client_id=self.mqtt_client,
-                server=self.mqtt_server,
-                port=self.mqtt_port,
-                user=self.mqtt_username,
-                password=self.mqtt_password)
-            client.connect()
-            client.publish('{}/{}'.format(self.mqtt_path, str(value)))
-            return True
+            url = "{}/temp/value/{}".format(self.url_base, value)
+            self.send_log('Trying to send "{}" over HTTP to {}'.format(value, url))
+            response = ur.get(url)
+            if response.status_code != 200:
+                self.report_status = 'Failure, status code {}'.format(response.status_code)
         except Exception as e:
-            self.report_status += ' MQTT failure {}'.format(e)
-            return False
+            self.report_status = 'Failure, exception {}'.format(e)
 
     @staticmethod
     def send_log(log_string):
@@ -161,19 +178,23 @@ class PulseDetector:
             raise KeyError
 
     @staticmethod
-    def reset(self):
+    def reset():
         # machine.reset()   # board crushes
         # sys.exit() # no code executed after by default
         pass
 
     def main(self):
+        temp_timer = time.time()
         self.greeter()
         if PulseDetector.disconnect:
             do_disconnect()
-        if not (self.http_server or self.mqtt_server):
-            self.send_log('ERROR: No report method specified. Please select HTTP or MQTT')
+        if not self.http_server:
+            self.send_log('ERROR: No report method specified. Please select HTTP')
             return
         while True:
+            if time.time() - temp_timer > 30:
+                self.get_temp()
+                temp_timer = time.time()
             if time.time() // self.reset_timer >= 1:
                 self.reset()
             if time.time() - self.last_report > self.interval:
@@ -182,8 +203,8 @@ class PulseDetector:
                         do_connect()
                     if self.http_server:
                         self.send_http(self.pulse_counter)
-                    if self.mqtt_server:
-                        self.send_mqtt(self.pulse_counter)
+                    if self.temp:
+                        self.send_temp(self.temp)
                     # Reset last report, so there is no blocking in case server is down
                     self.last_report = time.time()
                 finally:

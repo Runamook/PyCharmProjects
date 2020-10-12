@@ -4,9 +4,17 @@ import time
 import sqlite3
 import cv2
 import os
+import logging
 
 # https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
 # https://www.pyimagesearch.com/2015/06/01/home-surveillance-and-motion-detection-with-the-raspberry-pi-python-and-opencv/
+
+"""
+Main loop continuously scans target dir for videos.
+Videos are processed to find motion and result is recorded to DB.
+
+"""
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 class Detector:
@@ -45,7 +53,7 @@ class Detector:
 
             # Reset first frame every 10 seconds
             if time.time() - self.start > 10:
-                print('firstFrame change {}'.format(datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p")))
+                logging.info('firstFrame change {}'.format(datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p")))
                 self.firstFrame = gray
                 self.start = time.time()
 
@@ -87,12 +95,12 @@ class Detector:
             conn = sqlite3.connect(self.db_full_name)
             cursor = conn.cursor()
             now = int(time.time())
-            insert_metadata = "INSERT INTO processed_videos VALUES ('{}', '{}', '{}')".format(now, self.filename, self.status)
+            insert_metadata = "INSERT INTO processed_videos VALUES ('{}', '{}', '{}', '0')".format(now, self.filename, self.status)
             cursor.execute(insert_metadata)
             conn.commit()
             conn.close()
         except Exception as e:
-            print('ERROR {}, file: {}'.format(e, self.filename))
+            logging.error('{}, file: {}'.format(e, self.filename))
             pass
 
 
@@ -103,24 +111,24 @@ if __name__ == '__main__':
         db_full_name = '/tmp/videofiles.db'
         conn = sqlite3.connect(db_full_name)
         cursor = conn.cursor()
-        create_table = 'CREATE TABLE IF NOT EXISTS processed_videos (dt INTEGER,filename TEXT NOT NULL, motion INTEGER, PRIMARY KEY(dt, filename));'
+        create_table = 'CREATE TABLE IF NOT EXISTS processed_videos (dt INTEGER,filename TEXT NOT NULL, motion INTEGER, sent INTEGER, PRIMARY KEY(dt, filename));'
         delete_metadata = 'DELETE FROM processed_videos WHERE dt < strftime("%s", "now", "-{}");'.format(Detector.storage)
         cursor.execute(create_table)
         cursor.execute(delete_metadata)
         conn.commit()
         q = "SELECT filename from videos WHERE NOT EXISTS (SELECT * FROM processed_videos WHERE filename = videos.filename) AND filename LIKE '%.mp4';"
         unprocessed_videos_list = [x[0] for x in cursor.execute(q).fetchall()]
-        print('{} unprocessed videos found'.format(len(unprocessed_videos_list)))
+        logging.info('{} unprocessed videos found'.format(len(unprocessed_videos_list)))
 
         try:
             for unprocessed_video in unprocessed_videos_list:
                 d = Detector(unprocessed_video)
                 if d.find_motion():
-                    print('Motion detected in {}'.format(unprocessed_video))
+                    logging.info('Motion detected in {}'.format(unprocessed_video))
                     m_counter += 1
                 counter += 1
-            print('{} videos processed. Motion found in {}'.format(counter, m_counter))
+            logging.info('{} videos processed. Motion found in {}'.format(counter, m_counter))
             time.sleep(15)
         except KeyboardInterrupt:
-            print('{} videos processed'.format(counter))
+            logging.info('{} videos processed'.format(counter))
             break

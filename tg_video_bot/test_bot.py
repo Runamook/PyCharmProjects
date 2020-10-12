@@ -82,12 +82,14 @@ def echo(update, context):
 
 
 if __name__ == '__main__':
+    # Handler for /start command
     start_handler = CommandHandler('start', start)
+    # Handler for /video command
     video_handler = CommandHandler('video', video)
+    # Handler for messages, id only = Rnnmk
     echo_handler = MessageHandler(Filters.text & Filters.user(username=['Rnnmk']), echo)
     # echo_handler = MessageHandler(Filters.user(username='Rnnmk'), echo)
 
-    # dispatcher.add_handler(echo_handler)
     dispatcher.add_handler(echo_handler)
     dispatcher.add_handler(video_handler)
     dispatcher.add_handler(start_handler)

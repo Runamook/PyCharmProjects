@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<scenario>
+<counter>
+        <counterdef name="HbH-counter" init="0"> </counterdef>
+        <counterdef name="EtE-counter" init="0"> </counterdef>
+        <counterdef name="session-counter" init="0"> </counterdef>
+</counter>
+
+<init>
+
+  <send channel="channel-1">
+    <command name="CER">
+      <avp name="Origin-Host"> </avp>
+      <avp name="Origin-Realm"> </avp>
+      <avp name="Host-IP-Address"> </avp>
+      <avp name="Vendor-Id" value="9"> </avp>
+      <avp name="Product-Name" value="Seagull"> </avp>
+      <avp name="Origin-State-Id" value="1094807040"> </avp>
+      <avp name="Supported-Vendor-Id" value="10415"> </avp>
+      <avp name="Auth-Application-Id" value="16777238"> </avp>
+      <avp name="Acct-Application-Id" value="0"> </avp>
+      <avp name="Vendor-Specific-Application-Id">
+        <avp name="Vendor-Id" value="10415"> </avp>
+        <avp name="Auth-Application-Id" value="16777238"> </avp>
+        <avp name="Acct-Application-Id" value="0"> </avp>
+      </avp>
+      <avp name="Firmware-Revision" value="182"> </avp>
+    </command>
+  </send>
+
+  <receive channel="channel-1">
+    <command name="CEA">
+    </command>
+  </receive>
+
+</init>
+
+<!-- Traffic -->
+<traffic>
+  <send channel="channel-1">
+    <action>
+      <restore-from-external field="0" entity="Framed-IP-Address"> </restore-from-external>
+      <restore-from-external field="1" entity="Subscription-Id-Data-IMSI"> </restore-from-external>
+      <restore-from-external field="2" entity="Subscription-Id-Data-MSISDN"> </restore-from-external>
+      <!-- For each new call, increment the session-ID counter -->
+      <inc-counter name="HbH-counter"> </inc-counter>
+      <inc-counter name="EtE-counter"> </inc-counter>
+      <inc-counter name="session-counter"> </inc-counter>
+      <set-value name="HbH-id" format="$(HbH-counter)"> </set-value>
+      <set-value name="EtE-id" format="$(EtE-counter)"> </set-value>
+      <set-value name="Session-Id" format="seagull-2.epc.mnc042.mcc250.3gppnetwork.org;1096298391;$(session-counter)"> </set-value>
+    </action>
+
+    <command name="CCR-Gx">
+      <avp name="Session-Id" value="value_is_replaced"> </avp>
+      <avp name="Auth-Application-Id" value="16777238"> </avp>
+      <avp name="Origin-Host"> </avp>
+      <avp name="Origin-Realm"> </avp>
+      <avp name="Destination-Realm"> </avp>
+      <avp name="Destination-Host"> </avp>
+      <!-- Added -->
+      <avp name="CC-Request-Type" value="1"> </avp>
+      <avp name="CC-Request-Number" value="0"> </avp>
+      <avp name="Origin-State-Id" value="100"> </avp>
+      <avp name="Subscription-Id">
+        <avp name="Subscription-Id-Type" value="1"> </avp>
+        <avp name="Subscription-Id-Data-IMSI" value=""> </avp>
+      </avp>
+      <avp name="Subscription-Id">
+        <avp name="Subscription-Id-Type" value="0"> </avp>
+        <avp name="Subscription-Id-Data-MSISDN" value=""> </avp>
+      </avp>
+      <avp name="Called-Station-Id" value="internet.cpm.ru"> </avp>
+      <avp name="RAT-Type" value="1000"> </avp> <!--UTRAN-->
+      <avp name="Framed-IP-Address" value=""> </avp>
+      <avp name="IP-CAN-Type" value="5"> </avp>
+      <avp name="Bearer-Usage" value="0"> </avp>
+      <avp name="User-Equipment-Info">
+        <avp name="User-Equipment-Info-Type" value="0"> </avp>
+        <avp name="User-Equipment-Info-Value" value="8647800223378400"> </avp>
+          </avp>
+        <avp name="QoS-Information">
+          <avp name="APN-Aggregate-Max-Bitrate-DL" value="64000000"> </avp>
+          <avp name="APN-Aggregate-Max-Bitrate-UL" value="64000000"> </avp>
+        </avp>
+        <avp name="Supported-Features">
+          <avp name="Feature-List-ID" value="1"> </avp>
+          <avp name="Feature-List" value="2"> </avp>
+          <avp name="Vendor-Id" value="10415"> </avp>
+        </avp>
+          <avp name="Default-EPS-Bearer-QoS">
+        <avp name="QoS-Class-Identifier" value="9"> </avp>
+        <avp name="Allocation-Retention-Priority">
+                   <avp name="Priority-Level" value="1"> </avp>
+                   <avp name="Pre-emption-Capability" value="1"> </avp>
+                   <avp name="Pre-emption-Vulnerability" value="0"> </avp>
+                   </avp>
+             </avp>
+          <avp name="Access-Network-Charging-Address" value="0x00010a000081"> </avp> <!--10.0.0.129-->
+          <avp name="3GPP-SGSN-MCC-MNC" value="25001"> </avp>
+          <avp name="AN-GW-Address" value="0x00010a000082"> </avp> <!--10.0.0.130-->
+        <avp name="Access-Network-Charging-Identifier-Gx">
+                <avp name="Access-Network-Charging-Identifier-Value" value="1579002403"> </avp>
+        </avp>
+          <avp name="3GPP-User-Location-Info" value="0x0152f01001b367a9"> </avp>
+          <avp name="3GPP-MS-TimeZone" value="0x2100"> </avp>
+     </command>
+    <action>
+      <start-timer> </start-timer>
+      <store name="msisdn" entity="Subscription-Id-Data-MSISDN"> </store>
+      <store name="imsi" entity="Subscription-Id-Data-IMSI"> </store>
+      <store name="framed-ip" entity="Framed-IP-Address"> </store>
+      <store name="sid" entity="Session-Id"> </store>
+    </action>
+  </send>
+
+  <receive channel="channel-1">
+    <action>
+      <stop-timer> </stop-timer>
+    </action>
+    <command name="CCA-Gx">
+           <avp name="Result-Code" value="2001"> </avp>
+    </command>
+    <action>
+           <check-value name="Result-Code" behaviour="error"> </check-value>
+    </action>
+  </receive>
+
+<wait-ms value="4000"> </wait-ms>
+
+<send channel="channel-1">
+        <action>
+        <restore name="imsi" entity="Subscription-Id-Data-IMSI"> </restore>
+        <restore name="msisdn" entity="Subscription-Id-Data-MSISDN"> </restore>
+        <restore name="framed-ip" entity="Framed-IP-Address"> </restore>
+        <restore name="sid" entity="Session-Id"> </restore>
+        <!-- For each new call, increment the session-ID counter -->
+        <inc-counter name="HbH-counter"> </inc-counter>
+        <inc-counter name="EtE-counter"> </inc-counter>
+        <set-value name="HbH-id"
+                format="$(HbH-counter)"> </set-value>
+         <set-value name="EtE-id"
+                format="$(EtE-counter)"> </set-value>
+        </action>
+
+<command name="CCR-Gx">
+        <avp name="Session-Id" value="value_is_replaced"> </avp>
+        <avp name="Auth-Application-Id" value="16777238"> </avp>
+        <avp name="Origin-Host"> </avp>
+        <avp name="Origin-Realm"> </avp>
+        <avp name="Destination-Realm"> </avp>
+        <avp name="Destination-Host"> </avp>
+        <!-- Added -->
+        <avp name="CC-Request-Type" value="2"> </avp>
+        <avp name="CC-Request-Number" value="1"> </avp>
+        <avp name="Origin-State-Id" value="100"> </avp>
+        <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="0"> </avp>
+                <avp name="Subscription-Id-Data-IMSI" value=""> </avp>
+         </avp>
+         <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="1"> </avp>
+                <avp name="Subscription-Id-Data-MSISDN" value=""> </avp>
+        </avp>
+        <avp name="Framed-IP-Address" value=""> </avp>
+        <avp name="Event-Trigger" value="33"> </avp>
+         <avp name="Usage-Monitoring-Information">
+                <avp name="Monitoring-Key" value="0x00000001"> </avp>
+                <avp name="Used-Service-Unit">
+                 <avp name="CC-Total-Octets" value="123"> </avp>
+                </avp>
+        </avp>
+</command>
+<action>
+        <start-timer> </start-timer>
+</action>
+</send>
+
+<receive channel="channel-1">
+        <action>
+                <stop-timer> </stop-timer>
+        </action>
+<command name="CCA-Gx">
+        <avp name="Result-Code" value="2001"> </avp>
+</command>
+<action>
+        <check-value name="Result-Code" behaviour="error"> </check-value>
+</action>
+</receive>
+
+<wait-ms value="4000"> </wait-ms>
+
+<send channel="channel-1">
+        <action>
+        <restore name="imsi" entity="Subscription-Id-Data-IMSI"> </restore>
+        <restore name="msisdn" entity="Subscription-Id-Data-MSISDN"> </restore>
+        <restore name="framed-ip" entity="Framed-IP-Address"> </restore>
+        <restore name="sid" entity="Session-Id"> </restore>
+        <!-- For each new call, increment the session-ID counter -->
+        <inc-counter name="HbH-counter"> </inc-counter>
+        <inc-counter name="EtE-counter"> </inc-counter>
+        <set-value name="HbH-id"
+                format="$(HbH-counter)"> </set-value>
+         <set-value name="EtE-id"
+                format="$(EtE-counter)"> </set-value>
+        </action>
+
+<command name="CCR-Gx">
+        <avp name="Session-Id" value="value_is_replaced"> </avp>
+        <avp name="Auth-Application-Id" value="16777238"> </avp>
+        <avp name="Origin-Host"> </avp>
+        <avp name="Origin-Realm"> </avp>
+        <avp name="Destination-Realm"> </avp>
+        <avp name="Destination-Host"> </avp>
+        <!-- Added -->
+        <avp name="CC-Request-Type" value="2"> </avp>
+        <avp name="CC-Request-Number" value="2"> </avp>
+        <avp name="Origin-State-Id" value="100"> </avp>
+        <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="0"> </avp>
+                <avp name="Subscription-Id-Data-IMSI" value=""> </avp>
+         </avp>
+         <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="1"> </avp>
+                <avp name="Subscription-Id-Data-MSISDN" value=""> </avp>
+        </avp>
+        <avp name="Framed-IP-Address" value=""> </avp>
+        <avp name="Event-Trigger" value="33"> </avp>
+         <avp name="Usage-Monitoring-Information">
+                <avp name="Monitoring-Key" value="0x00000001"> </avp>
+                <avp name="Used-Service-Unit">
+                 <avp name="CC-Total-Octets" value="182"> </avp>
+                </avp>
+        </avp>
+</command>
+<action>
+        <start-timer> </start-timer>
+</action>
+</send>
+
+<receive channel="channel-1">
+        <action>
+                <stop-timer> </stop-timer>
+        </action>
+<command name="CCA-Gx">
+        <avp name="Result-Code" value="2001"> </avp>
+</command>
+<action>
+        <check-value name="Result-Code" behaviour="error"> </check-value>
+</action>
+</receive>
+
+<wait-ms value="4000"> </wait-ms>
+
+<send channel="channel-1">
+        <action>
+        <restore name="imsi" entity="Subscription-Id-Data-IMSI"> </restore>
+        <restore name="msisdn" entity="Subscription-Id-Data-MSISDN"> </restore>
+        <restore name="framed-ip" entity="Framed-IP-Address"> </restore>
+        <restore name="sid" entity="Session-Id"> </restore>
+        <!-- For each new call, increment the session-ID counter -->
+        <inc-counter name="HbH-counter"> </inc-counter>
+        <inc-counter name="EtE-counter"> </inc-counter>
+        <set-value name="HbH-id"
+                format="$(HbH-counter)"> </set-value>
+         <set-value name="EtE-id"
+                format="$(EtE-counter)"> </set-value>
+        </action>
+
+<command name="CCR-Gx">
+        <avp name="Session-Id" value="value_is_replaced"> </avp>
+        <avp name="Auth-Application-Id" value="16777238"> </avp>
+        <avp name="Origin-Host"> </avp>
+        <avp name="Origin-Realm"> </avp>
+        <avp name="Destination-Realm"> </avp>
+        <avp name="Destination-Host"> </avp>
+        <!-- Added -->
+        <avp name="CC-Request-Type" value="2"> </avp>
+        <avp name="CC-Request-Number" value="3"> </avp>
+        <avp name="Origin-State-Id" value="100"> </avp>
+        <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="0"> </avp>
+                <avp name="Subscription-Id-Data-IMSI" value=""> </avp>
+         </avp>
+         <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="1"> </avp>
+                <avp name="Subscription-Id-Data-MSISDN" value=""> </avp>
+        </avp>
+        <avp name="Framed-IP-Address" value=""> </avp>
+        <avp name="Event-Trigger" value="33"> </avp>
+         <avp name="Usage-Monitoring-Information">
+                <avp name="Monitoring-Key" value="0x00000001"> </avp>
+                <avp name="Used-Service-Unit">
+                 <avp name="CC-Total-Octets" value="225"> </avp>
+                </avp>
+        </avp>
+</command>
+<action>
+        <start-timer> </start-timer>
+</action>
+</send>
+
+<receive channel="channel-1">
+        <action>
+                <stop-timer> </stop-timer>
+        </action>
+<command name="CCA-Gx">
+        <avp name="Result-Code" value="2001"> </avp>
+</command>
+<action>
+        <check-value name="Result-Code" behaviour="error"> </check-value>
+</action>
+</receive>
+
+<wait-ms value="4000"> </wait-ms>
+
+<send channel="channel-1">
+    <action>
+      <restore name="imsi" entity="Subscription-Id-Data-IMSI"> </restore>
+      <restore name="msisdn" entity="Subscription-Id-Data-MSISDN"> </restore>
+      <restore name="framed-ip" entity="Framed-IP-Address"> </restore>
+      <restore name="sid" entity="Session-Id"> </restore>
+      <!-- For each new call, increment the session-ID counter -->
+      <inc-counter name="HbH-counter"> </inc-counter>
+      <inc-counter name="EtE-counter"> </inc-counter>
+      <set-value name="HbH-id"
+                 format="$(HbH-counter)"> </set-value>
+      <set-value name="EtE-id"
+                 format="$(EtE-counter)"> </set-value>
+    </action>
+    <command name="CCR-Gx">
+                <avp name="Session-Id" value="value_is_replaced"> </avp>
+                <avp name="Auth-Application-Id" value="16777238"> </avp>
+                <avp name="Origin-Host"> </avp>
+                <avp name="Origin-Realm"> </avp>
+                <avp name="Destination-Realm"> </avp>
+                <avp name="Destination-Host"> </avp>
+                <!-- Added -->
+                <avp name="CC-Request-Type" value="3"> </avp>
+                <avp name="CC-Request-Number" value="4"> </avp>
+                <avp name="Origin-State-Id" value="100"> </avp>
+         <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="1"> </avp>
+                <avp name="Subscription-Id-Data-IMSI" value=""> </avp>
+      </avp>
+        <avp name="Subscription-Id">
+                <avp name="Subscription-Id-Type" value="0"> </avp>
+                <avp name="Subscription-Id-Data-MSISDN" value=""> </avp>
+      </avp>
+      <avp name="Framed-IP-Address" value=""> </avp>
+      <avp name="Termination-Cause" value="1"> </avp>
+      <avp name="User-Equipment-Info">
+        <avp name="User-Equipment-Info-Type" value="0"> </avp>
+        <avp name="User-Equipment-Info-Value" value="8647800223378400"> </avp>
+      </avp>
+      <avp name="Called-Station-Id" value="internet.cpm.ru"> </avp>
+      <avp name="Access-Network-Charging-Address" value="0x00010a000081"> </avp> <!--10.0.0.129-->
+        <avp name="Usage-Monitoring-Information">
+                <avp name="Monitoring-Key" value="0x00000001"> </avp>
+                <avp name="Used-Service-Unit">
+                 <avp name="CC-Total-Octets" value="123"> </avp>
+                </avp>
+        </avp>
+     </command>
+    <action>
+      <start-timer> </start-timer>
+    </action>
+  </send>
+
+    <receive channel="channel-1">
+    <action>
+      <stop-timer> </stop-timer>
+    </action>
+    <command name="CCA-Gx">
+           <avp name="Result-Code" value="2001"> </avp>
+    </command>
+    <action>
+           <check-value name="Result-Code" behaviour="error"> </check-value>
+    </action>
+  </receive>
+
+</traffic>
+
+<default behaviour="ignore">
+         <receive channel="channel-1">
+                 <command name="DWR"> </command>
+                 <action>
+                         <store name="HbH" entity="HbH-id"> </store>
+                         <store name="E2E" entity="EtE-id"> </store>
+                 </action>
+         </receive>
+         <send channel="channel-1">
+                 <action>
+                         <restore name="HbH" entity="HbH-id"> </restore>
+                         <restore name="E2E" entity="EtE-id"> </restore>
+                 </action>
+                 <command name="DWA">
+                         <avp name="Origin-Host"> </avp>
+                         <avp name="Origin-Realm"> </avp>
+                         <avp name="Result-Code" value="2001"> </avp>
+                 </command>
+         </send>
+</default>
+
+<default>
+ <receive channel="channel-1">
+    <command name="RAR-Gx">
+      <avp name="Session-Id" value="value_is_replaced"> </avp>
+      <avp name="Auth-Application-Id" value="16777238"> </avp>
+      <avp name="Destination-Host"> </avp>
+      <avp name="Destination-Realm"> </avp>
+      <avp name="Origin-Realm"> </avp>
+      <avp name="Origin-Host"> </avp>
+    </command>
+            <action>
+            <store name="HbH" entity="HbH-id"> </store>
+            <store name="E2E" entity="EtE-id"> </store>
+            <store name="sid" entity="Session-Id"> </store>
+            <log format="HbH-dwr-store = $(HbH)"> </log>
+            <log format="HbH-dwr-store = $(E2E)"> </log>
+    </action>
+  </receive>
+  <send channel="channel-1">
+         <action>
+            <restore name="HbH" entity="HbH-id"> </restore>
+            <restore name="E2E" entity="EtE-id"> </restore>
+            <restore name="sid" entity="Session-Id"> </restore>
+            <log format="HbH-dwr-restore = $(HbH)"> </log>
+            <log format="HbH-dwr-restore = $(E2E)"> </log>
+         </action>
+         <command name="RAA-Gx">
+            <avp name="Session-Id" value="value_is_replaced"> </avp>
+            <avp name="Auth-Application-Id" value="16777238"> </avp>
+            <avp name="Origin-Host"> </avp>
+            <avp name="Origin-Realm"> </avp>
+            <avp name="Result-Code" value="2001"> </avp>
+            <avp name="Origin-State-Id" value="1"> </avp>
+         </command>
+ </send>
+ </default>
+</scenario>

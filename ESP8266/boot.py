@@ -29,7 +29,7 @@ def do_connect():
     Connect to WiFi.
     Reset the board until DNS is responding
     """
-    connect_timeout = 5000
+    connect_timeout = 15000
     start = time.ticks_ms()
     import network
     sta_if = network.WLAN(network.STA_IF)
