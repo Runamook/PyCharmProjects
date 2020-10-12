@@ -15,7 +15,7 @@ except ImportError:
     import urequests as ur
 
 
-# TODO: make it async
+# TODO: make it async 
 
 
 class PulseDetector:
