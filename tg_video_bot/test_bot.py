@@ -8,7 +8,7 @@ import time
 import glob
 
 # https://stackoverflow.com/questions/47615956/send-video-through-telegram-python-api
-updater = Updater(token='1063510617:AAHCceqJw11iGR8v688XRnA5zZBGxKWJLAw',
+updater = Updater(token='asd',
                   use_context=True,
                   request_kwargs={'read_timeout': 1000, 'connect_timeout': 1000})
 
@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 
 def send_message():
-    bot = Bot(token='1063510617:AAHCceqJw11iGR8v688XRnA5zZBGxKWJLAw')
+    bot = Bot(token='asd')
 
     # Отправить сообщение в канал
     # bot.send_message(chat_id='@test_chn123', text="I'm sorry Dave I'm afraid I can't do that.")
